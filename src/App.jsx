@@ -2,10 +2,15 @@ import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHand
 
 // ─── CONSTANTS ─────────────────────────────────────────
 const SECTIONS = [
-  { id: "business", label: "Business Profile", icon: "🏢" },
-  { id: "rules", label: "AI Writing Rules", icon: "⚙️" },
   { id: "generator", label: "Prompt Maker", icon: "✨" },
   { id: "hooks", label: "Hook Generator", icon: "🪝" },
+  { id: "settings", label: "Settings", icon: "⚙️" },
+];
+
+const SETTINGS_PAGES = [
+  { id: "business", label: "Business Profile", icon: "🏢" },
+  { id: "rules", label: "AI Writing Rules", icon: "📝" },
+  { id: "antiRobot", label: "Anti-Robot", icon: "🚫" },
   { id: "history", label: "Prompt History", icon: "📋" },
 ];
 
@@ -31,16 +36,28 @@ const EMOJI_QUICK = ["🔥", "💡", "🚀", "💰", "⚡", "🎯", "📈", "�
 // ─── CUSTOMIZABLE CONFIG (stored in localStorage) ─────
 const DEFAULT_CONFIG = {
   approaches: [
-    { id: "personal", label: "Personal / Storytelling", icon: "🧠", color: "#60A5FA", desc: "Personal stories, hot takes, experiences, engagement" },
-    { id: "research", label: "Research / Data-driven", icon: "🔍", color: "#A78BFA", desc: "Industry news, data, trends, analysis with citations" },
-    { id: "instructional", label: "Instructional / Educational", icon: "📚", color: "#34D399", desc: "Step-by-step guides, tutorials, how-to breakdowns" },
-    { id: "opinionated", label: "Opinionated / Controversial", icon: "🔥", color: "#F87171", desc: "Hot takes, contrarian views, strong positions" },
-    { id: "action", label: "Action-Oriented", icon: "🎯", color: "#FBBF24", desc: "Actionable tactics, frameworks, templates readers use immediately" },
-    { id: "philosophical", label: "Philosophical / Reflective", icon: "💭", color: "#38BDF8", desc: "Big-picture thinking, mental models, deep observations" },
-    { id: "observational", label: "Observational / Current Events", icon: "👀", color: "#FB923C", desc: "Pattern spotting, trend commentary, real-time analysis" },
+    { id: "personal", label: "Personal / Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
+    { id: "research", label: "Research / Data-driven", icon: "🔍", color: "#A78BFA", desc: "Evidence-backed posts with real statistics from multiple named sources", examples: ["73% of startups fail because of this one thing", "New data: remote workers are 23% more productive", "I analyzed 500 landing pages. Here's what converts.", "The surprising stat nobody is talking about"] },
+    { id: "instructional", label: "Instructional / Educational", icon: "📚", color: "#34D399", desc: "Complete step-by-step guides with prerequisites, edge cases, and expected results", examples: ["How to write a sales page in 30 minutes", "The exact process I use to plan a week of content", "5 steps to double your email open rate", "Build your first landing page today"] },
+    { id: "opinionated", label: "Opinionated / Controversial", icon: "🔥", color: "#F87171", desc: "Bold argument against a specific belief, backed by evidence and conviction", examples: ["Consistency is the worst content advice ever", "Stop building an audience. Build a customer base.", "Newsletters are dead. Here's what's replacing them.", "Your marketing strategy is 5 years out of date"] },
+    { id: "action", label: "Action-Oriented", icon: "🎯", color: "#FBBF24", desc: "One named framework or tactic the reader can copy and use today", examples: ["The 3-2-1 framework for writing any LinkedIn post", "Copy this email template. It books meetings.", "My exact morning routine for writing 2 posts a day", "Use this checklist before you hit publish"] },
+    { id: "philosophical", label: "Philosophical / Reflective", icon: "💭", color: "#38BDF8", desc: "Deep questions and paradoxes that make people think — essays, not answers", examples: ["Why the best creators are also the loneliest", "The paradox of building in public", "What chess taught me about content strategy", "Success isn't what I thought it was at 25"] },
+    { id: "observational", label: "Observational / Current Events", icon: "👀", color: "#FB923C", desc: "Real-time pattern spotting — connecting signals into trends with predictions", examples: ["Everyone missed the real lesson from Twitter's rebrand", "The creator economy is splitting in two", "I'm noticing a pattern in every failing startup", "What Threads' launch tells us about attention"] },
+    { id: "humorous", label: "Humorous / Entertaining", icon: "😂", color: "#F472B6", desc: "Comedy-first content where the joke carries a real insight underneath", examples: ["My content calendar vs. what I actually post", "Things my clients say that keep me up at night", "A day in the life of a solopreneur (honest edition)", "If business advice were honest"] },
+    { id: "motivational", label: "Motivational / Inspirational", icon: "🚀", color: "#4ADE80", desc: "Reader-focused transformation — your struggle becomes their action plan", examples: ["I started with zero followers and no plan. Here's year one.", "The moment I stopped caring what people think", "You don't need permission to start", "What I'd tell my younger self about business"] },
+    { id: "behindScenes", label: "Behind-the-Scenes", icon: "🎬", color: "#E879F9", desc: "Process transparency — tools, costs, systems, decisions, and real numbers", examples: ["Exactly how I made $12K this month (breakdown)", "Here's my actual Notion dashboard for content", "The messy truth behind my 'polished' launch", "Revenue, expenses, failures — my March in review"] },
+    { id: "curated", label: "Curated / Roundup", icon: "📦", color: "#22D3EE", desc: "Organized collections with personal picks, verdicts, and hidden gems", examples: ["7 tools I actually use every day (not sponsored)", "The best free resources for learning copywriting", "My top 5 podcasts for founders", "Every book that changed how I think about marketing"] },
+    { id: "caseStudy", label: "Case Study / Proof-Based", icon: "📊", color: "#F59E0B", desc: "Before/after results with specific metrics, isolation of what worked, and transferable lessons", examples: ["How one email sequence generated $87K in 3 months", "This client went from 200 to 15K followers in 90 days", "Before/after: rewriting a homepage that converts at 8%", "The exact strategy that grew my newsletter to 10K"] },
   ],
   customRuleCategories: [],
-  topics: ["Business", "Artificial Intelligence", "Design", "Conversions", "Marketing", "Personal Brand", "Industry News", "Tech", "Productivity"],
+  bannedWords: [
+    // Verbs
+    "delve", "harness", "unlock", "leverage", "elevate", "foster", "unleash", "empower", "optimize", "streamline", "revolutionize", "amplify", "cultivate", "navigate", "unpack", "underscore", "garner", "showcase", "reimagine", "redefine", "spearhead", "catalyze", "synergize", "democratize", "accelerate", "supercharge", "turbocharge", "accentuate", "surpass", "boast",
+    // Adjectives
+    "game-changing", "revolutionary", "cutting-edge", "state-of-the-art", "groundbreaking", "innovative", "disruptive", "seamless", "robust", "holistic", "dynamic", "scalable", "agile", "actionable", "next-generation", "fascinating", "remarkable", "captivating", "majestic", "vibrant", "meticulous", "unparalleled", "pivotal", "crucial", "intricate", "versatile", "transformative", "proactive", "visionary", "noteworthy", "commendable", "trailblazing", "pioneering", "unprecedented", "intuitive", "immersive", "predictive", "frictionless", "mission-critical", "paradigm-shifting", "future-proof", "hyper-personalized", "results-driven",
+    // Nouns & compounds
+    "tapestry", "landscape", "testament", "realm", "paradigm", "synergy", "ecosystem", "interplay", "bandwidth", "touchpoint", "deep dive", "thought leader", "game-changer", "value-add", "end-to-end", "table stakes", "low-hanging fruit", "north star", "playbook",
+  ],
   platforms: [
     // Social Media
     { id: "twitter", label: "Twitter/X", cat: "Social Media", inst: "PLATFORM: Twitter/X\n- HARD LIMIT: 280 characters. Count carefully. 281 = unpublishable.\n- No line breaks for aesthetic purposes — every line must carry meaning.\n- Write for the timeline: punchy, opinion-driven, shareable.\n- Great tweets are one of: a strong opinion, a surprising fact, or a useful insight in under 20 words.", active: true },
@@ -87,28 +104,21 @@ const DEFAULT_CONFIG = {
     { id: "behind_scenes", label: "Behind the scenes", inst: "FORMAT: Behind the scenes — Show the messy process. Raw > polished. Include what went wrong. Make the audience feel like insiders.", active: false },
     { id: "hot_take", label: "Hot take", inst: "FORMAT: Hot take — One bold contrarian statement. Under 50 words. No hedge. No disclaimer. Let it stand on its own.", active: false },
   ],
-  tones: [
-    { id: "educational", label: "Educational", inst: "TONE: Educational. Teach something. Break complexity into simple steps. 'Here's how' and 'here's why' framing. Be the expert who makes things simple.", active: true },
-    { id: "provocative", label: "Provocative", inst: "TONE: Provocative. Challenge conventional wisdom. Contrarian take upfront. 'Unpopular opinion' energy without saying it. Make people stop and reconsider.", active: true },
-    { id: "storytelling", label: "Storytelling", inst: "TONE: Storytelling. Lead with a specific moment in time. Sensory details. Build tension before the insight. Movie scene, not a lecture.", active: true },
-    { id: "data_driven", label: "Data-driven", inst: "TONE: Data-driven. Lead with the most surprising number. Contrast expectations vs reality. 'X% think Y, but actually Z' framing.", active: true },
-    { id: "casual", label: "Casual", inst: "TONE: Casual. Like texting a smart friend. Short sentences. Fragments okay. Show personality. Don't overthink it.", active: true },
-    { id: "authoritative", label: "Authoritative", inst: "TONE: Authoritative. Deep expertise. Reference your experience. Be definitive, not wishy-washy. No hedging.", active: true },
-    { id: "witty", label: "Witty / Humorous", inst: "TONE: Witty. Clever observations. Unexpected comparisons. Self-deprecating > punching down. Humor serves the point, it's not the point.", active: false },
-    { id: "inspirational", label: "Inspirational", inst: "TONE: Inspirational. Real stories of transformation. Specific moments of change. Earned optimism, not empty motivation.", active: false },
-    { id: "empathetic", label: "Empathetic", inst: "TONE: Empathetic. Name what they're feeling before giving advice. 'I've been there' energy. Validate first, solve second.", active: false },
-    { id: "urgent", label: "Urgent / FOMO", inst: "TONE: Urgent. Time-sensitive framing. What they're losing by not acting. Specific deadlines or consequences. No fake scarcity.", active: false },
-    { id: "vulnerable", label: "Vulnerable / Raw", inst: "TONE: Vulnerable. Share real failures, doubts, fears. No hero arc needed. The mess IS the message. Honesty > polish.", active: false },
-    { id: "sarcastic", label: "Sarcastic / Dry", inst: "TONE: Sarcastic. Dry wit. Say the opposite of what you mean, then make the real point. Subtle > obvious. Never punch down.", active: false },
-  ],
 };
 
 const TAG_COLORS = {
-  topic: { bg: "rgba(255,215,0,0.12)", color: "#FFD700" },
   platform: { bg: "rgba(96,165,250,0.12)", color: "#60A5FA" },
   format: { bg: "rgba(244,114,182,0.12)", color: "#F472B6" },
-  tone: { bg: "rgba(251,191,36,0.12)", color: "#FBBF24" },
   command: { bg: "rgba(167,139,250,0.12)", color: "#A78BFA" },
+};
+
+const SECTION_DESCRIPTIONS = {
+  approaches: "Your content approaches define the angle and energy of every post. Each approach has its own writing rules that shape how the AI writes. Pick the approach that matches your intent.",
+  hooks: "Hooks are the first line of your post — the line that stops the scroll. These rules control how the AI crafts your opening. A great hook creates a gap the reader must close by reading more. Every hook should make someone physically stop scrolling and pay attention.",
+  seo: "SEO rules generate search-optimized metadata alongside your post: title tags, meta descriptions, URL slugs, and FAQ sections. These appear after your post content and help your writing rank in search engines. Enable SEO in Prompt Maker when writing blog posts, articles, or any content that needs organic search visibility.",
+  general: "General rules are custom categories you create for anything that doesn't fit into approaches, hooks, SEO, formats, or platforms. Use these for brand voice guidelines, compliance rules, audience-specific instructions, or any recurring directions you want injected into every prompt.",
+  formats: "Format rules control the structure and length of your content. A thread follows different rules than a carousel or short post. When you select a format in Prompt Maker, its rules are automatically injected into the prompt.",
+  platforms: "Platform rules adapt your content for where it will be published. Twitter has a 280-character limit, LinkedIn rewards white space, Reddit hates self-promotion. Each platform has its own norms, and these rules enforce them.",
 };
 
 // ─── DEFAULT DATA ──────────────────────────────────────
@@ -161,19 +171,27 @@ const PROFILE_PLACEHOLDERS = {
 };
 
 const DEFAULT_RULES = {
-  global: [
-    { id: 1, text: "Write in first person, conversational tone.", active: true },
-    { id: 2, text: "No corporate jargon or buzzwords.", active: true },
-    { id: 3, text: "Twitter posts must be under 280 characters.", active: true },
-    { id: 4, text: "Always end with a clear call-to-action or question.", active: true },
-    { id: 5, text: "No hashtags unless I specifically ask.", active: true },
-  ],
   personal: [
     { id: 10, text: "Use personal stories and real experiences only.", active: true },
     { id: 11, text: "Include specific numbers and results where possible.", active: true },
     { id: 12, text: "Hook: pattern interrupt or contrarian take.", active: true },
     { id: 13, text: "Vulnerability > perfection. Show the struggle.", active: true },
-    { id: 14, text: "No motivational platitudes. Be specific and concrete.", active: false },
+    { id: 14, text: "No motivational platitudes. Be specific and concrete.", active: true },
+    { id: 6000, text: "Name the exact moment — date, place, what you were doing. Specificity is credibility.", active: true },
+    { id: 6001, text: "Include the internal monologue — what you were thinking and feeling, not just what happened.", active: true },
+    { id: 6002, text: "Show the lesson through the story. Don't state the moral — let the reader discover it.", active: true },
+    { id: 6003, text: "One story per post. Don't stack multiple anecdotes. Go deep on one.", active: true },
+    { id: 6004, text: "End with what changed — the before/after of your thinking, behavior, or results.", active: true },
+    { id: 7000, text: "Set the scene: time, place, sensory details. 'Tuesday, 2am, staring at a blank screen' beats 'I was struggling.'", active: true },
+    { id: 7001, text: "Include at least one line of dialogue or inner monologue in quotes. Dialogue makes stories feel alive.", active: true },
+    { id: 7002, text: "Build tension before the resolution. The reader should feel the uncertainty you felt before knowing the outcome.", active: true },
+    { id: 7003, text: "The lesson should surprise even you. If you knew the lesson before the story, it's a lecture, not a story.", active: true },
+    { id: 7004, text: "One timeline, one storyline. No flashbacks or parallel plots in short-form. Linear storytelling is powerful.", active: true },
+    { id: 7005, text: "Include the embarrassing detail you almost left out. That's the detail that makes it real.", active: true },
+    { id: 7006, text: "Mundane moments with sharp observation beat fake drama. Not every story needs a crisis.", active: true },
+    { id: 7007, text: "End with reflection, not instruction. 'I realized' not 'you should.' Let the reader draw their own conclusion.", active: true },
+    { id: 7008, text: "Use present tense for the climactic moment. 'I pick up the phone and call.' It pulls readers into the scene.", active: true },
+    { id: 7009, text: "The story doesn't need a happy ending. Unresolved stories with honest reflection are more memorable than neat conclusions.", active: true },
   ],
   research: [
     { id: 20, text: "Always cite sources with links.", active: true },
@@ -181,6 +199,21 @@ const DEFAULT_RULES = {
     { id: 22, text: "Lead with the most surprising or counterintuitive finding.", active: true },
     { id: 23, text: "Present both sides, then give your personal take.", active: true },
     { id: 24, text: "No vague claims — be specific about which study, report, or source.", active: true },
+    { id: 6010, text: "Translate raw data into a 'so what' — explain why this number matters to the reader's life.", active: true },
+    { id: 6011, text: "Compare the data to a previous benchmark or expectation so the reader feels the surprise.", active: true },
+    { id: 6012, text: "Include the sample size, methodology, or limitation — transparency builds trust.", active: true },
+    { id: 6013, text: "Use one visual analogy to make abstract data concrete: 'That's the equivalent of...'", active: true },
+    { id: 6014, text: "End with a prediction or implication — what does this data mean for the next 6-12 months?", active: true },
+    { id: 7010, text: "Open with the most counterintuitive number. Lead with the stat that makes people say 'wait, what?'", active: true },
+    { id: 7011, text: "Include data from at least 2 different sources. One stat is an anecdote; cross-referenced stats are evidence.", active: true },
+    { id: 7012, text: "Name the study, report, or organization explicitly. 'McKinsey's 2024 report' not 'research shows.'", active: true },
+    { id: 7013, text: "Show how the data changed over time. Year-over-year comparison makes static numbers feel dynamic.", active: true },
+    { id: 7014, text: "Include one 'wait, what?' size comparison. 'That's more than the entire GDP of Portugal' makes abstract data concrete.", active: true },
+    { id: 7015, text: "Use precise numbers, not rounded ones. '$47,300' is more credible than 'about $50K.'", active: true },
+    { id: 7016, text: "Present one data point that contradicts your main thesis. Showing complexity proves you're not cherry-picking.", active: true },
+    { id: 7017, text: "Address the sample size or methodology. 'They surveyed 10,000 companies across 12 countries' builds instant credibility.", active: true },
+    { id: 7018, text: "Your analysis IS the value-add over raw data. Don't just report findings — interpret what they mean.", active: true },
+    { id: 7019, text: "If data is older than 12 months, acknowledge it and explain why it's still relevant. Stale data kills trust.", active: true },
   ],
   instructional: [
     { id: 5000, text: "Start with the outcome — what will they be able to do after reading this?", active: true },
@@ -188,6 +221,21 @@ const DEFAULT_RULES = {
     { id: 5002, text: "Include one real example or scenario per major step.", active: true },
     { id: 5003, text: "Anticipate where they'll get stuck and address it proactively.", active: true },
     { id: 5004, text: "End with the expected result so they know if they did it right.", active: true },
+    { id: 6020, text: "Include a time estimate — how long this will take. Sets expectations and builds commitment.", active: true },
+    { id: 6021, text: "Name one common mistake per section and explain why it happens.", active: true },
+    { id: 6022, text: "Use 'If X, then Y' conditional guidance for different skill levels or situations.", active: true },
+    { id: 6023, text: "Include the minimum viable version — the simplest way to get 80% of the result.", active: true },
+    { id: 6024, text: "Add a 'next steps' section — what to do after they've completed the guide.", active: true },
+    { id: 7020, text: "Start by naming who this is FOR and who it's NOT for. 'This is for people who already have X.'", active: true },
+    { id: 7021, text: "List all prerequisites upfront: tools needed, time required, skill level assumed. No surprises mid-tutorial.", active: true },
+    { id: 7022, text: "Each step must be testable. The reader should know if they did it right before moving to the next step.", active: true },
+    { id: 7023, text: "Include exactly what to type, click, or do. 'Click Settings > General > API Keys' not 'go to your settings.'", active: true },
+    { id: 7024, text: "Add a troubleshooting note after any step that commonly fails. 'If you see error X, it means Y.'", active: true },
+    { id: 7025, text: "Show the finished result BEFORE you teach the process. People need to see the destination first.", active: true },
+    { id: 7026, text: "Order steps by dependency, not importance. Step 3 must be impossible without completing step 2.", active: true },
+    { id: 7027, text: "Include one shortcut or pro tip per section for experienced readers who want to move faster.", active: true },
+    { id: 7028, text: "Use 'you' language throughout. 'You'll see a popup' not 'the user will see a popup.'", active: true },
+    { id: 7029, text: "Depth > speed. Cover all the steps and edge cases, even if it takes multiple reads. Completeness is the point.", active: true },
   ],
   opinionated: [
     { id: 5010, text: "Lead with your strongest, most polarizing claim. No warming up.", active: true },
@@ -195,6 +243,21 @@ const DEFAULT_RULES = {
     { id: 5012, text: "Back your opinion with one concrete example or personal result.", active: true },
     { id: 5013, text: "Acknowledge the best counter-argument, then dismantle it.", active: true },
     { id: 5014, text: "End with a line that sticks — quotable, screenshot-worthy.", active: true },
+    { id: 6030, text: "Quote the specific thing you disagree with — name the article, tweet, or conventional wisdom.", active: true },
+    { id: 6031, text: "Include the personal cost of holding this opinion — what you've lost or risked.", active: true },
+    { id: 6032, text: "Make ONE clear argument, not three weak ones. Depth over breadth.", active: true },
+    { id: 6033, text: "Use 'not X, but Y' framing to sharpen the contrast between the common view and yours.", active: true },
+    { id: 6034, text: "Anticipate the 'but what about...' rebuttal and address it before the reader thinks it.", active: true },
+    { id: 7030, text: "Name the EXACT thing you're fighting: a specific quote, article, tweet, or widely-held belief. No vague targets.", active: true },
+    { id: 7031, text: "The first sentence must be your strongest claim. Not a question, not a story — your position, point blank.", active: true },
+    { id: 7032, text: "Include the steelman version of the opposing argument BEFORE you dismantle it. Show you understand what you're fighting.", active: true },
+    { id: 7033, text: "Use concrete evidence, not feelings. 'Revenue dropped 40% after they did X' beats 'I just feel like X is wrong.'", active: true },
+    { id: 7034, text: "One opinion per post. 'Consistency is overrated' is sharp. Three opinions in one post is three different posts.", active: true },
+    { id: 7035, text: "Don't apologize for your opinion. No 'I know this is controversial but' or 'don't hate me for this.' Just state it.", active: true },
+    { id: 7036, text: "Include what you personally lost or sacrificed by holding this position. Skin in the game = credibility.", active: true },
+    { id: 7037, text: "Write as if you're arguing with one specific smart person, not a crowd. Arguments get sharper with a real opponent.", active: true },
+    { id: 7038, text: "The closing line should be a standalone statement someone would screenshot. Compress the argument into one line.", active: true },
+    { id: 7039, text: "If your opinion makes nobody uncomfortable, it's not opinionated enough. Push harder.", active: true },
   ],
   action: [
     { id: 5020, text: "Every sentence must pass the 'so what do I do?' test.", active: true },
@@ -203,6 +266,20 @@ const DEFAULT_RULES = {
     { id: 5023, text: "Structure as a framework or checklist they can save and reuse.", active: true },
     { id: 5024, text: "No theory without application. Every insight must have an action step.", active: true },
     { id: 5025, text: "End with the single most impactful thing to do first.", active: true },
+    { id: 6040, text: "Name the tool, app, or platform specifically. 'Use a project manager' is useless — 'Use Notion with this template' is actionable.", active: true },
+    { id: 6041, text: "Include a 'do this right now' micro-action that takes under 2 minutes.", active: true },
+    { id: 6042, text: "Show the expected outcome with numbers: 'You should see X within Y days/weeks.'", active: true },
+    { id: 6043, text: "If it's a framework, give it a memorable name. Named frameworks get saved and shared.", active: true },
+    { id: 7040, text: "One tactic per post. If you have three tips, pick the strongest one and go deep. Save the rest for later.", active: true },
+    { id: 7041, text: "Include a real example of the framework in action. Show actual inputs and outputs, not just theory.", active: true },
+    { id: 7042, text: "Specify the exact trigger: 'Do this every Monday morning' or 'Use this right before you hit publish.'", active: true },
+    { id: 7043, text: "Include the expected time investment: 'This takes 5 minutes' or 'Block 30 minutes for this.'", active: true },
+    { id: 7044, text: "Make it copy-paste ready. Templates, scripts, checklists, or exact phrasing the reader can use verbatim.", active: true },
+    { id: 7045, text: "Show the before/after of applying the tactic. 'Before: 2% CTR. After the framework: 8% CTR.'", active: true },
+    { id: 7046, text: "Skip the theory. Don't explain WHY it works — show HOW to use it. The proof is in the results.", active: true },
+    { id: 7047, text: "End with: 'Do this right now.' Give a micro-action under 2 minutes that gets them started immediately.", active: true },
+    { id: 7048, text: "Include the one scenario where this tactic does NOT work. Showing limits proves you know what you're talking about.", active: true },
+    { id: 7049, text: "Impact > completeness. Give the one thing that changes the game, not a complete system. Depth on one tactic.", active: true },
   ],
   philosophical: [
     { id: 5030, text: "Open with a question or paradox that reframes how they see the topic.", active: true },
@@ -210,6 +287,21 @@ const DEFAULT_RULES = {
     { id: 5032, text: "Slow the pace. Longer sentences are fine. Let ideas breathe.", active: true },
     { id: 5033, text: "Reference thinkers, books, or mental models where they deepen the point.", active: true },
     { id: 5034, text: "Don't resolve everything. Leave room for the reader to think.", active: true },
+    { id: 6050, text: "Start with a tension or contradiction that can't be easily resolved. Sit with complexity.", active: true },
+    { id: 6051, text: "Use 'I used to think X, now I think Y' to show intellectual evolution.", active: true },
+    { id: 6052, text: "Write one sentence that's worth screenshotting — a compressed, quotable truth.", active: true },
+    { id: 6053, text: "End with a question, not an answer. The best philosophical posts start conversations.", active: true },
+    { id: 6054, text: "Layer the idea: surface reading for skimmers, deeper meaning for careful readers.", active: true },
+    { id: 7050, text: "Open with a paradox or contradiction. 'The more you optimize for growth, the less you grow.' Sit with the tension.", active: true },
+    { id: 7051, text: "Ask more questions than you answer. The ratio should be at least 2:1 questions to answers.", active: true },
+    { id: 7052, text: "Use 'I wonder' and 'what if' more than 'I believe' and 'you should.' Exploring beats prescribing.", active: true },
+    { id: 7053, text: "Use analogies from outside your field. Connect business to biology, art, physics, or history.", active: true },
+    { id: 7054, text: "Let the essay breathe. Longer paragraphs, no bullet points, no numbered lists. This is an essay, not a listicle.", active: true },
+    { id: 7055, text: "End with an open question the reader will think about after they close the app. No neat resolution.", active: true },
+    { id: 7056, text: "Don't tie it to a current event or trending topic. Philosophical posts should feel timeless.", active: true },
+    { id: 7057, text: "Don't resolve the paradox. Leave it open. The question is more valuable than any answer you could give.", active: true },
+    { id: 7058, text: "Write at least one sentence that works as a standalone quote — something worth screenshotting on its own.", active: true },
+    { id: 7059, text: "The goal is not to convince anyone. It's to make them see something familiar in a completely new way.", active: true },
   ],
   observational: [
     { id: 5040, text: "Anchor to a specific, recent event, trend, or data point.", active: true },
@@ -218,6 +310,130 @@ const DEFAULT_RULES = {
     { id: 5043, text: "Cite the source — link, date, or specifics so it's verifiable.", active: true },
     { id: 5044, text: "End with your personal take: why this matters for your audience.", active: true },
     { id: 5045, text: "Write like it's happening now, not a history lesson.", active: true },
+    { id: 6060, text: "Name the pattern explicitly: 'Here's what I'm seeing...' then describe 2-3 supporting data points.", active: true },
+    { id: 6061, text: "Separate observation from opinion — first show what's happening, then say what you think.", active: true },
+    { id: 6062, text: "Include a timestamp or recency marker. Observations lose power when they feel stale.", active: true },
+    { id: 6063, text: "Make a specific prediction — 'Within 12 months, we'll see X.' Predictions build authority.", active: true },
+    { id: 7060, text: "Anchor to something that happened THIS week or month. Recency is credibility for observational posts.", active: true },
+    { id: 7061, text: "Name at least 2-3 different signals that form the pattern. One example is an anecdote; three is a trend.", active: true },
+    { id: 7062, text: "Show what everyone else is seeing, THEN reveal the layer underneath. 'Everyone's talking about X. The real story is Y.'", active: true },
+    { id: 7063, text: "Make a specific, dated prediction. 'By Q4 2025, we'll see X.' Vague predictions are worthless.", active: true },
+    { id: 7064, text: "Include links, screenshots, or dates as sources. Verifiability is non-negotiable for trend analysis.", active: true },
+    { id: 7065, text: "Explain who benefits and who gets hurt by this shift. Every trend has winners and losers.", active: true },
+    { id: 7066, text: "Connect the current trend to a historical pattern. 'We saw this before in 2015 when...' adds depth.", active: true },
+    { id: 7067, text: "Write with urgency. This is happening NOW. Use present tense and time markers throughout.", active: true },
+    { id: 7068, text: "End with 'what this means for you' — translate the observation into a specific action for your audience.", active: true },
+    { id: 7069, text: "Don't cover trends everyone is already covering. Find the signal in the noise, not the noise itself.", active: true },
+  ],
+  humorous: [
+    { id: 6100, text: "Lead with the punchline or absurd observation. Don't build up — land it immediately.", active: true },
+    { id: 6101, text: "Use specific, vivid details. 'My 3pm Zoom with 47 people and no cameras on' beats 'meetings are bad'.", active: true },
+    { id: 6102, text: "Self-deprecation works better than mocking others. Punch up or inward, never down.", active: true },
+    { id: 6103, text: "Exaggerate ONE real truth to absurd proportions. Comedy = truth + distortion.", active: true },
+    { id: 6104, text: "Use unexpected comparisons: connect two things that don't belong together.", active: true },
+    { id: 6105, text: "Keep it tight. Every extra word dilutes the funny. Cut anything that doesn't serve the joke.", active: true },
+    { id: 6106, text: "Read it out loud. If it doesn't make YOU laugh or smile, rewrite it.", active: true },
+    { id: 6107, text: "Embed a real insight inside the humor. The best comedy makes people laugh AND think.", active: true },
+    { id: 6108, text: "Use the callback technique — reference the opening joke at the end for a satisfying loop.", active: true },
+    { id: 6109, text: "Never explain the joke. If it needs a 'get it?' it's not landing. Trust the audience.", active: true },
+    { id: 7070, text: "Use the rule of three: set up a pattern with two serious items, then break it with an absurd third.", active: true },
+    { id: 7071, text: "Use timing and white space — put punchlines on their own line. The pause before the joke is half the comedy.", active: true },
+    { id: 7072, text: "Contrast formal language with absurd content for comedic effect — corporate jargon about ridiculous things.", active: true },
+    { id: 7073, text: "Write punchlines shorter than setups — brevity multiplies impact.", active: true },
+    { id: 7074, text: "Describe a universal experience so precisely that people feel personally called out — observational humor earns shares.", active: true },
+    { id: 7075, text: "Use anti-humor or subversion — set up a joke, then deliver something unexpectedly sincere for a bigger impact.", active: true },
+    { id: 7076, text: "Vary comedy formats: lists, fake definitions, mock advice, absurd analogies, fake breaking news.", active: true },
+    { id: 7077, text: "Build running themes or recurring bits across posts to create a comedy universe your audience recognizes.", active: true },
+    { id: 7078, text: "Write 5 punch options for your best joke and pick the funniest — comedy requires more revision than any other format.", active: true },
+    { id: 7079, text: "Study your specific audience's in-jokes and industry humor — niche references land 10x harder than generic comedy.", active: true },
+  ],
+  motivational: [
+    { id: 6110, text: "Ground every motivational claim in a specific moment: a failure, turning point, or hard-won insight.", active: true },
+    { id: 6111, text: "Show the struggle before the lesson. Unearned optimism feels hollow and performative.", active: true },
+    { id: 6112, text: "Use short, punchy sentences for impact. Rhythm matters in motivational writing.", active: true },
+    { id: 6113, text: "Include a specific action the reader can take — motivation without direction is just noise.", active: true },
+    { id: 6114, text: "Write like a coach in the locker room, not a motivational poster. Direct, urgent, personal.", active: true },
+    { id: 6115, text: "Name the specific fear, doubt, or excuse your audience uses — then dismantle it.", active: true },
+    { id: 6116, text: "End with a line worth screenshotting. Compress the entire message into one sentence.", active: true },
+    { id: 6117, text: "Use 'I' statements about your journey, then pivot to 'you' for the reader's application.", active: true },
+    { id: 6118, text: "Avoid toxic positivity. Acknowledge that things are hard while showing they're possible.", active: true },
+    { id: 6119, text: "Include a timeline: 'It took me X months/years.' Real timelines set realistic expectations.", active: true },
+    { id: 7080, text: "Open with the reader's current frustration, not your success — they need to feel seen before they'll listen.", active: true },
+    { id: 7081, text: "Build a 'then vs. now' bridge — show the exact moment the shift happened and make it feel inevitable.", active: true },
+    { id: 7082, text: "Give exactly one mindset shift per post — multiple shifts dilute all of them.", active: true },
+    { id: 7083, text: "Replace platitudes with protocols — 'believe in yourself' becomes 'write down 3 wins from this week every Friday'.", active: true },
+    { id: 7084, text: "Acknowledge the cost of change honestly — motivation without realism creates guilt, not action.", active: true },
+    { id: 7085, text: "Use contrast structure: 'You think X, but actually Y' — reframes are more motivating than affirmations.", active: true },
+    { id: 7086, text: "Include a 'smallest first step' — the action should be so small it feels almost too easy to skip.", active: true },
+    { id: 7087, text: "Never use 'just' or 'simply' before difficult actions — it invalidates the reader's real obstacles.", active: true },
+    { id: 7088, text: "Frame the reader as the hero — you are the guide, not the protagonist. Their transformation is the story.", active: true },
+    { id: 7089, text: "Include a 'try this today' micro-challenge they can do in under 5 minutes — immediate action beats future plans.", active: true },
+  ],
+  behindScenes: [
+    { id: 6120, text: "Show the messy middle, not just the polished result. Include real screenshots, numbers, or process details.", active: true },
+    { id: 6121, text: "Include specific numbers: revenue, costs, hours spent, conversion rates. Vague BTS is boring BTS.", active: true },
+    { id: 6122, text: "Structure: what I'm building/doing -> what actually happened -> what I learned.", active: true },
+    { id: 6123, text: "Include at least one thing that went wrong. Failure details are more interesting than success details.", active: true },
+    { id: 6124, text: "Name the specific tools, apps, and systems you used. Your audience wants to copy your stack.", active: true },
+    { id: 6125, text: "Show your actual thought process: 'I chose X over Y because...' Decisions are the real content.", active: true },
+    { id: 6126, text: "Include a timeline: when you started, key milestones, where you are now.", active: true },
+    { id: 6127, text: "Don't perform authenticity. Skip 'I don't usually share this but...' — just share it.", active: true },
+    { id: 6128, text: "Make it reproducible: could someone follow your process and get a similar result?", active: true },
+    { id: 6129, text: "End with what you'd do differently next time. Hindsight is the most valuable part.", active: true },
+    { id: 7090, text: "Break down a single decision into the full context: constraints, tradeoffs, and what you almost did instead.", active: true },
+    { id: 7091, text: "Include actual costs with specifics: '$X/month for Y tool, Z hours per week on maintenance'.", active: true },
+    { id: 7092, text: "Show the workflow as a sequence: 'Step 1 → Step 2 → Step 3' with time estimates for each.", active: true },
+    { id: 7093, text: "Use screenshots, screen recordings, or annotated images — visual proof is 10x more compelling than description.", active: true },
+    { id: 7094, text: "Share your actual daily or weekly routine for this process with real times and durations.", active: true },
+    { id: 7095, text: "Reveal your iteration count — how many versions did it take? Show the evolution from v1 to current.", active: true },
+    { id: 7096, text: "Include what you automated vs. what you still do manually, and explain why.", active: true },
+    { id: 7097, text: "Address the unsexy parts: maintenance, bugs, support, the ongoing cost of keeping things running.", active: true },
+    { id: 7098, text: "Name the prerequisite skills or knowledge needed before someone could replicate your process.", active: true },
+    { id: 7099, text: "Compare your expectations before starting vs. reality after finishing — the gap is the real story.", active: true },
+  ],
+  curated: [
+    { id: 6130, text: "Every item needs YOUR take: why you chose it, who it's best for, what surprised you about it.", active: true },
+    { id: 6131, text: "Organize with clear structure: numbered list, ranked order, or categorized by use case.", active: true },
+    { id: 6132, text: "Include a mix: free/paid, beginner/advanced, well-known/hidden gems.", active: true },
+    { id: 6133, text: "Add context that saves time: pricing, best use case, biggest limitation, alternatives.", active: true },
+    { id: 6134, text: "Open with why this curation matters NOW — what problem does this list solve?", active: true },
+    { id: 6135, text: "Close with your #1 pick and a clear reason why. Don't be neutral — be opinionated.", active: true },
+    { id: 6136, text: "Include one 'wild card' pick that most people haven't heard of. Surprise earns saves.", active: true },
+    { id: 6137, text: "For each item: what it does, what it costs, and who should use it (one sentence each).", active: true },
+    { id: 6138, text: "Disclose any affiliations or personal relationships. Transparency is non-negotiable.", active: true },
+    { id: 6139, text: "Only recommend things you've personally used or evaluated. Never curate blind.", active: true },
+    { id: 7100, text: "State your selection criteria upfront — readers need to know your filter before trusting your picks.", active: true },
+    { id: 7101, text: "Give a clear verdict for each item: 'Best for X', 'Skip if Y', 'Worth it only when Z'.", active: true },
+    { id: 7102, text: "Organize items by use case or reader type, not alphabetically or by popularity — help people find THEIR pick.", active: true },
+    { id: 7103, text: "Include one item you almost included but cut, and explain why — shows rigor in your curation process.", active: true },
+    { id: 7104, text: "Compare at least two similar items head-to-head — direct comparison is the most useful curation you can offer.", active: true },
+    { id: 7105, text: "Add a 'quick pick' summary at the top for readers who don't want the full breakdown.", active: true },
+    { id: 7106, text: "Note when you last tested or used each item — dated recommendations build trust and show recency.", active: true },
+    { id: 7107, text: "Tell readers what you deliberately left OUT of the roundup and why — boundaries show expertise.", active: true },
+    { id: 7108, text: "Update the post publicly when items change (price increases, shutdowns, pivots) — living curation builds authority.", active: true },
+    { id: 7109, text: "Include an 'if you can only pick one' recommendation with a specific use case — force yourself to commit.", active: true },
+  ],
+  caseStudy: [
+    { id: 6140, text: "Structure: Context (who/what) -> Challenge (the problem) -> Action (what was done) -> Result (numbers).", active: true },
+    { id: 6141, text: "Include real numbers: revenue, growth %, time saved, conversions, cost, timeline.", active: true },
+    { id: 6142, text: "Name the specific strategies, tools, or decisions that drove the result.", active: true },
+    { id: 6143, text: "Be honest about what was unique to this situation and what might not transfer.", active: true },
+    { id: 6144, text: "Make the lesson transferable: 'Here's what YOU can take from this' with specific steps.", active: true },
+    { id: 6145, text: "Include the before state with the same specificity as the after state.", active: true },
+    { id: 6146, text: "Show the timeline: how long did the transformation take?", active: true },
+    { id: 6147, text: "Include one thing that didn't work during the process. It builds credibility.", active: true },
+    { id: 6148, text: "Use direct quotes from the subject if possible. First-person testimony beats third-person summary.", active: true },
+    { id: 6149, text: "End with the single most important takeaway — the one thing the reader should remember.", active: true },
+    { id: 7110, text: "Isolate the single variable that mattered most — case studies that claim everything worked teach nothing.", active: true },
+    { id: 7111, text: "Show at least one metric that DIDN'T improve — selective reporting destroys credibility.", active: true },
+    { id: 7112, text: "Include the cost of the solution (time, money, resources) alongside the results — ROI matters more than raw numbers.", active: true },
+    { id: 7113, text: "Describe the subject's initial skepticism or resistance — it makes the transformation more believable.", active: true },
+    { id: 7114, text: "Provide the exact playbook: if someone wanted to replicate this, what are the literal steps?", active: true },
+    { id: 7115, text: "Include a control or comparison — what were similar people or companies doing WITHOUT this approach?", active: true },
+    { id: 7116, text: "Address survivorship bias: why did this work here? What conditions were necessary?", active: true },
+    { id: 7117, text: "Show compounding effects: did the results grow, plateau, or decline over time after the initial period?", active: true },
+    { id: 7118, text: "Include at least one unexpected side effect — positive or negative — that nobody predicted.", active: true },
+    { id: 7119, text: "State your confidence level: 'I'm 90% sure X caused Y because...' — calibrated certainty beats absolute claims.", active: true },
   ],
   hooks: [
     { id: 30, text: "Under 20 words max.", active: true },
@@ -226,9 +442,9 @@ const DEFAULT_RULES = {
     { id: 33, text: "Pattern interrupt (e.g. 'Stop doing X').", active: true },
   ],
   antiRobot: [
-    // Banned words & verbs
-    { id: 40, text: "NEVER use these words: 'delve', 'tapestry', 'landscape', 'testament', 'unleash', 'elevate', 'foster', 'leverage', 'harness', 'unlock', 'empower', 'optimize', 'streamline', 'revolutionize', 'amplify', 'cultivate', 'navigate', 'unpack'.", active: true },
-    { id: 41, text: "No fluffy adjectives: 'game-changing', 'revolutionary', 'cutting-edge', 'state-of-the-art', 'groundbreaking', 'innovative', 'disruptive', 'seamless', 'robust', 'holistic', 'dynamic', 'scalable', 'agile', 'actionable', 'next-generation'.", active: true },
+    // Banned words reference
+    { id: 40, text: "NEVER use any word from the Banned Words list. If you catch yourself reaching for a fancy verb, use the plain English equivalent instead.", active: true },
+    { id: 41, text: "No fluffy adjectives from the Banned Words list. If something is good, SHOW why with specifics — don't label it with empty superlatives.", active: true },
     { id: 42, text: "Use simple words over fancy ones: 'help' not 'facilitate', 'use' not 'utilize', 'to' not 'in order to', 'because' not 'due to the fact that', 'improve' not 'optimize'.", active: true },
     // Banned phrases
     { id: 5200, text: "NEVER open with: 'In today's...', 'Let's face it', 'Let's be honest', 'Picture this:', 'Imagine this:', 'You might be wondering', 'Here's the thing', 'The truth is', 'The reality is', 'Let's dive in'.", active: true },
@@ -244,10 +460,30 @@ const DEFAULT_RULES = {
     { id: 5208, text: "No fake relatability: never say 'We've all been there', 'You know the feeling', 'Sound familiar?'. Don't create strawman problems or oversimplify emotions.", active: true },
     { id: 5209, text: "No rhetorical question filler: don't use 'Why does this matter?', 'What does this mean for you?', 'So what's the solution?' as lazy transitions. Don't ask a question then immediately answer it.", active: true },
     { id: 5210, text: "No connector clichés: never use 'That's where X comes in', 'This is where X shines', 'Enter: [solution]', 'But wait, there's more', 'And that's not all'.", active: true },
-    { id: 5211, text: "Don't overuse em dashes (—) for dramatic pauses. Don't default to bullet points when a paragraph works better. Don't put a colon before every explanation.", active: true },
+    { id: 5211, text: "Don't overuse em dashes (—) for dramatic pauses. Don't default to bullet points when a paragraph works better. Don't put a colon before every explanation. Don't bold every key term mechanically. Don't use excessive headers or subheaders for short content.", active: true },
     { id: 5212, text: "Vary sentence structure and paragraph length naturally. Don't make every paragraph 3-4 sentences. Don't start multiple sentences the same way. Don't repeat the same key term in every sentence.", active: true },
     { id: 5213, text: "No overexplaining: don't explain concepts the audience already knows. Don't use 100 words when 20 will do. If it needs a 'TLDR' it's too long.", active: true },
     { id: 5214, text: "No vague attribution: never say 'Studies show', 'Research indicates', 'According to experts', 'X% of businesses' without naming the specific source.", active: true },
+    // LinkedIn bro formulas (from Ruben's "Delve")
+    { id: 5215, text: "NEVER use these viral formulas: 'In a world where [X], [Y] becomes [Z]' / 'Most people [lazy thing]. The few who win [hard thing]' / 'Stop doing X. Start doing Y' / 'It's not [A]. It's not [B]. It's [C]' / 'If you're not [doing X], you're already behind' / 'The real [work] isn't [visible]. It's [invisible]' / 'You don't need more [resource]. You need [virtue]' / 'It's never been easier to [X]. Never been harder to [Y]'. Write original structures.", active: true },
+    // Padding phrases (from Ruben's "Detection")
+    { id: 5216, text: "Cut zero-value padding: never write 'plays a crucial role in', 'highlighting the importance of', 'it is important to remember that', 'it is essential to note', 'it is worth mentioning that', 'may potentially offer some benefits', 'often considered to be'. Every sentence must add new information.", active: true },
+    // Active voice (from "Detection" + Wikipedia)
+    { id: 5217, text: "Write in active voice with 'I' and 'you'. Never default to passive ('it was found that', 'it can be argued', 'this is often seen as'). Name the actor. Own your statements.", active: true },
+    // Rule of three (from "Detection" + Wikipedia)
+    { id: 5218, text: "Don't always group things in threes. AI defaults to exactly 3 examples, 3 adjectives, 3 bullet points. Vary your lists — use 2, 4, or 5 items. If you list 3 things, make sure it's because there ARE exactly 3, not because it sounds nice.", active: true },
+    // Flattery & superlatives (from Wikipedia)
+    { id: 5219, text: "No unearned superlatives: never call something 'fascinating', 'remarkable', 'extraordinary', 'impressive', 'incredible' unless you prove WHY with a specific detail. Show, don't label. 'Revenue grew 340% in 6 months' beats 'achieved remarkable growth'.", active: true },
+    // Participial -ing endings (from Wikipedia)
+    { id: 5220, text: "Avoid empty '-ing' analysis at the end of sentences: '...showcasing the importance of X', '...highlighting his commitment to Y', '...demonstrating the power of Z', '...underscoring the need for W'. These add opinion disguised as analysis. State the fact and move on.", active: true },
+    // "From X to Y" fake breadth (from "Detection")
+    { id: 5221, text: "No 'from X to Y' range constructions that fake breadth: 'from ancient traditions to modern innovations', 'from small startups to Fortune 500 companies', 'from beginners to seasoned professionals'. Be specific about WHO and WHAT instead of gesturing at a range.", active: true },
+    // Synonym swapping (from Wikipedia)
+    { id: 5222, text: "Don't swap synonyms to avoid repetition. If you're talking about a 'company', keep saying 'company' — don't rotate through 'organization', 'enterprise', 'firm', 'establishment'. Artificial vocabulary variety sounds robotic. Repeat the clear word.", active: true },
+    // Real over hypothetical (from "Detection")
+    { id: 5223, text: "Use real examples, not hypothetical ones. Don't write 'Imagine a startup that...' or 'Consider a scenario where...' — name a real company, a real person, a real number. If you don't have a real example, make your point without one rather than fabricating it.", active: true },
+    // Fake reveals & FOMO (from "Delve")
+    { id: 5224, text: "No fake authority reveals: 'Here's what nobody tells you', 'The secret is', 'Here's the truth', 'What most people get wrong'. These promise insider knowledge then deliver obvious observations. Just state the insight directly.", active: true },
   ],
   seo: [
     { id: 5100, text: "SEO Title: Under 60 characters. Include primary keyword near the front. Make it click-worthy.", active: true },
@@ -362,103 +598,6 @@ const DEFAULT_RULES = {
     { id: 1034, text: "Structure: personal hook → main insight → supporting points → what to do about it.", active: true },
   ],
   // Tone-specific rules
-  tone_educational: [
-    { id: 2001, text: "Lead with the 'why this matters' before diving into the 'how'.", active: true },
-    { id: 2002, text: "Break complex ideas into numbered steps or sequential logic.", active: true },
-    { id: 2003, text: "Use analogies from everyday life to explain abstract concepts.", active: true },
-    { id: 2004, text: "Include at least one 'common mistake' or 'most people think X, but actually Y' moment.", active: true },
-    { id: 2005, text: "End with a clear takeaway the reader can apply immediately.", active: true },
-    { id: 2006, text: "Be the expert who simplifies — never the expert who shows off complexity.", active: true },
-  ],
-  tone_provocative: [
-    { id: 2010, text: "Open with your strongest contrarian claim — don't build up to it, lead with it.", active: true },
-    { id: 2011, text: "Challenge a specific widely-held belief, not a straw man.", active: true },
-    { id: 2012, text: "Back up the hot take with evidence, experience, or logic — contrarian without substance is just trolling.", active: true },
-    { id: 2013, text: "Acknowledge what the other side gets right before dismantling it.", active: true },
-    { id: 2014, text: "End with a question that forces the reader to reconsider their position.", active: true },
-    { id: 2015, text: "Be confident, not aggressive. Swagger, not anger.", active: true },
-  ],
-  tone_storytelling: [
-    { id: 2020, text: "Open in a specific moment in time — 'It was 3am and I was staring at...' not 'Let me tell you a story'.", active: true },
-    { id: 2021, text: "Include sensory details: what you saw, heard, felt. Make the reader experience it.", active: true },
-    { id: 2022, text: "Build tension before the insight — the lesson lands harder after the struggle.", active: true },
-    { id: 2023, text: "Use dialogue where possible — it makes scenes come alive.", active: true },
-    { id: 2024, text: "The insight should feel earned by the story, not tacked on at the end.", active: true },
-    { id: 2025, text: "Show vulnerability — the best stories include moments of doubt, failure, or fear.", active: true },
-  ],
-  tone_data_driven: [
-    { id: 2030, text: "Lead with the most surprising or counterintuitive data point.", active: true },
-    { id: 2031, text: "Always cite the source: who found it, when, and how (sample size if relevant).", active: true },
-    { id: 2032, text: "Use comparisons to make numbers meaningful — '$50M' means less than '$50M — more than the GDP of Tonga'.", active: true },
-    { id: 2033, text: "Contrast expectations vs reality — 'Most people think X%, but it's actually Y%'.", active: true },
-    { id: 2034, text: "Include at least 3 specific data points (percentages, dollar amounts, timeframes).", active: true },
-    { id: 2035, text: "End with 'what this means for you' — translate data into action.", active: true },
-  ],
-  tone_casual: [
-    { id: 2040, text: "Write like you're texting a smart friend. Short sentences. Fragments are fine.", active: true },
-    { id: 2041, text: "Use 'you' and 'I' liberally. This is a conversation, not an article.", active: true },
-    { id: 2042, text: "Parenthetical asides are great (they feel like you're letting the reader in on something).", active: true },
-    { id: 2043, text: "Don't overthink transitions. 'Anyway,' and 'So here's the thing' work perfectly.", active: true },
-    { id: 2044, text: "Show personality through word choice — your voice should be unmistakably yours.", active: true },
-    { id: 2045, text: "Punctuation is a tool, not a rule. Em dashes, ellipses, and single-word sentences all fair game.", active: true },
-  ],
-  tone_authoritative: [
-    { id: 2050, text: "Be definitive. 'This is how it works' not 'I think maybe this could work'.", active: true },
-    { id: 2051, text: "Reference your experience: years in the field, results achieved, lessons learned the hard way.", active: true },
-    { id: 2052, text: "Use precise language. Replace 'a lot' with a number. Replace 'soon' with a date.", active: true },
-    { id: 2053, text: "No hedging words: remove 'maybe', 'perhaps', 'I think', 'kind of', 'sort of'.", active: true },
-    { id: 2054, text: "Structure with clear frameworks or mental models — authority comes from organized thinking.", active: true },
-    { id: 2055, text: "Acknowledge nuance without being wishy-washy — 'Here's the exception...' not 'Well it depends...'.", active: true },
-  ],
-  // ─── New tone rules ───
-  tone_witty: [
-    { id: 2060, text: "Lead with an unexpected comparison or analogy — surprise creates humor.", active: true },
-    { id: 2061, text: "Self-deprecating > punching down. Laugh at yourself, not at others.", active: true },
-    { id: 2062, text: "The humor serves the insight. The joke should make the point land harder.", active: true },
-    { id: 2063, text: "Use timing — short setups with unexpected punchlines. Brevity is the soul of wit.", active: true },
-    { id: 2064, text: "Observational humor works best: 'isn't it weird that...' or 'nobody talks about...'", active: true },
-    { id: 2065, text: "Never explain the joke. If it needs explanation, rewrite it.", active: true },
-  ],
-  tone_inspirational: [
-    { id: 2070, text: "Root inspiration in a REAL moment of transformation — specific time, place, feeling.", active: true },
-    { id: 2071, text: "Earned optimism only. Show the struggle before the triumph. No skipping to the mountaintop.", active: true },
-    { id: 2072, text: "Name the specific fear or doubt you overcame — make it relatable.", active: true },
-    { id: 2073, text: "End with something actionable, not just motivational fluff.", active: true },
-    { id: 2074, text: "Avoid clichés: no 'chase your dreams', 'never give up', or 'believe in yourself'.", active: true },
-    { id: 2075, text: "One transformation story per post. Depth > breadth.", active: true },
-  ],
-  tone_empathetic: [
-    { id: 2080, text: "Name what they're feeling BEFORE offering advice. Validation first.", active: true },
-    { id: 2081, text: "'I've been there' energy — share your own experience with the same struggle.", active: true },
-    { id: 2082, text: "Use 'you' language: 'If you've ever felt...' or 'You're not alone in thinking...'", active: true },
-    { id: 2083, text: "Never minimize: avoid 'just', 'simply', or 'it's easy to' when discussing real pain points.", active: true },
-    { id: 2084, text: "Offer support without condescension — peer-to-peer, not expert-to-student.", active: true },
-    { id: 2085, text: "End with permission or reassurance: 'it's okay to...', 'you don't have to...'", active: true },
-  ],
-  tone_urgent: [
-    { id: 2090, text: "Open with what's at stake — what they're losing by waiting.", active: true },
-    { id: 2091, text: "Use specific timelines: 'in the next 6 months' not 'soon'.", active: true },
-    { id: 2092, text: "Show the cost of inaction with concrete numbers or consequences.", active: true },
-    { id: 2093, text: "Create real urgency, not fake scarcity. The deadline must be genuine.", active: true },
-    { id: 2094, text: "One clear action step — don't overwhelm with 10 things to do now.", active: true },
-    { id: 2095, text: "End with 'start today' energy, not panic. Urgency should motivate, not paralyze.", active: true },
-  ],
-  tone_vulnerable: [
-    { id: 2100, text: "Share the real thing, not the sanitized version. Include the ugly details.", active: true },
-    { id: 2101, text: "No hero arc required — sometimes the mess IS the message.", active: true },
-    { id: 2102, text: "Name the specific emotions: 'I was terrified' not 'it was challenging'.", active: true },
-    { id: 2103, text: "Don't wrap it in a neat bow. Unresolved is okay. In-progress is okay.", active: true },
-    { id: 2104, text: "Write it like a journal entry, then edit for clarity. Keep the rawness.", active: true },
-    { id: 2105, text: "Vulnerability without insight is just venting. Share what you learned or are learning.", active: true },
-  ],
-  tone_sarcastic: [
-    { id: 2110, text: "Say the opposite of what you mean, then reveal the real point. Setup → subversion.", active: true },
-    { id: 2111, text: "Use deadpan delivery — understatement is funnier than exaggeration.", active: true },
-    { id: 2112, text: "Target systems, trends, and ideas — never individuals or groups.", active: true },
-    { id: 2113, text: "Include a 'clearly' or 'obviously' before stating something absurd.", active: true },
-    { id: 2114, text: "The sarcasm should make people think, not just laugh.", active: true },
-    { id: 2115, text: "End with the genuine insight. Sarcasm is the vehicle, not the destination.", active: true },
-  ],
   // ─── Missing platform rules ───
   plt_instagram_feed: [
     { id: 3000, text: "First line of caption must hook — it shows before 'more' on the feed.", active: true },
@@ -704,109 +843,208 @@ const CMD_TRANSLATE = {
 };
 
 const APPROACH_SYSTEM_ROLES = {
-  personal: `You are ghostwriting a social media post for me. Your job is to sound EXACTLY like me — not like an AI, not like a copywriter, like ME.
+  personal: `You are ghostwriting a PERSONAL STORYTELLING post for me. The story IS the content — not a lesson with a story attached.
+
+This approach is DIFFERENT from motivational (which focuses on the reader's transformation) and behind-the-scenes (which focuses on systems/process). Personal storytelling is about narrative craft: a scene, a conflict, a resolution that reveals something true.
 
 Key principles:
-- Write from lived experience. Every claim should feel like something I actually did, saw, or learned.
-- My audience is smart. Don't over-explain. Be direct.
-- Imperfection is fine. Real posts have rough edges. Don't polish everything into sounding generic.
-- Hook hard in the first line. If the first sentence doesn't stop the scroll, rewrite it.
-- BANNED phrases (never use these): "In today's world", "It's no secret that", "Let me be honest", "Here's the thing", "In this post", "I want to share", "Let's dive in", "game-changer", "at the end of the day".
+- Open in a specific SCENE — time, place, what was happening. Drop the reader into the moment.
+- Write as a narrator, not an advisor. Show what happened, let the reader draw the lesson.
+- Include sensory details and dialogue. "My co-founder said 'we're done'" beats "my co-founder wanted to quit".
+- The story arc matters: setup → tension → turning point → aftermath. Don't skip the tension.
+- Vulnerability is the engine. Share what you felt, not just what you did.
+- End with reflection, not instruction. "I think about that moment whenever..." not "So here's what you should do".
+- BANNED: "In today's world", "Let me be honest", "Here's the thing", "I want to share", "Let's dive in", "game-changer", "at the end of the day".
 - No hashtags unless I specifically ask.
 
 `,
 
-  research: `You are helping me create a research-backed social media post. Your job is to find real, current data and statistics on my topic, then help me turn them into a compelling post in MY voice.
+  research: `You are helping me create a RESEARCH / DATA-DRIVEN post. Every claim must trace back to a named source with real numbers.
+
+This approach is DIFFERENT from observational (which spots emerging patterns and predicts trends). Research posts are anchored in published evidence — studies, surveys, datasets — not your personal observations.
 
 Key principles:
 - Search the web for current data, statistics, and sources on this topic.
-- Every major claim needs a source — link to it.
-- Lead with a surprising or counterintuitive finding — that's the hook.
-- Don't just list facts. Weave them into a narrative with my perspective.
-- Include at least 2-3 specific data points (numbers, percentages, dates).
-- End with my personal take — what this data means for my audience.
-- BANNED phrases: "In today's rapidly evolving landscape", "Studies show that" (say WHICH study), "As we all know", "It goes without saying", "game-changer".
+- EVERY major claim needs a named source — "Harvard Business Review found..." not "Studies show..."
+- Lead with the single most surprising or counterintuitive finding — that's the hook.
+- Include at least 3 specific data points (numbers, percentages, sample sizes, dates).
+- Weave data into narrative — don't just list stats. Build an argument from evidence.
+- Acknowledge limitations: sample size, methodology, conflicting studies.
+- End with my personal interpretation: what this data means for my specific audience.
+- BANNED: "Studies show that" (say WHICH study), "In today's rapidly evolving landscape", "As we all know", "It goes without saying", "game-changer".
 
 `,
 
-  instructional: `You are helping me create an instructional social media post. Your job is to turn my expertise into a clear, step-by-step guide that my audience can follow and get results from — in MY voice.
+  instructional: `You are helping me create an INSTRUCTIONAL / EDUCATIONAL post. This is a complete, standalone guide — when they finish reading, they should be able to do the thing.
+
+This approach is DIFFERENT from action-oriented (which gives one quick tactic). Instructional posts are comprehensive: prerequisites, detailed steps, edge cases, troubleshooting, and expected results.
 
 Key principles:
-- Start with the transformation: what they'll be able to do after reading this.
-- Break the process into numbered, specific steps. No hand-waving.
-- Each step should be concrete enough that a smart beginner could follow it.
-- Include at least one real example or before/after to show the method in action.
-- Anticipate mistakes and address them inline ("Don't do X — do Y instead").
-- End with the expected outcome so they know if they did it right.
-- BANNED phrases: "In this guide", "Simply follow these steps", "It's easy", "game-changer".
+- Start with what they'll be able to DO after following this guide, and what they need BEFORE starting.
+- Break the process into numbered steps. Each step should have: what to do, how to do it, and how to verify it worked.
+- Include at least one real before/after example showing the method in action.
+- Anticipate where people get stuck. Add "If X happens, do Y" for common pitfalls.
+- Difficulty matters — state it upfront: beginner, intermediate, advanced. Time estimate too.
+- End with the expected outcome and how to know if they did it right.
+- BANNED: "In this guide", "Simply follow these steps", "It's easy", "game-changer", "Just do X" (never trivialize steps).
 
 `,
 
-  opinionated: `You are helping me create an opinionated social media post. Your job is to articulate a strong, specific stance on a topic in MY voice — one that makes people stop, think, and react.
+  opinionated: `You are helping me create an OPINIONATED / CONTROVERSIAL post. This is a structured argument AGAINST a specific mainstream belief — not venting, but persuasion.
+
+This approach is DIFFERENT from philosophical (which explores open questions without committing to an answer). Opinionated posts take a definitive SIDE and argue for it with evidence and conviction.
 
 Key principles:
-- Lead with the boldest version of my opinion. No warming up, no hedging.
-- Name what you disagree with specifically — people, ideas, conventional wisdom.
-- Back the opinion with at least one concrete example, result, or experience.
-- Anticipate the strongest objection and address it head-on.
-- The goal is not to offend — it's to challenge. Precision over provocation.
+- Lead with the boldest version of my stance. No warming up, no hedging, no "some people might disagree."
+- Name the SPECIFIC belief, practice, or advice you're arguing against. Be precise.
+- Structure as a prosecutorial case: state the claim → present evidence → address the best counter-argument → deliver the verdict.
+- Back every point with concrete examples, results, or data. Opinion without evidence is just noise.
+- Anticipate the strongest objection and address it head-on — don't strawman.
+- Conviction, not aggression. The tone is "I'm right and here's why" not "everyone else is stupid."
 - End with a line worth screenshotting.
-- BANNED phrases: "Unpopular opinion but", "I might get hate for this", "Let me explain", "At the end of the day", "game-changer".
+- BANNED: "Unpopular opinion but", "I might get hate for this", "Let me explain", "At the end of the day", "game-changer", "Just my two cents".
 
 `,
 
-  action: `You are helping me create an action-oriented social media post. Your job is to give my audience something they can DO immediately — a tactic, framework, or system — in MY voice.
+  action: `You are helping me create an ACTION-ORIENTED post. This delivers ONE specific tactic, framework, or method the reader can copy and use TODAY.
+
+This approach is DIFFERENT from instructional (which is comprehensive education). Action posts are laser-focused: one technique, stripped to its essentials, ready to use in under 10 minutes.
 
 Key principles:
-- Every sentence must answer "so what do I do with this?"
-- Use direct, imperative language: "Do X" not "You might want to consider X".
-- Include specific numbers: timeframes, quantities, benchmarks.
-- Structure for scannability — numbered steps, bullet points, or a named framework.
-- One core method per post. Depth over breadth.
-- End with the single highest-impact action they should take first.
-- BANNED phrases: "Here are some tips", "You should consider", "game-changer", "In today's world".
+- Every sentence answers "so what do I do with this RIGHT NOW?"
+- Use direct, imperative language: "Do X" not "You might want to consider X."
+- Give the method a NAME if possible — named frameworks get saved and shared.
+- Include specific numbers: timeframes, quantities, benchmarks, expected results.
+- Structure for copy-paste scannability: numbered steps, bullets, or a fill-in-the-blank template.
+- ONE method per post. If you need a second method, it's a second post.
+- End with the single highest-impact first action: "Start here."
+- BANNED: "Here are some tips", "You should consider", "game-changer", "In today's world", "There are many ways to".
 
 `,
 
-  philosophical: `You are helping me create a reflective, philosophical social media post. Your job is to explore a deeper idea — a mental model, a paradox, a big-picture observation — in MY voice.
+  philosophical: `You are helping me create a PHILOSOPHICAL / REFLECTIVE post. This explores a deep question, paradox, or mental model — the value is in the thinking, not the answer.
+
+This approach is DIFFERENT from opinionated (which argues a definitive position). Philosophical posts sit with tension, explore multiple angles, and sometimes end with a better question rather than an answer.
 
 Key principles:
-- Open with a question, tension, or reframing that makes them pause.
-- Use analogies and metaphors to connect abstract ideas to concrete experience.
-- Pacing is slower here. Let ideas build. Longer sentences are fine.
-- Reference books, thinkers, or mental models where they strengthen the point.
-- Don't rush to a conclusion. Sometimes the question IS the value.
-- Write like an essayist, not a listicle machine.
-- BANNED phrases: "In today's fast-paced world", "Food for thought", "Let that sink in", "Think about it", "game-changer".
+- Open with a question, paradox, or reframing that stops them mid-scroll.
+- Use analogies and metaphors to ground abstract ideas in lived experience.
+- Pacing is slower. Let ideas build. Longer sentences and paragraph-length thoughts are fine.
+- Reference specific thinkers, books, or mental models by name where they strengthen the point.
+- Hold tension — don't rush to resolve contradictions. "Both can be true" is sometimes the insight.
+- Write like an essayist exploring an idea, not a guru delivering answers.
+- Don't rush to a conclusion. Sometimes the question IS the post.
+- BANNED: "In today's fast-paced world", "Food for thought", "Let that sink in", "Think about it", "game-changer", "At the end of the day".
 
 `,
 
-  observational: `You are helping me create an observational social media post. Your job is to spot a pattern, trend, or shift that others are missing and turn it into a compelling post in MY voice.
+  observational: `You are helping me create an OBSERVATIONAL / CURRENT EVENTS post. This spots a real-time pattern or emerging trend and makes a specific prediction.
+
+This approach is DIFFERENT from research (which cites published studies and existing data). Observational posts connect LIVE signals — recent events, launches, shifts — into a trend that others haven't named yet.
 
 Key principles:
-- Anchor to something specific and current — a news event, data point, product launch, cultural moment.
-- State what everyone sees on the surface, then reveal the deeper pattern.
-- Connect this observation to a prediction or broader trend.
-- Cite your sources — links, dates, specifics. Verifiability builds trust.
-- End with your personal interpretation: what this means for your audience.
-- Write like a sharp analyst, not a news reporter.
-- BANNED phrases: "Breaking news", "As we all know", "It's no secret", "game-changer", "In today's world".
+- Anchor to something specific and RECENT — a news event, product launch, earnings report, cultural moment from the last 30 days.
+- Name what everyone sees on the surface, then reveal the deeper pattern underneath.
+- Connect at least 2-3 separate signals into one coherent trend. One data point is an anecdote; three is a pattern.
+- Make a specific, falsifiable prediction: "Within X months, Y will happen because Z."
+- Cite your sources with links, dates, and specifics. Verifiability is everything.
+- Write like a sharp analyst briefing a room, not a news reporter summarizing headlines.
+- End with what this means for YOUR audience specifically — not the world at large.
+- BANNED: "Breaking news", "As we all know", "It's no secret", "game-changer", "In today's world", "Time will tell".
+
+`,
+
+  humorous: `You are helping me create a HUMOROUS / ENTERTAINING post. Comedy is the vehicle — the joke CARRIES the insight. If it's not genuinely funny, it fails.
+
+This approach is DIFFERENT from personal storytelling (which uses narrative arc) and observational (which analyzes trends). Humorous posts prioritize the LAUGH first, then sneak in a real point underneath.
+
+Key principles:
+- Lead with the joke, punchline, or absurd observation. Never build up — land it in the first line.
+- Use hyper-specific details. "My 47-slide deck about minimalism" is funnier than "my long presentation."
+- Formats: rule of three (serious, serious, absurd), unexpected comparisons, exaggerated truths, self-deprecation, mock-formal language.
+- Timing matters in text — use short paragraphs, line breaks before punchlines, and sentence rhythm.
+- Read it out loud. If it doesn't make YOU laugh, rewrite it. Then rewrite it again.
+- The insight should be discoverable, not stated. Never say "but seriously though" — let the comedy do the teaching.
+- Keep it tight. Every extra word dilutes the funny. Cut ruthlessly.
+- BANNED: "Am I right?", "LOL", "It's funny because", "game-changer", "We've all been there" (show it, don't tell it), "But on a serious note".
+
+`,
+
+  motivational: `You are helping me create a MOTIVATIONAL / INSPIRATIONAL post. This is about the READER'S transformation — your story is just the bridge to their action.
+
+This approach is DIFFERENT from personal storytelling (which is about the narrative itself). Motivational posts use your experience as EVIDENCE that change is possible, then pivot entirely to the reader's next move.
+
+Key principles:
+- Open with the reader's current frustration or fear — they need to feel seen before they'll listen.
+- Your struggle is the setup, their action plan is the payoff. Spend 30% on your story, 70% on their path.
+- One mindset shift per post. "You think X, but actually Y" — then prove it.
+- Replace every platitude with a protocol. "Believe in yourself" → "Write down 3 wins from this week every Friday."
+- Acknowledge the real cost of change — motivation without realism creates guilt, not action.
+- Use "you" 3x more than "I." Frame the reader as the hero; you are the guide.
+- End with a specific micro-action they can take in the next 5 minutes.
+- BANNED: "Hustle harder", "Rise and grind", "You got this", "Believe in yourself", "game-changer", "Your future self will thank you", "Just start".
+
+`,
+
+  behindScenes: `You are helping me create a BEHIND-THE-SCENES post. This is process transparency — show the actual machinery: tools, costs, systems, decisions, and real numbers.
+
+This approach is DIFFERENT from personal storytelling (which tells a narrative) and case study (which proves results). Behind-the-scenes posts expose HOW things work — the systems, stack, workflows, and tradeoffs — not just what happened.
+
+Key principles:
+- Show the actual infrastructure: tools used, costs per month, time invested, manual vs automated parts.
+- Structure: What I'm building → How it actually works → What I'd change. Systems, not stories.
+- Include real numbers: "$X/month", "takes Y hours/week", "v3 of this process."
+- Name every tool and service specifically — your audience wants to copy your stack.
+- Show the decision-making: "I chose X over Y because..." Tradeoffs are the real content.
+- Include what's broken, inefficient, or held together with duct tape. Perfect systems aren't believable.
+- Don't perform authenticity — skip "I don't usually share this." Just share it.
+- BANNED: "I don't usually share this", "Transparency post", "Real talk", "game-changer", "In the spirit of honesty", "Pulling back the curtain".
+
+`,
+
+  curated: `You are helping me create a CURATED / ROUNDUP post. This is editorial curation — organized collections where YOUR judgment, verdicts, and rankings are the value.
+
+This approach is DIFFERENT from research (which presents data/studies) and instructional (which teaches a method). Curated posts organize existing resources/tools/examples and add your EDITORIAL OPINION to each one.
+
+Key principles:
+- State your selection criteria upfront: how you evaluated, what made the cut, what didn't.
+- Every item needs a VERDICT: "Best for X", "Skip if Y", "Worth it only when Z." Be opinionated.
+- Organize by use case or reader type, not alphabetically. Help people find THEIR pick.
+- Include context that saves time: pricing, best use case, biggest limitation, alternatives.
+- Add one "sleeper pick" — an underrated option most roundups miss. This is your editorial edge.
+- Include a mix: free/paid, beginner/advanced, well-known/hidden gems.
+- Close with your definitive #1 pick and a clear reason why. Don't be neutral.
+- BANNED: "Without further ado", "Here's a comprehensive list", "game-changer", "Must-have", "Ultimate guide", "Top X tools for".
+
+`,
+
+  caseStudy: `You are helping me create a CASE STUDY / PROOF-BASED post. This isolates what worked, proves it with specific metrics, and extracts transferable lessons.
+
+This approach is DIFFERENT from behind-the-scenes (which shows process/systems) and personal storytelling (which tells a narrative). Case studies are about PROOF — measurable before/after results with controlled analysis of what caused the change.
+
+Key principles:
+- Lead with the result number in the first two sentences: "Revenue went from $12K to $89K in 6 months."
+- Structure: Baseline (before, with specifics) → Intervention (what changed) → Results (with numbers) → Analysis (why it worked).
+- ISOLATE the variable — identify the single most important factor. Case studies that claim everything worked teach nothing.
+- Include at least one metric that DIDN'T improve — selective reporting destroys credibility.
+- Show the timeline with specific dates or durations. "Week 1-2: X, Week 3-4: Y."
+- Include the cost of the solution (time, money, resources) alongside results — ROI matters more than raw numbers.
+- Address transferability honestly: under what conditions would this work? When wouldn't it?
+- BANNED: "Success story", "game-changer", "Incredible results", "This one simple trick", "You won't believe", "The results speak for themselves".
 
 `,
 };
 
-function getUserWrittenText(plainText, selTopics, selPlatform, selFormat, selTone) {
+function getUserWrittenText(plainText, selPlatform, selFormat) {
   let text = plainText;
-  selTopics.forEach(t => { text = text.replace(new RegExp(`#${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*`, "g"), ""); });
-  [selPlatform, selFormat, selTone].filter(Boolean).forEach(tag => {
+  [selPlatform, selFormat].filter(Boolean).forEach(tag => {
     text = text.replace(new RegExp(tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*", "g"), "");
   });
-  // Also strip /command tokens
   text = text.replace(/\/\w+\s*/g, "");
   return text.replace(/\s+/g, " ").trim();
 }
 
-function buildPrompt({ approach, profile, rules, config, selTopics, selPlatform, selFormat, selTone, ideaText, commands, includeHooks, includeAntiRobot, includeSeo }) {
+function buildPrompt({ approach, profile, rules, config, selPlatform, selFormat, ideaText, commands, includeHooks, includeAntiRobot, includeSeo }) {
   const v = (key) => { const val = profile[key]; return typeof val === "string" ? val.trim() : ""; };
   const has = (key) => { const val = profile[key]; if (Array.isArray(val)) return val.length > 0; return !!v(key); };
   let o = "";
@@ -863,7 +1101,6 @@ function buildPrompt({ approach, profile, rules, config, selTopics, selPlatform,
   }
 
   // ═══ LAYER 3: Rules ═══
-  const gActive = (rules.global || []).filter(r => r.active);
   const mActive = (rules[approach] || []).filter(r => r.active);
   const hActive = (rules.hooks || []).filter(r => r.active);
   const arActive = (rules.antiRobot || []).filter(r => r.active);
@@ -874,27 +1111,20 @@ function buildPrompt({ approach, profile, rules, config, selTopics, selPlatform,
   const pltCfg = selPlatform ? (config.platforms || []).find(p => p.label === selPlatform) : null;
   const pltKey = pltCfg ? "plt_" + pltCfg.id : null;
   const pltActive = pltKey ? (rules[pltKey] || []).filter(r => r.active) : [];
-  const toneCfgR = selTone ? (config.tones || []).find(t => t.label === selTone) : null;
-  const toneKey = toneCfgR ? "tone_" + toneCfgR.id : null;
-  const toneActive = toneKey ? (rules[toneKey] || []).filter(r => r.active) : [];
 
-  if (gActive.length || mActive.length || (includeHooks && hActive.length) || (includeAntiRobot && arActive.length) || fmtActive.length || pltActive.length || toneActive.length) {
+  if (mActive.length || (includeHooks && hActive.length) || (includeAntiRobot && arActive.length) || fmtActive.length || pltActive.length) {
     o += `=== WRITING RULES (follow these strictly) ===\n`;
-    if (includeAntiRobot && arActive.length) { o += `\nNEGATIVE CONSTRAINTS (ANTI-ROBOT MODE):\n`; arActive.forEach(r => o += `- ${r.text}\n`); }
-    if (gActive.length) { o += `\nGeneral:\n`; gActive.forEach(r => o += `- ${r.text}\n`); }
+    if (includeAntiRobot && arActive.length) { o += `\nNEGATIVE CONSTRAINTS (ANTI-ROBOT MODE):\n`; arActive.forEach(r => o += `- ${r.text}\n`); if (config.bannedWords?.length) { o += `\nBANNED WORDS (never use any of these): ${config.bannedWords.join(", ")}.\n`; } }
     if (mActive.length) { const apprCfg = (config.approaches || []).find(a => a.id === approach); o += `\n${apprCfg ? apprCfg.label : approach} rules:\n`; mActive.forEach(r => o += `- ${r.text}\n`); }
     (config.customRuleCategories || []).forEach(cat => { const catRules = (rules[cat.id] || []).filter(r => r.active); if (catRules.length) { o += `\n${cat.label}:\n`; catRules.forEach(r => o += `- ${r.text}\n`); } });
     if (fmtActive.length) { o += `\nFORMAT: ${selFormat}\n`; fmtActive.forEach(r => o += `- ${r.text}\n`); }
     if (pltActive.length) { o += `\nPLATFORM: ${selPlatform}\n`; pltActive.forEach(r => o += `- ${r.text}\n`); }
-    if (toneActive.length) { o += `\nTONE: ${selTone}\n`; toneActive.forEach(r => o += `- ${r.text}\n`); }
     if (includeHooks && hActive.length) { o += `\nHOOK RULES (First line must be perfect):\n`; hActive.forEach(r => o += `- ${r.text}\n`); }
     if (includeSeo && seoActive.length) { o += `\nSEO RULES:\n`; seoActive.forEach(r => o += `- ${r.text}\n`); }
     o += `\n`;
   }
 
   // ═══ LAYER 4: Content Task ═══
-  if (selTopics.length) o += `TOPIC FOCUS: ${selTopics.join(", ")}\n\n`;
-
   if (ideaText) {
     o += `=== MY IDEA / DIRECTION ===\n${ideaText}\n`;
     const cmds = (commands || []).filter(c => CMD_TRANSLATE[c]);
@@ -956,7 +1186,6 @@ RULES:
 // ─── RICH EDITOR ───────────────────────────────────────
 const IdeaEditor = forwardRef(function IdeaEditor({ onTagsChange, config }, ref) {
   const editorRef = useRef(null);
-  const [showTopic, setShowTopic] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [menuFilter, setMenuFilter] = useState("");
@@ -964,12 +1193,12 @@ const IdeaEditor = forwardRef(function IdeaEditor({ onTagsChange, config }, ref)
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [activeFormat, setActiveFormat] = useState({ bold: false, italic: false });
   const [wordCount, setWordCount] = useState(0);
-  const closeMenus = () => { setShowMention(false); setShowTopic(false); setShowSlash(false); setShowEmoji(false); setMenuFilter(""); setSelectedIdx(0); };
+  const closeMenus = () => { setShowSlash(false); setShowEmoji(false); setMenuFilter(""); setSelectedIdx(0); };
 
   const scanAndReport = useCallback(() => {
     if (!editorRef.current) return;
     const get = (cls) => [...editorRef.current.querySelectorAll(`.${cls}`)].map(el => el.getAttribute("data-value")).filter(Boolean);
-    onTagsChange({ topics: get("ed-topic"), platforms: get("ed-platform"), formats: get("ed-format"), tones: get("ed-tone"), commands: get("ed-command") });
+    onTagsChange({ platforms: get("ed-platform"), formats: get("ed-format"), commands: get("ed-command") });
   }, [onTagsChange]);
 
   const getCaretCoords = () => { const sel = window.getSelection(); if (!sel.rangeCount) return { top: 0, left: 0 }; const range = sel.getRangeAt(0).cloneRange(); range.collapse(true); const rect = range.getClientRects()[0]; const edRect = editorRef.current?.getBoundingClientRect(); if (!rect || !edRect) return { top: 0, left: 0 }; return { top: rect.bottom - edRect.top + 4, left: Math.min(rect.left - edRect.left, 400) }; };
@@ -1001,29 +1230,25 @@ const IdeaEditor = forwardRef(function IdeaEditor({ onTagsChange, config }, ref)
     const range = sel.getRangeAt(0); const node = range.startContainer;
     if (node.nodeType !== Node.TEXT_NODE) return;
     const text = node.textContent.substring(0, range.startOffset);
-    const hashM = text.match(/#([^\s]*)$/); const slashM = text.match(/\/([^\s]*)$/);
-    if (hashM) { setMenuFilter(hashM[1].toLowerCase()); setMenuPos(getCaretCoords()); setShowTopic(true); setShowSlash(false); setSelectedIdx(0); }
-    else if (slashM) { setMenuFilter(slashM[1].toLowerCase()); setMenuPos(getCaretCoords()); setShowSlash(true); setShowTopic(false); setSelectedIdx(0); }
+    const slashM = text.match(/\/([^\s]*)$/);
+    if (slashM) { setMenuFilter(slashM[1].toLowerCase()); setMenuPos(getCaretCoords()); setShowSlash(true); setSelectedIdx(0); }
     else if (!showEmoji) closeMenus();
   };
 
-  const cfgTopics = config?.topics || DEFAULT_CONFIG.topics;
-  const getItems = () => { if (showTopic) return cfgTopics.filter(t => t.toLowerCase().includes(menuFilter)); if (showSlash) return SLASH_COMMANDS.filter(c => c.cmd.includes(menuFilter) || c.label.toLowerCase().includes(menuFilter)); return []; };
+  const getItems = () => { if (showSlash) return SLASH_COMMANDS.filter(c => c.cmd.includes(menuFilter) || c.label.toLowerCase().includes(menuFilter)); return []; };
 
   const handleKeyDown = (e) => {
-    const anyMenu = showTopic || showSlash;
-    if (anyMenu) {
+    if (showSlash) {
       const items = getItems();
       if (e.key === "ArrowDown") { e.preventDefault(); setSelectedIdx(i => Math.min(i + 1, items.length - 1)); return; }
       if (e.key === "ArrowUp") { e.preventDefault(); setSelectedIdx(i => Math.max(i - 1, 0)); return; }
-      if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); const item = items[selectedIdx]; if (!item) return; const rem = menuFilter.length + 1; if (showTopic) insertTag(`#${item}`, "ed-topic", item, rem); else if (showSlash) insertTag(`/${item.cmd}`, "ed-command", item.cmd, rem); return; }
+      if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); const item = items[selectedIdx]; if (!item) return; const rem = menuFilter.length + 1; insertTag(`/${item.cmd}`, "ed-command", item.cmd, rem); return; }
       if (e.key === "Escape") { closeMenus(); return; }
     }
     if (e.key === "b" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); document.execCommand("bold"); setActiveFormat(f => ({ ...f, bold: !f.bold })); }
     if (e.key === "i" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); document.execCommand("italic"); setActiveFormat(f => ({ ...f, italic: !f.italic })); }
   };
 
-  const fTop = cfgTopics.filter(t => t.toLowerCase().includes(menuFilter));
   const fCmd = SLASH_COMMANDS.filter(c => c.cmd.includes(menuFilter) || c.label.toLowerCase().includes(menuFilter));
   const menuSt = { position: "absolute", top: menuPos.top, left: menuPos.left, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 10, padding: "6px 0", zIndex: 100, minWidth: 240, maxHeight: 260, overflowY: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" };
 
@@ -1031,7 +1256,7 @@ const IdeaEditor = forwardRef(function IdeaEditor({ onTagsChange, config }, ref)
     <div style={{ marginBottom: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <label style={{ fontSize: 12, color: "#8A8580" }}>Your idea (optional)</label>
-        <span style={{ fontSize: 10, color: "#6A6560" }}><span style={{ color: "#FFD700" }}>#</span> topics <span style={{ color: "#A78BFA" }}>/</span> commands</span>
+        <span style={{ fontSize: 10, color: "#6A6560" }}><span style={{ color: "#A78BFA" }}>/</span> commands</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 2, padding: "6px 8px", background: "#1A1816", borderRadius: "8px 8px 0 0", border: "1px solid #3A3632", borderBottom: "none" }}>
         {[{ fn: "bold", label: "B", fw: 700, fs: "normal", active: activeFormat.bold }, { fn: "italic", label: "I", fw: 400, fs: "italic", active: activeFormat.italic }].map(b => (<button key={b.fn} onClick={() => { editorRef.current?.focus(); document.execCommand(b.fn); setActiveFormat(f => ({ ...f, [b.fn]: !f[b.fn] })); }} style={{ background: b.active ? "#3A3632" : "none", border: "none", color: "#E8E4E0", fontSize: 13, fontWeight: b.fw, fontStyle: b.fs, cursor: "pointer", borderRadius: 4, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>{b.label}</button>))}
@@ -1045,9 +1270,8 @@ const IdeaEditor = forwardRef(function IdeaEditor({ onTagsChange, config }, ref)
       </div>
       {showEmoji && <div style={{ display: "flex", gap: 2, padding: "6px 8px", background: "#1A1816", border: "1px solid #3A3632", borderTop: "none", borderBottom: "none" }}>{EMOJI_QUICK.map((em, i) => (<button key={i} onClick={() => { editorRef.current?.focus(); insertPlainText(em); }} style={{ background: "none", border: "none", fontSize: 16, cursor: "pointer", borderRadius: 4, width: 30, height: 28 }}>{em}</button>))}</div>}
       <div style={{ position: "relative" }}>
-        <style>{`.idea-ed{min-height:100px;max-height:300px;overflow-y:auto;padding:12px 14px;background:#1A1816;border:1px solid #3A3632;border-radius:0 0 8px 8px;color:#E8E4E0;font-size:13px;line-height:1.7;outline:none;font-family:'DM Sans',sans-serif}.idea-ed:focus{border-color:#C5FF4A}.idea-ed:empty::before{content:attr(data-placeholder);color:#6A6560;pointer-events:none}.idea-ed .ed-topic{background:${TAG_COLORS.topic.bg};color:${TAG_COLORS.topic.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-platform{background:${TAG_COLORS.platform.bg};color:${TAG_COLORS.platform.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-format{background:${TAG_COLORS.format.bg};color:${TAG_COLORS.format.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-tone{background:${TAG_COLORS.tone.bg};color:${TAG_COLORS.tone.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-command{background:${TAG_COLORS.command.bg};color:${TAG_COLORS.command.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed b,.idea-ed strong{color:#fff}.mn-item{padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:10px}.mn-item:hover,.mn-item.act{background:#3A3632}`}</style>
-        <div ref={editorRef} className="idea-ed" contentEditable data-placeholder="Start typing your idea... use # for topics, / for AI commands — or click the buttons below." onInput={handleInput} onKeyDown={handleKeyDown} onBlur={() => setTimeout(closeMenus, 200)} suppressContentEditableWarning />
-        {showTopic && fTop.length > 0 && <div style={menuSt}><div style={{ padding: "6px 14px 4px", fontSize: 10, color: "#6A6560", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Topics</div>{fTop.map((t, i) => (<div key={t} className={`mn-item ${i === selectedIdx ? "act" : ""}`} onMouseDown={e => { e.preventDefault(); insertTag(`#${t}`, "ed-topic", t, menuFilter.length + 1); }}><span style={{ color: "#FFD700" }}>#</span><span style={{ color: "#E8E4E0", fontSize: 13 }}>{t}</span></div>))}</div>}
+        <style>{`.idea-ed{min-height:100px;max-height:300px;overflow-y:auto;padding:12px 14px;background:#1A1816;border:1px solid #3A3632;border-radius:0 0 8px 8px;color:#E8E4E0;font-size:13px;line-height:1.7;outline:none;font-family:'DM Sans',sans-serif}.idea-ed:focus{border-color:#C5FF4A}.idea-ed:empty::before{content:attr(data-placeholder);color:#6A6560;pointer-events:none}.idea-ed .ed-platform{background:${TAG_COLORS.platform.bg};color:${TAG_COLORS.platform.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-format{background:${TAG_COLORS.format.bg};color:${TAG_COLORS.format.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed .ed-command{background:${TAG_COLORS.command.bg};color:${TAG_COLORS.command.color};padding:1px 6px;border-radius:4px;font-weight:500;font-size:12px}.idea-ed b,.idea-ed strong{color:#fff}.mn-item{padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:10px}.mn-item:hover,.mn-item.act{background:#3A3632}`}</style>
+        <div ref={editorRef} className="idea-ed" contentEditable data-placeholder="Start typing your idea... use / for AI commands — or click the buttons below." onInput={handleInput} onKeyDown={handleKeyDown} onBlur={() => setTimeout(closeMenus, 200)} suppressContentEditableWarning />
         {showSlash && fCmd.length > 0 && <div style={menuSt}><div style={{ padding: "6px 14px 4px", fontSize: 10, color: "#6A6560", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Commands</div>{fCmd.map((c, i) => (<div key={c.cmd} className={`mn-item ${i === selectedIdx ? "act" : ""}`} onMouseDown={e => { e.preventDefault(); insertTag(`/${c.cmd}`, "ed-command", c.cmd, menuFilter.length + 1); }}><span style={{ fontSize: 16 }}>{c.icon}</span><div><div style={{ color: "#E8E4E0", fontSize: 13, fontWeight: 500 }}>{c.label}</div><div style={{ color: "#6A6560", fontSize: 11 }}>{c.desc}</div></div></div>))}</div>}
       </div>
       <div style={{ display: "flex", gap: 12, marginTop: 6, fontSize: 10, color: "#6A6560" }}>
@@ -1196,10 +1420,15 @@ function BusinessSection({ profile, setProfile }) {
 // ─── RULES & SETTINGS (unified hub) ────────────────────
 function RulesSection({ rules, setRules, config, setConfig }) {
   // Core rules state
-  const [tab, setTab] = useState("global");
+  const [tab, setTab] = useState("personal");
   const [nr, setNr] = useState("");
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
+  // Standalone section state (hooks, seo)
+  const [standaloneNr, setStandaloneNr] = useState({});
+  const [standaloneEditId, setStandaloneEditId] = useState(null);
+  const [standaloneEditText, setStandaloneEditText] = useState("");
+  const [standaloneEditSection, setStandaloneEditSection] = useState(null);
 
   // Accordion + inline rules state
   const [expandedId, setExpandedId] = useState(null);
@@ -1208,26 +1437,17 @@ function RulesSection({ rules, setRules, config, setConfig }) {
   const [editRuleText, setEditRuleText] = useState("");
 
   // Add item state (for section "+" buttons)
-  const [addingSection, setAddingSection] = useState(null); // null | "formats" | "platforms" | "tones"
+  const [addingSection, setAddingSection] = useState(null); // null | "formats" | "platforms"
   const [addingMode, setAddingMode] = useState(null); // null | "library" | "new"
   const [newLabel, setNewLabel] = useState("");
-
-  // Topics + AI Tools state
-  const [newTopic, setNewTopic] = useState("");
 
   // Custom core category state
   const [addingCore, setAddingCore] = useState(false);
   const [newCoreName, setNewCoreName] = useState("");
 
-  const aiModeTabs = (config.approaches || []).map(m => ({ id: m.id, label: `${m.icon} ${m.label}`, desc: m.desc, color: m.color, builtIn: true, group: "ai" }));
-  const generalTabs = [
-    { id: "global", label: "🌐 Global", desc: "Applied to all prompts", color: "#C5FF4A", builtIn: true, group: "general" },
-    { id: "hooks", label: "🪝 Hooks", desc: "First line rules", color: "#FFD700", builtIn: true, group: "general" },
-    { id: "antiRobot", label: "🚫 Anti-Robot", desc: "Forbid specific words", color: "#F87171", builtIn: true, group: "general" },
-    { id: "seo", label: "🔎 SEO", desc: "Title, meta, slug, FAQ", color: "#34D399", builtIn: true, group: "general" },
-  ];
+  const aiModeTabs = (config.approaches || []).map(m => ({ id: m.id, label: `${m.icon} ${m.label}`, desc: m.desc, color: m.color, examples: m.examples, builtIn: true, group: "ai" }));
   const customCoreTabs = (config.customRuleCategories || []).map(c => ({ id: c.id, label: c.label, desc: c.desc || "Custom rule category", color: c.color || "#8A8580", builtIn: false, group: "general" }));
-  const coreTabs = [...aiModeTabs, ...generalTabs, ...customCoreTabs];
+  const coreTabs = [...aiModeTabs, ...customCoreTabs];
   const addCoreCategory = () => {
     if (!newCoreName.trim()) return;
     const id = "custom_" + newCoreName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
@@ -1240,11 +1460,10 @@ function RulesSection({ rules, setRules, config, setConfig }) {
   const removeCoreCategory = (id) => {
     setConfig(prev => ({ ...prev, customRuleCategories: (prev.customRuleCategories || []).filter(c => c.id !== id) }));
     setRules(prev => { const next = { ...prev }; delete next[id]; return next; });
-    if (tab === id) setTab("global");
+    if (tab === id) setTab("personal");
   };
   const fmtColor = "#F472B6";
   const pltColor = "#60A5FA";
-  const toneColor = "#34D399";
 
   const getRules = (key) => rules[key] || [];
   const setRulesFor = (key, val) => setRules({ ...rules, [key]: val });
@@ -1262,10 +1481,8 @@ function RulesSection({ rules, setRules, config, setConfig }) {
   // Compute totals for summary
   const fmtTabs = (config.formats || []).filter(f => f.active).map(f => "fmt_" + f.id);
   const pltTabs = (config.platforms || []).filter(p => p.active).map(p => "plt_" + p.id);
-  const toneTabs = (config.tones || []).filter(t => t.active).map(t => "tone_" + t.id);
   const totalFmtRules = fmtTabs.reduce((sum, k) => sum + getRules(k).filter(r => r.active).length, 0);
   const totalPltRules = pltTabs.reduce((sum, k) => sum + getRules(k).filter(r => r.active).length, 0);
-  const totalToneRules = toneTabs.reduce((sum, k) => sum + getRules(k).filter(r => r.active).length, 0);
 
   // ─── Shared styles ───
   const inputSt = { background: "#1A1816", border: "1px solid #3A3632", borderRadius: 8, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, fontFamily: "inherit", width: "100%", boxSizing: "border-box" };
@@ -1273,12 +1490,12 @@ function RulesSection({ rules, setRules, config, setConfig }) {
   const toId = (label) => label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
   const sectionHeaderSt = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, marginTop: 28 };
 
-  // ─── Accordion item section (formats, platforms, tones) ───
-  const renderItemSection = (key, label, color, catField) => {
+  // ─── Accordion item section (formats, platforms) ───
+  const renderItemSection = (key, label, color, catField, description) => {
     const items = config[key] || [];
     const activeItems = items.filter(i => i.active);
     const inactiveItems = items.filter(i => !i.active);
-    const rulePrefix = key === "platforms" ? "plt_" : key === "formats" ? "fmt_" : "tone_";
+    const rulePrefix = key === "platforms" ? "plt_" : "fmt_";
     const totalActive = activeItems.reduce((sum, i) => sum + getRules(rulePrefix + i.id).filter(r => r.active).length, 0);
     const totalAll = items.reduce((sum, i) => sum + getRules(rulePrefix + i.id).length, 0);
     const isAdding = addingSection === key;
@@ -1366,6 +1583,7 @@ function RulesSection({ rules, setRules, config, setConfig }) {
           </div>
           <button onClick={() => { if (isAdding) { setAddingSection(null); setAddingMode(null); } else { setAddingSection(key); setAddingMode(null); setNewLabel(""); } }} style={{ background: "none", border: "none", color: isAdding ? "#F87171" : color, cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0 }} title={`Add ${label.toLowerCase()}`}>{isAdding ? "×" : "+"}</button>
         </div>
+        {description && <p style={{ margin: "0 0 10px", fontSize: 12, color: "#8A8580", lineHeight: 1.6 }}>{description}</p>}
 
         {isAdding && <div style={{ marginBottom: 8, background: "#1A1816", borderRadius: 8, border: "1px solid #3A3632", padding: 10 }}>
           {addingMode === null && <>
@@ -1389,46 +1607,137 @@ function RulesSection({ rules, setRules, config, setConfig }) {
     );
   };
 
-  // ─── Topics ───
-  const renderTopics = () => {
-    const topics = config.topics || [];
-    return (<div>
-      <div style={sectionHeaderSt}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#E8E4E0" }}>Topics</span>
-          <span style={{ fontSize: 11, color: "#6A6560" }}>{topics.length} topics</span>
+  // ─── Standalone rule section renderer (for Hooks, SEO) ───
+  const renderStandaloneRuleSection = (key, title, color, description) => {
+    const sectionRules = getRules(key);
+    const activeCount = sectionRules.filter(r => r.active).length;
+    const sNr = standaloneNr[key] || "";
+    const isEditing = standaloneEditSection === key;
+    const addStandalone = () => { if (!sNr.trim()) return; setRulesFor(key, [...sectionRules, { id: Date.now(), text: sNr.trim(), active: true }]); setStandaloneNr(prev => ({ ...prev, [key]: "" })); };
+    return (
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+          <span style={{ fontSize: 16, fontWeight: 600, color: "#E8E4E0" }}>{title}</span>
+          <span style={{ fontSize: 11, color: "#6A6560" }}>{activeCount}/{sectionRules.length} active</span>
+        </div>
+        <p style={{ margin: "0 0 14px", fontSize: 12, color: "#8A8580", lineHeight: 1.6 }}>{description}</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
+          {sectionRules.map(r => (
+            <div key={r.id} style={{ background: "#2A2724", borderRadius: 8, padding: "10px 14px", border: "1px solid #3A3632", opacity: r.active ? 1 : 0.5 }}>
+              {isEditing && standaloneEditId === r.id ? (
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input value={standaloneEditText} onChange={e => setStandaloneEditText(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && standaloneEditText.trim()) { setRulesFor(key, sectionRules.map(x => x.id === r.id ? { ...x, text: standaloneEditText.trim() } : x)); setStandaloneEditId(null); setStandaloneEditSection(null); } if (e.key === "Escape") { setStandaloneEditId(null); setStandaloneEditSection(null); } }} autoFocus style={{ flex: 1, background: "#1A1816", border: `1px solid ${color}`, borderRadius: 6, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
+                  <button onClick={() => { if (standaloneEditText.trim()) setRulesFor(key, sectionRules.map(x => x.id === r.id ? { ...x, text: standaloneEditText.trim() } : x)); setStandaloneEditId(null); setStandaloneEditSection(null); }} style={{ background: color, color: "#1A1816", border: "none", borderRadius: 6, padding: "6px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Save</button>
+                </div>
+              ) : (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                    <input type="checkbox" checked={r.active} onChange={() => setRulesFor(key, sectionRules.map(x => x.id === r.id ? { ...x, active: !x.active } : x))} style={{ accentColor: color, flexShrink: 0 }} />
+                    <span style={{ color: "#E8E4E0", fontSize: 13 }}>{r.text}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 2, flexShrink: 0, marginLeft: 8 }}>
+                    <button onClick={() => { setStandaloneEditId(r.id); setStandaloneEditText(r.text); setStandaloneEditSection(key); }} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 12, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#E8E4E0"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>Edit</button>
+                    <button onClick={() => setRulesFor(key, sectionRules.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 16, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#F87171"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>×</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+          {sectionRules.length === 0 && <div style={{ textAlign: "center", padding: 16, color: "#6A6560", fontSize: 12 }}>No rules yet. Add one below.</div>}
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input value={sNr} onChange={e => setStandaloneNr(prev => ({ ...prev, [key]: e.target.value }))} onKeyDown={e => e.key === "Enter" && addStandalone()} placeholder={`Add ${title.toLowerCase().replace(" rules", "")} rule...`} style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 8, padding: "10px 14px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
+          <button onClick={addStandalone} style={{ background: color, color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>+ Add</button>
         </div>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>{topics.map((t, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 20, padding: "6px 10px 6px 14px", fontSize: 12, color: "#E8E4E0" }}>
-          {t}
-          <button onClick={() => setConfig(prev => ({ ...prev, topics: prev.topics.filter((_, j) => j !== i) }))} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 14, padding: "0 2px", lineHeight: 1 }} title="Remove">×</button>
-        </div>
-      ))}</div>
-      <div style={{ display: "flex", gap: 8 }}>
-        <input value={newTopic} onChange={e => setNewTopic(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && newTopic.trim()) { setConfig(prev => ({ ...prev, topics: [...prev.topics, newTopic.trim()] })); setNewTopic(""); } }} placeholder="Add topic..." style={{ ...inputSt, flex: 1 }} />
-        <button onClick={() => { if (newTopic.trim()) { setConfig(prev => ({ ...prev, topics: [...prev.topics, newTopic.trim()] })); setNewTopic(""); } }} style={accentBtn}>Add</button>
-      </div>
-    </div>);
+    );
   };
 
   return (<div>
     <h2 style={{ margin: "0 0 6px", fontSize: 22, color: "#E8E4E0" }}>AI Writing Rules</h2>
-    <p style={{ margin: "0 0 20px", fontSize: 13, color: "#8A8580" }}>Manage your writing rules, content approaches, and categories in one place.</p>
+    <p style={{ margin: "0 0 24px", fontSize: 13, color: "#8A8580" }}>Manage your writing rules, content approaches, and categories in one place.</p>
 
-    {/* ─── Content Approach Rules ─── */}
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 11, color: "#8A8580", fontWeight: 500, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>Content Approaches</div>
-      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-        {aiModeTabs.map(t => (<button key={t.id} onClick={() => { setTab(t.id); cancelEdit(); }} style={{ flex: "1 1 auto", minWidth: 140, background: tab === t.id ? "#2A2724" : "transparent", border: tab === t.id ? `1px solid ${t.color}` : "1px solid #3A3632", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left" }}><div style={{ fontSize: 12, fontWeight: 600, color: tab === t.id ? t.color : "#8A8580" }}>{t.label}</div><div style={{ fontSize: 10, color: "#6A6560", marginTop: 2 }}>{t.desc}</div><div style={{ fontSize: 9, color: "#6A6560", marginTop: 3 }}>{getRules(t.id).filter(r => r.active).length}/{getRules(t.id).length}</div></button>))}
+    {/* ═══ 1. CONTENT APPROACHES (vertical accordion) ═══ */}
+    <div style={{ marginBottom: 32 }}>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#E8E4E0", margin: "0 0 6px" }}>Content Approaches</h3>
+      <p style={{ margin: "0 0 16px", fontSize: 13, color: "#8A8580", lineHeight: 1.6 }}>{SECTION_DESCRIPTIONS.approaches}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        {aiModeTabs.map(t => {
+          const isOpen = tab === t.id;
+          const tRules = getRules(t.id);
+          const tActive = tRules.filter(r => r.active).length;
+          return (
+            <div key={t.id} style={{ background: "#2A2724", borderRadius: 10, border: isOpen ? `1px solid ${t.color}40` : "1px solid #3A3632", overflow: "hidden" }}>
+              {/* Row header */}
+              <div onClick={() => { setTab(isOpen ? null : t.id); cancelEdit(); setNr(""); }} style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: isOpen ? t.color : "#C0BCB8" }}>{t.label}</span>
+                  <span style={{ fontSize: 11, color: "#6A6560" }}>{t.desc}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                  <span style={{ fontSize: 10, color: t.color, fontWeight: 500 }}>{tActive}/{tRules.length}</span>
+                  <span style={{ fontSize: 11, color: "#6A6560", transition: "transform 0.15s", transform: isOpen ? "rotate(90deg)" : "none" }}>▸</span>
+                </div>
+              </div>
+              {/* Expanded content */}
+              {isOpen && (
+                <div style={{ padding: "0 16px 16px", borderTop: "1px solid #3A363280" }}>
+                  {/* Inspiration examples */}
+                  {t.examples && t.examples.length > 0 && (
+                    <div style={{ marginTop: 12, marginBottom: 14 }}>
+                      <div style={{ fontSize: 11, color: "#8A8580", fontWeight: 500, marginBottom: 6 }}>Content ideas for inspiration</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {t.examples.map((ex, i) => (<span key={i} style={{ fontSize: 11, color: "#C0BCB8", fontStyle: "italic", background: "#1A1816", borderRadius: 6, padding: "4px 10px", border: "1px solid #3A363280" }}>"{ex}"</span>))}
+                      </div>
+                    </div>
+                  )}
+                  {/* Rules */}
+                  <div style={{ fontSize: 11, color: "#8A8580", fontWeight: 500, marginBottom: 6 }}>Rules ({tActive} active / {tRules.length} total)</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 10 }}>
+                    {tRules.map(r => (
+                      <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", background: "#1A1816", borderRadius: 6, opacity: r.active ? 1 : 0.5 }}>
+                        {editId === r.id ? (<>
+                          <input value={editText} onChange={e => setEditText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }} autoFocus style={{ flex: 1, background: "transparent", border: `1px solid ${t.color}40`, borderRadius: 4, padding: "4px 8px", color: "#E8E4E0", fontSize: 12, outline: "none", fontFamily: "inherit" }} />
+                          <button onClick={saveEdit} style={{ background: "none", border: "none", color: t.color, fontSize: 11, cursor: "pointer" }}>Save</button>
+                        </>) : (<>
+                          <input type="checkbox" checked={r.active} onChange={() => setRulesFor(t.id, tRules.map(x => x.id === r.id ? { ...x, active: !x.active } : x))} style={{ accentColor: t.color, flexShrink: 0 }} />
+                          <span style={{ flex: 1, fontSize: 12, color: "#C0BCB8" }}>{r.text}</span>
+                          <button onClick={() => startEdit(r)} style={{ background: "none", border: "none", color: "#6A6560", fontSize: 11, cursor: "pointer", padding: "0 4px" }}>Edit</button>
+                          <button onClick={() => setRulesFor(t.id, tRules.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#6A6560", fontSize: 13, cursor: "pointer", padding: "0 4px" }}>×</button>
+                        </>)}
+                      </div>
+                    ))}
+                    {tRules.length === 0 && <div style={{ padding: 8, fontSize: 11, color: "#6A6560", textAlign: "center" }}>No rules yet. Add one below.</div>}
+                  </div>
+                  {/* Add rule */}
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <input value={nr} onChange={e => setNr(e.target.value)} onKeyDown={e => { if (e.key === "Enter") add(); }} placeholder="Add rule..." style={{ ...inputSt, flex: 1, fontSize: 12, padding: "6px 10px" }} />
+                    <button onClick={add} style={{ ...accentBtn, padding: "6px 12px", fontSize: 11, background: t.color }}>Add</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
 
-    {/* ─── General Rules ─── */}
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 11, color: "#8A8580", fontWeight: 500, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>General Rules</div>
-      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-        {[...generalTabs, ...customCoreTabs].map(t => (<button key={t.id} onClick={() => { setTab(t.id); cancelEdit(); }} style={{ flex: "1 1 auto", minWidth: 120, background: tab === t.id ? "#2A2724" : "transparent", border: tab === t.id ? `1px solid ${t.color}` : "1px solid #3A3632", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left", position: "relative" }}><div style={{ fontSize: 12, fontWeight: 600, color: tab === t.id ? t.color : "#8A8580" }}>{t.label}</div><div style={{ fontSize: 10, color: "#6A6560", marginTop: 2 }}>{t.desc}</div><div style={{ fontSize: 9, color: "#6A6560", marginTop: 3 }}>{getRules(t.id).filter(r => r.active).length}/{getRules(t.id).length}</div>{!t.builtIn && tab === t.id && <button onClick={e => { e.stopPropagation(); removeCoreCategory(t.id); }} style={{ position: "absolute", top: 4, right: 6, background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 14, padding: 0, lineHeight: 1 }} title="Remove category">×</button>}</button>))}
+    {/* ═══ 2. HOOKS (standalone) ═══ */}
+    {renderStandaloneRuleSection("hooks", "Hook Rules", "#FFD700", SECTION_DESCRIPTIONS.hooks)}
+
+    {/* ═══ 3. SEO (standalone) ═══ */}
+    {renderStandaloneRuleSection("seo", "SEO Rules", "#34D399", SECTION_DESCRIPTIONS.seo)}
+
+    {/* ═══ 4. GENERAL RULES (custom categories) ═══ */}
+    <div style={{ marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+        <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#C5FF4A" }} />
+        <span style={{ fontSize: 16, fontWeight: 600, color: "#E8E4E0" }}>General Rules</span>
+      </div>
+      <p style={{ margin: "0 0 14px", fontSize: 12, color: "#8A8580", lineHeight: 1.6 }}>{SECTION_DESCRIPTIONS.general}</p>
+      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 12 }}>
+        {customCoreTabs.map(t => (<button key={t.id} onClick={() => { setTab(t.id); cancelEdit(); }} style={{ flex: "1 1 auto", minWidth: 120, background: tab === t.id ? "#2A2724" : "transparent", border: tab === t.id ? `1px solid ${t.color}` : "1px solid #3A3632", borderRadius: 10, padding: "10px 12px", cursor: "pointer", textAlign: "left", position: "relative" }}><div style={{ fontSize: 12, fontWeight: 600, color: tab === t.id ? t.color : "#8A8580" }}>{t.label}</div><div style={{ fontSize: 10, color: "#6A6560", marginTop: 2 }}>{t.desc}</div><div style={{ fontSize: 9, color: "#6A6560", marginTop: 3 }}>{getRules(t.id).filter(r => r.active).length}/{getRules(t.id).length}</div>{tab === t.id && <button onClick={e => { e.stopPropagation(); removeCoreCategory(t.id); }} style={{ position: "absolute", top: 4, right: 6, background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 14, padding: 0, lineHeight: 1 }} title="Remove category">×</button>}</button>))}
         {!addingCore ? (
           <button onClick={() => setAddingCore(true)} style={{ flex: "0 0 auto", background: "transparent", border: "1px dashed #3A3632", borderRadius: 10, padding: "10px 16px", cursor: "pointer", color: "#6A6560", fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }} title="Add category">+</button>
         ) : (
@@ -1438,60 +1747,172 @@ function RulesSection({ rules, setRules, config, setConfig }) {
           </div>
         )}
       </div>
+      {/* Selected custom category rule list */}
+      {customCoreTabs.some(t => t.id === tab) && (<>
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}><input value={nr} onChange={e => setNr(e.target.value)} onKeyDown={e => e.key === "Enter" && add()} placeholder={`Add ${atLabel} rule...`} style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 8, padding: "10px 14px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} /><button onClick={add} style={{ background: atColor, color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>+ Add</button></div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>{cur.map(r => (
+          <div key={r.id} style={{ background: "#2A2724", borderRadius: 8, padding: "10px 14px", border: "1px solid #3A3632", opacity: r.active ? 1 : 0.5 }}>
+            {editId === r.id ? (
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input value={editText} onChange={e => setEditText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }} autoFocus style={{ flex: 1, background: "#1A1816", border: `1px solid ${atColor}`, borderRadius: 6, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
+                <button onClick={saveEdit} style={{ background: atColor, color: "#1A1816", border: "none", borderRadius: 6, padding: "6px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Save</button>
+                <button onClick={cancelEdit} style={{ background: "none", border: "1px solid #3A3632", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#8A8580", cursor: "pointer" }}>Esc</button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                  <input type="checkbox" checked={r.active} onChange={() => setRulesFor(tab, cur.map(x => x.id === r.id ? { ...x, active: !x.active } : x))} style={{ accentColor: atColor, flexShrink: 0 }} />
+                  <span style={{ color: "#E8E4E0", fontSize: 13 }}>{r.text}</span>
+                </div>
+                <div style={{ display: "flex", gap: 2, flexShrink: 0, marginLeft: 8 }}>
+                  <button onClick={() => startEdit(r)} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 12, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#E8E4E0"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>Edit</button>
+                  <button onClick={() => setRulesFor(tab, cur.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 16, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#F87171"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>×</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {cur.length === 0 && <div style={{ textAlign: "center", padding: 16, color: "#6A6560", fontSize: 12 }}>No rules yet. Add one above.</div>}</div>
+      </>)}
     </div>
 
-    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}><input value={nr} onChange={e => setNr(e.target.value)} onKeyDown={e => e.key === "Enter" && add()} placeholder={`Add ${atLabel} rule...`} style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 8, padding: "10px 14px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} /><button onClick={add} style={{ background: atColor, color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>+ Add</button></div>
+    {/* ═══ 5. FORMATS (with description) ═══ */}
+    {renderItemSection("formats", "Formats", fmtColor, null, SECTION_DESCRIPTIONS.formats)}
 
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 8 }}>{cur.map(r => (
-      <div key={r.id} style={{ background: "#2A2724", borderRadius: 8, padding: "10px 14px", border: "1px solid #3A3632", opacity: r.active ? 1 : 0.5 }}>
-        {editId === r.id ? (
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <input value={editText} onChange={e => setEditText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }} autoFocus style={{ flex: 1, background: "#1A1816", border: `1px solid ${atColor}`, borderRadius: 6, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
-            <button onClick={saveEdit} style={{ background: atColor, color: "#1A1816", border: "none", borderRadius: 6, padding: "6px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Save</button>
-            <button onClick={cancelEdit} style={{ background: "none", border: "1px solid #3A3632", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#8A8580", cursor: "pointer" }}>Esc</button>
-          </div>
-        ) : (
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
-              <input type="checkbox" checked={r.active} onChange={() => setRulesFor(tab, cur.map(x => x.id === r.id ? { ...x, active: !x.active } : x))} style={{ accentColor: atColor, flexShrink: 0 }} />
-              <span style={{ color: "#E8E4E0", fontSize: 13 }}>{r.text}</span>
-            </div>
-            <div style={{ display: "flex", gap: 2, flexShrink: 0, marginLeft: 8 }}>
-              <button onClick={() => startEdit(r)} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 12, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#E8E4E0"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>Edit</button>
-              <button onClick={() => setRulesFor(tab, cur.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 16, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#F87171"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>×</button>
-            </div>
-          </div>
-        )}
+    {/* ═══ 6. PLATFORMS (with description) ═══ */}
+    {renderItemSection("platforms", "Platforms", pltColor, "cat", SECTION_DESCRIPTIONS.platforms)}
+  </div>);
+}
+
+// ─── ANTI-ROBOT (dedicated settings page) ──────────────
+function AntiRobotSection({ rules, setRules, config, setConfig }) {
+  const [nr, setNr] = useState("");
+  const [editId, setEditId] = useState(null);
+  const [editText, setEditText] = useState("");
+  const [newBannedWord, setNewBannedWord] = useState("");
+
+  const arRules = rules.antiRobot || [];
+  const setAr = (val) => setRules(prev => ({ ...prev, antiRobot: val }));
+  const words = config.bannedWords || [];
+
+  const add = () => { if (!nr.trim()) return; setAr([...arRules, { id: Date.now(), text: nr.trim(), active: true }]); setNr(""); };
+  const startEdit = (r) => { setEditId(r.id); setEditText(r.text); };
+  const saveEdit = () => { if (!editText.trim()) return; setAr(arRules.map(x => x.id === editId ? { ...x, text: editText.trim() } : x)); setEditId(null); setEditText(""); };
+  const cancelEdit = () => { setEditId(null); setEditText(""); };
+
+  return (<div>
+    <h2 style={{ margin: "0 0 6px", fontSize: 22, color: "#E8E4E0" }}>Anti-Robot Mode</h2>
+    <p style={{ margin: "0 0 24px", fontSize: 13, color: "#8A8580" }}>Rules and banned words that prevent AI-sounding output. Enabled via the toggle in Prompt Maker.</p>
+
+    {/* Rules */}
+    <div style={{ marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <span style={{ fontSize: 14, fontWeight: 600, color: "#F87171" }}>Rules</span>
+        <span style={{ fontSize: 11, color: "#6A6560" }}>{arRules.filter(r => r.active).length}/{arRules.length} active</span>
       </div>
-    ))}
-    {cur.length === 0 && <div style={{ textAlign: "center", padding: 16, color: "#6A6560", fontSize: 12 }}>No rules yet. Add one above.</div>}</div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <input value={nr} onChange={e => setNr(e.target.value)} onKeyDown={e => e.key === "Enter" && add()} placeholder="Add anti-robot rule..." style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 8, padding: "10px 14px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
+        <button onClick={add} style={{ background: "#F87171", color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>+ Add</button>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {arRules.map(r => (
+          <div key={r.id} style={{ background: "#2A2724", borderRadius: 8, padding: "10px 14px", border: "1px solid #3A3632", opacity: r.active ? 1 : 0.5 }}>
+            {editId === r.id ? (
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input value={editText} onChange={e => setEditText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }} autoFocus style={{ flex: 1, background: "#1A1816", border: "1px solid #F87171", borderRadius: 6, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, outline: "none", fontFamily: "inherit" }} />
+                <button onClick={saveEdit} style={{ background: "#F87171", color: "#1A1816", border: "none", borderRadius: 6, padding: "6px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Save</button>
+                <button onClick={cancelEdit} style={{ background: "none", border: "1px solid #3A3632", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#8A8580", cursor: "pointer" }}>Esc</button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                  <input type="checkbox" checked={r.active} onChange={() => setAr(arRules.map(x => x.id === r.id ? { ...x, active: !x.active } : x))} style={{ accentColor: "#F87171", flexShrink: 0 }} />
+                  <span style={{ color: "#E8E4E0", fontSize: 13 }}>{r.text}</span>
+                </div>
+                <div style={{ display: "flex", gap: 2, flexShrink: 0, marginLeft: 8 }}>
+                  <button onClick={() => startEdit(r)} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 12, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#E8E4E0"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>Edit</button>
+                  <button onClick={() => setAr(arRules.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#6A6560", cursor: "pointer", fontSize: 16, padding: "2px 6px" }} onMouseEnter={e => e.currentTarget.style.color = "#F87171"} onMouseLeave={e => e.currentTarget.style.color = "#6A6560"}>×</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {arRules.length === 0 && <div style={{ textAlign: "center", padding: 16, color: "#6A6560", fontSize: 12 }}>No anti-robot rules yet.</div>}
+      </div>
+    </div>
 
-    {/* ─── Format / Platform / Tone accordion sections ─── */}
-    {renderItemSection("formats", "Formats", fmtColor, null)}
-    {renderItemSection("platforms", "Platforms", pltColor, "cat")}
-    {renderItemSection("tones", "Tones", toneColor, null)}
-
-    {/* ─── Topics ─── */}
-    {renderTopics()}
-
-
-    {/* ─── Summary ─── */}
-    <div style={{ marginTop: 28, padding: 16, background: "#1A1816", borderRadius: 10, border: "1px solid #3A3632" }}>
-      <div style={{ fontSize: 12, color: "#8A8580", marginBottom: 10 }}>Prompt injection summary</div>
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        {coreTabs.map(t => (<div key={t.id}><span style={{ fontSize: 11, color: t.color }}>{t.label}:</span> <span style={{ fontSize: 11, color: "#6A6560" }}>{getRules(t.id).filter(r => r.active).length}</span></div>))}
-        <div><span style={{ fontSize: 11, color: fmtColor }}>Format:</span> <span style={{ fontSize: 11, color: "#6A6560" }}>{totalFmtRules}</span></div>
-        <div><span style={{ fontSize: 11, color: pltColor }}>Platform:</span> <span style={{ fontSize: 11, color: "#6A6560" }}>{totalPltRules}</span></div>
-        <div><span style={{ fontSize: 11, color: toneColor }}>Tone:</span> <span style={{ fontSize: 11, color: "#6A6560" }}>{totalToneRules}</span></div>
+    {/* Banned Words */}
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <span style={{ fontSize: 14, fontWeight: 600, color: "#F87171" }}>Banned Words</span>
+        <span style={{ fontSize: 11, color: "#6A6560" }}>{words.length} words</span>
+      </div>
+      <p style={{ margin: "0 0 10px", fontSize: 11, color: "#8A8580" }}>These words are injected into every Anti-Robot prompt. Add or remove words freely.</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>{words.map((w, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.25)", borderRadius: 20, padding: "5px 10px 5px 12px", fontSize: 11, color: "#E8E4E0" }}>
+          {w}
+          <button onClick={() => setConfig(prev => ({ ...prev, bannedWords: prev.bannedWords.filter((_, j) => j !== i) }))} style={{ background: "none", border: "none", color: "rgba(248,113,113,0.5)", cursor: "pointer", fontSize: 14, padding: "0 2px", lineHeight: 1 }} title="Remove" onMouseEnter={e => e.currentTarget.style.color = "#F87171"} onMouseLeave={e => e.currentTarget.style.color = "rgba(248,113,113,0.5)"}>×</button>
+        </div>
+      ))}</div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input value={newBannedWord} onChange={e => setNewBannedWord(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && newBannedWord.trim()) { const w = newBannedWord.trim().toLowerCase(); if (!words.includes(w)) { setConfig(prev => ({ ...prev, bannedWords: [...prev.bannedWords, w] })); } setNewBannedWord(""); } }} placeholder="Add banned word..." style={{ background: "#1A1816", border: "1px solid #3A3632", borderRadius: 8, padding: "8px 12px", color: "#E8E4E0", fontSize: 13, fontFamily: "inherit", flex: 1, boxSizing: "border-box" }} />
+        <button onClick={() => { const w = newBannedWord.trim().toLowerCase(); if (w && !words.includes(w)) { setConfig(prev => ({ ...prev, bannedWords: [...prev.bannedWords, w] })); } setNewBannedWord(""); }} style={{ background: "#F87171", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: "#1A1816", cursor: "pointer", fontFamily: "inherit" }}>Add</button>
       </div>
     </div>
   </div>);
 }
 
+// ─── SETTINGS PAGE (container) ─────────────────────────
+function SettingsPage({ settingsTab, setSettingsTab, profile, setProfile, rules, setRules, config, setConfig, history, setHistory }) {
+  const filled = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
+
+  const renderContent = () => {
+    switch (settingsTab) {
+      case "business": return <BusinessSection profile={profile} setProfile={setProfile} />;
+      case "rules": return <RulesSection rules={rules} setRules={setRules} config={config} setConfig={setConfig} />;
+      case "history": return <PromptHistorySection history={history} setHistory={setHistory} config={config} />;
+      case "antiRobot": return <AntiRobotSection rules={rules} setRules={setRules} config={config} setConfig={setConfig} />;
+      default: return <BusinessSection profile={profile} setProfile={setProfile} />;
+    }
+  };
+
+  return (
+    <div style={{ display: "flex", gap: 0, height: "100vh" }}>
+      <div style={{ width: 220, background: "#141210", borderRight: "1px solid #2A2724", padding: "24px 0", flexShrink: 0, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "0 16px", marginBottom: 20 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#E8E4E0" }}>Settings</div>
+          <div style={{ fontSize: 11, color: "#6A6560", marginTop: 2 }}>Manage your content brain</div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 8px" }}>
+          {SETTINGS_PAGES.map(p => (
+            <button key={p.id} onClick={() => setSettingsTab(p.id)} style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              background: settingsTab === p.id ? "#2A2724" : "transparent",
+              border: "none", borderRadius: 8, padding: "10px 12px",
+              color: settingsTab === p.id ? "#E8E4E0" : "#6A6560",
+              fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%", textAlign: "left"
+            }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 15 }}>{p.icon}</span>
+                {p.label}
+              </span>
+              {p.id === "business" && filled > 0 && <span style={{ fontSize: 10, color: "#6A6560" }}>{filled}</span>}
+              {p.id === "history" && history.length > 0 && <span style={{ fontSize: 10, color: "#6A6560" }}>{history.length}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}>
+        <div style={{ maxWidth: 820 }}>{renderContent()}</div>
+      </div>
+    </div>
+  );
+}
+
 // ─── PROMPT MAKER (real engine) ────────────────────────
 function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, history }) {
   const editorRef = useRef(null);
-  const [editorTags, setEditorTags] = useState({ topics: [], platforms: [], formats: [], tones: [], commands: [] });
+  const [editorTags, setEditorTags] = useState({ platforms: [], formats: [], commands: [] });
   const [approach, setApproach] = useState("personal");
   const [includeHooks, setIncludeHooks] = useState(true);
   const [includeAntiRobot, setIncludeAntiRobot] = useState(true);
@@ -1500,38 +1921,31 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
   const [copied, setCopied] = useState(false);
   const [pltSearch, setPltSearch] = useState("");
   const [fmtSearch, setFmtSearch] = useState("");
-  const [toneSearch, setToneSearch] = useState("");
-  const [addingCol, setAddingCol] = useState(null); // null | "platform" | "format" | "tone"
+  const [addingCol, setAddingCol] = useState(null); // null | "platform" | "format"
   const [addingMode, setAddingMode] = useState(null); // null | "library" | "new"
   const [newLabel, setNewLabel] = useState("");
 
   const approaches = config.approaches || DEFAULT_CONFIG.approaches;
-  const topics = config.topics || DEFAULT_CONFIG.topics;
   const activePlatforms = (config.platforms || DEFAULT_CONFIG.platforms).filter(p => p.active);
   const activeFormats = (config.formats || DEFAULT_CONFIG.formats).filter(f => f.active);
-  const activeTones = (config.tones || DEFAULT_CONFIG.tones).filter(t => t.active);
   const inactivePlatforms = (config.platforms || DEFAULT_CONFIG.platforms).filter(p => !p.active);
   const inactiveFormats = (config.formats || DEFAULT_CONFIG.formats).filter(f => !f.active);
-  const inactiveTones = (config.tones || DEFAULT_CONFIG.tones).filter(t => !t.active);
 
   const toggleAddCol = (col) => { if (addingCol === col) { setAddingCol(null); setAddingMode(null); } else { setAddingCol(col); setAddingMode(null); setNewLabel(""); } };
   const activateItem = (key, id) => { setConfig(prev => ({ ...prev, [key]: prev[key].map(x => x.id === id ? { ...x, active: true } : x) })); setAddingCol(null); setAddingMode(null); };
   const addNewItem = (key, extra) => { if (!newLabel.trim()) return; const id = newLabel.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_"); if (!config[key].some(x => x.id === id)) { setConfig(prev => ({ ...prev, [key]: [...prev[key], { id, label: newLabel.trim(), inst: "", active: true, ...extra }] })); } setNewLabel(""); setAddingCol(null); setAddingMode(null); };
 
-  const selTopics = editorTags.topics;
   const selPlatform = editorTags.platforms[0] || null;
   const selFormat = editorTags.formats[0] || null;
-  const selTone = editorTags.tones[0] || null;
   const mode = approaches.find(m => m.id === approach) || approaches[0];
 
-  const toggleTopic = (t) => { if (!editorRef.current) return; if (selTopics.includes(t)) editorRef.current.removeTag("ed-topic", t); else editorRef.current.insertTag(`#${t}`, "ed-topic", t); };
   const toggleSingle = (cls, cur, val) => { if (!editorRef.current) return; if (cur === val) editorRef.current.removeTag(cls, val); else { if (cur) editorRef.current.removeTag(cls, cur); editorRef.current.insertTag(val, cls, val); } };
 
   const lastIdeaRef = useRef("");
   const handleBuild = () => {
     const ideaText = editorRef.current?.getPlainText()?.trim() || "";
     lastIdeaRef.current = ideaText;
-    setBuiltPrompt(buildPrompt({ approach, profile, rules, config, selTopics, selPlatform, selFormat, selTone, ideaText, commands: editorTags.commands, includeHooks, includeAntiRobot, includeSeo }));
+    setBuiltPrompt(buildPrompt({ approach, profile, rules, config, selPlatform, selFormat, ideaText, commands: editorTags.commands, includeHooks, includeAntiRobot, includeSeo }));
     setCopied(false);
   };
   const copy = () => {
@@ -1539,17 +1953,17 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
     if (onSaveToHistory) {
       const isDuplicate = history && history.length > 0 && history[0].builtPrompt === builtPrompt;
       if (!isDuplicate) {
-        const userText = getUserWrittenText(lastIdeaRef.current, selTopics, selPlatform, selFormat, selTone);
-        onSaveToHistory({ id: Date.now(), timestamp: new Date().toISOString(), title: null, ideaText: userText, builtPrompt, approach, topics: [...selTopics], platform: selPlatform, format: selFormat, tone: selTone });
+        const userText = getUserWrittenText(lastIdeaRef.current, selPlatform, selFormat);
+        onSaveToHistory({ id: Date.now(), timestamp: new Date().toISOString(), title: null, ideaText: userText, builtPrompt, approach, platform: selPlatform, format: selFormat });
       }
     }
   };
 
   const filledProfile = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
-  const activeRules = rules.global.filter(r => r.active).length + (rules[approach]?.filter(r => r.active).length || 0);
+  const activeRules = (rules[approach]?.filter(r => r.active).length || 0);
   const pillSt = (on) => ({ background: on ? "#C5FF4A" : "#1A1816", color: on ? "#1A1816" : "#8A8580", border: on ? "none" : "1px solid #3A3632", borderRadius: 20, padding: "6px 14px", fontSize: 12, cursor: "pointer", fontWeight: 500 });
   const colSt = (on) => ({ background: on ? "#C5FF4A" : "#1A1816", color: on ? "#1A1816" : "#8A8580", border: on ? "none" : "1px solid #3A3632", borderRadius: 6, padding: "7px 12px", fontSize: 12, cursor: "pointer", fontWeight: 500, textAlign: "left" });
-  const any = selTopics.length > 0 || selPlatform || selFormat || selTone;
+  const any = selPlatform || selFormat;
 
   return (<div>
     <div style={{ marginBottom: 24 }}><h2 style={{ margin: 0, fontSize: 22, color: "#E8E4E0" }}>Prompt Maker</h2><p style={{ margin: "4px 0 0", fontSize: 13, color: "#8A8580" }}>Build a prompt → copy to your AI tool → get great content</p></div>
@@ -1560,11 +1974,9 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
     <div style={{ background: "#2A2724", borderRadius: 12, padding: 20, border: "1px solid #3A3632", marginBottom: 24 }}>
       <IdeaEditor ref={editorRef} onTagsChange={setEditorTags} config={config} />
 
-      {any && <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16, padding: "10px 12px", background: "#1A1816", borderRadius: 8, border: "1px solid #3A3632" }}><span style={{ fontSize: 11, color: "#6A6560", lineHeight: "24px", marginRight: 4 }}>Active:</span>{selTopics.map(t => <span key={t} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.topic.bg, color: TAG_COLORS.topic.color }}>#{t}</span>)}{selPlatform && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.platform.bg, color: TAG_COLORS.platform.color }}>{selPlatform}</span>}{selFormat && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.format.bg, color: TAG_COLORS.format.color }}>{selFormat}</span>}{selTone && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.tone.bg, color: TAG_COLORS.tone.color }}>{selTone}</span>}</div>}
+      {any && <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16, padding: "10px 12px", background: "#1A1816", borderRadius: 8, border: "1px solid #3A3632" }}><span style={{ fontSize: 11, color: "#6A6560", lineHeight: "24px", marginRight: 4 }}>Active:</span>{selPlatform && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.platform.bg, color: TAG_COLORS.platform.color }}>{selPlatform}</span>}{selFormat && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.format.bg, color: TAG_COLORS.format.color }}>{selFormat}</span>}</div>}
 
-      <div style={{ marginBottom: 18 }}><label style={{ fontSize: 12, color: "#8A8580", display: "block", marginBottom: 8 }}>Topics</label><div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{topics.map(t => (<button key={t} onClick={() => toggleTopic(t)} style={pillSt(selTopics.includes(t))}>{t}</button>))}</div></div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 18 }}>
         {/* Platform */}
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -1608,28 +2020,6 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
           </div>}
           <input value={fmtSearch} onChange={e => setFmtSearch(e.target.value)} placeholder="Search..." style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(fmtSearch ? activeFormats.filter(f => f.label.toLowerCase().includes(fmtSearch.toLowerCase())) : activeFormats).map(f => (<button key={f.id} onClick={() => toggleSingle("ed-format", selFormat, f.label)} style={colSt(selFormat === f.label)}>{f.label}</button>))}</div>
-        </div>
-        {/* Tone */}
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <label style={{ fontSize: 12, color: "#8A8580" }}>Tone</label>
-            <button onClick={() => toggleAddCol("tone")} style={{ background: "none", border: "none", color: addingCol === "tone" ? "#F87171" : "#C5FF4A", cursor: "pointer", fontSize: 16, lineHeight: 1, padding: 0 }} title="Add tone">{addingCol === "tone" ? "×" : "+"}</button>
-          </div>
-          {addingCol === "tone" && <div style={{ marginBottom: 6, background: "#1A1816", borderRadius: 8, border: "1px solid #3A3632", padding: 8 }}>
-            {addingMode === null && <>
-              {inactiveTones.length > 0 && <button onClick={() => setAddingMode("library")} style={{ width: "100%", background: "none", border: "1px solid #3A3632", borderRadius: 6, padding: "6px 8px", color: "#C5FF4A", fontSize: 11, cursor: "pointer", fontFamily: "inherit", marginBottom: 4, textAlign: "left" }}>From library ({inactiveTones.length})</button>}
-              <button onClick={() => setAddingMode("new")} style={{ width: "100%", background: "none", border: "1px solid #3A3632", borderRadius: 6, padding: "6px 8px", color: "#8A8580", fontSize: 11, cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>+ Add new</button>
-            </>}
-            {addingMode === "library" && <div style={{ display: "flex", flexDirection: "column", gap: 3, maxHeight: 160, overflowY: "auto" }}>
-              {inactiveTones.map(t => <button key={t.id} onClick={() => activateItem("tones", t.id)} style={{ background: "#2A2724", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>{t.label}</button>)}
-              <button onClick={() => setAddingMode(null)} style={{ background: "none", border: "none", color: "#6A6560", fontSize: 10, cursor: "pointer", fontFamily: "inherit", padding: "2px 0" }}>Back</button>
-            </div>}
-            {addingMode === "new" && <div style={{ display: "flex", gap: 4 }}>
-              <input value={newLabel} onChange={e => setNewLabel(e.target.value)} onKeyDown={e => { if (e.key === "Enter") addNewItem("tones", {}); if (e.key === "Escape") { setAddingCol(null); setAddingMode(null); } }} placeholder="Name..." autoFocus style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
-            </div>}
-          </div>}
-          <input value={toneSearch} onChange={e => setToneSearch(e.target.value)} placeholder="Search..." style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(toneSearch ? activeTones.filter(t => t.label.toLowerCase().includes(toneSearch.toLowerCase())) : activeTones).map(t => (<button key={t.id} onClick={() => toggleSingle("ed-tone", selTone, t.label)} style={colSt(selTone === t.label)}>{t.label}</button>))}</div>
         </div>
       </div>
 
@@ -1690,7 +2080,7 @@ function PromptHistorySection({ history, setHistory, config }) {
   const filtered = searchQuery.trim()
     ? history.filter(e => {
         const q = searchQuery.toLowerCase();
-        return (getDisplayTitle(e) || "").toLowerCase().includes(q) || (e.ideaText || "").toLowerCase().includes(q) || (e.topics || []).some(t => t.toLowerCase().includes(q)) || (e.platform || "").toLowerCase().includes(q) || (e.format || "").toLowerCase().includes(q) || (e.tone || "").toLowerCase().includes(q);
+        return (getDisplayTitle(e) || "").toLowerCase().includes(q) || (e.ideaText || "").toLowerCase().includes(q) || (e.platform || "").toLowerCase().includes(q) || (e.format || "").toLowerCase().includes(q);
       })
     : history;
 
@@ -1718,7 +2108,7 @@ function PromptHistorySection({ history, setHistory, config }) {
         const title = getDisplayTitle(entry);
         const isCopied = copiedId === entry.id;
         const isEditing = editingId === entry.id;
-        const hasTags = (entry.topics?.length > 0 || entry.platform || entry.format || entry.tone);
+        const hasTags = (entry.platform || entry.format);
 
         return (<div key={entry.id} style={{ background: "#2A2724", borderRadius: 10, border: isExp ? `1px solid ${mode.color}40` : "1px solid #3A3632", overflow: "hidden" }}>
           {/* Header — always visible */}
@@ -1747,10 +2137,8 @@ function PromptHistorySection({ history, setHistory, config }) {
           {isExp && (<div style={{ borderTop: "1px solid #3A363280" }}>
             {hasTags && (<div style={{ padding: "10px 16px", display: "flex", flexWrap: "wrap", gap: 6, borderBottom: "1px solid #3A363240" }}>
               <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: `${mode.color}18`, color: mode.color }}>{mode.icon} {mode.label}</span>
-              {entry.topics?.map(t => <span key={t} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: TAG_COLORS.topic.bg, color: TAG_COLORS.topic.color }}>#{t}</span>)}
               {entry.platform && <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: TAG_COLORS.platform.bg, color: TAG_COLORS.platform.color }}>{entry.platform}</span>}
               {entry.format && <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: TAG_COLORS.format.bg, color: TAG_COLORS.format.color }}>{entry.format}</span>}
-              {entry.tone && <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: TAG_COLORS.tone.bg, color: TAG_COLORS.tone.color }}>{entry.tone}</span>}
             </div>)}
             <div style={{ padding: "16px 18px", maxHeight: 400, overflowY: "auto", background: "#1A1816" }}>
               <pre style={{ margin: 0, fontSize: 12, color: "#C0BCB8", lineHeight: 1.7, whiteSpace: "pre-wrap", fontFamily: "'DM Sans', monospace" }}>{entry.builtPrompt}</pre>
@@ -1803,7 +2191,8 @@ function HookGenerator({ profile }) {
 // ─── MAIN (state lives here) ───────────────────────────
 
 export default function ContentBrain() {
-  const [active, setActive] = useState("generator");
+  const [active, setActive] = useStickyState("generator", "cb_active");
+  const [settingsTab, setSettingsTab] = useStickyState("business", "cb_settingsTab");
   const [profile, setProfile] = useStickyState(DEFAULT_PROFILE, "cb_profile");
   const [rules, setRules] = useStickyState(DEFAULT_RULES, "cb_rules");
   const [config, setConfig] = useStickyState(DEFAULT_CONFIG, "cb_config");
@@ -1854,15 +2243,39 @@ export default function ContentBrain() {
   useEffect(() => {
     let needsUpdate = false; const next = { ...config };
     Object.keys(DEFAULT_CONFIG).forEach(k => { if (!(k in config)) { next[k] = DEFAULT_CONFIG[k]; needsUpdate = true; } });
-    // Merge new items into existing arrays (formats, platforms, tones, approaches) by id
-    ["formats", "platforms", "tones", "approaches"].forEach(k => {
+    // Merge new items into existing arrays (formats, platforms, approaches) by id
+    ["formats", "platforms", "approaches"].forEach(k => {
       if (next[k] && DEFAULT_CONFIG[k]) {
         const existingIds = new Set(next[k].map(i => i.id));
         const newItems = DEFAULT_CONFIG[k].filter(i => !existingIds.has(i.id));
         if (newItems.length) { next[k] = [...next[k], ...newItems]; needsUpdate = true; }
       }
     });
+    // Merge new banned words by value (simple string array)
+    if (next.bannedWords && DEFAULT_CONFIG.bannedWords) {
+      const existing = new Set(next.bannedWords);
+      const newWords = DEFAULT_CONFIG.bannedWords.filter(w => !existing.has(w));
+      if (newWords.length) { next.bannedWords = [...next.bannedWords, ...newWords]; needsUpdate = true; }
+    }
+    // Add examples field to existing approaches that lack it
+    if (next.approaches) {
+      const defaults = DEFAULT_CONFIG.approaches;
+      next.approaches = next.approaches.map(a => {
+        if (!a.examples) {
+          const def = defaults.find(d => d.id === a.id);
+          if (def?.examples) { needsUpdate = true; return { ...a, examples: def.examples }; }
+        }
+        return a;
+      });
+    }
     if (needsUpdate) setConfig(next);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Migrate: remove global rules (no longer used)
+  useEffect(() => {
+    if (rules.global) {
+      setRules(prev => { const next = { ...prev }; delete next.global; return next; });
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Migrate: add new profile fields, remove old ones, convert old services/socialProof
@@ -1891,15 +2304,19 @@ export default function ContentBrain() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const filled = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
+  // Migrate: old flat nav active values → settings sub-page
+  useEffect(() => {
+    if (["business", "rules", "history"].includes(active)) {
+      setSettingsTab(active);
+      setActive("settings");
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const render = () => {
     switch (active) {
-      case "business": return <BusinessSection profile={profile} setProfile={setProfile} />;
-      case "rules": return <RulesSection rules={rules} setRules={setRules} config={config} setConfig={setConfig} />;
       case "generator": return <PromptMaker profile={profile} rules={rules} config={config} setConfig={setConfig} onSaveToHistory={saveToHistory} history={history} />;
       case "hooks": return <HookGenerator profile={profile} />;
-      case "history": return <PromptHistorySection history={history} setHistory={setHistory} config={config} />;
+      case "settings": return <SettingsPage settingsTab={settingsTab} setSettingsTab={setSettingsTab} profile={profile} setProfile={setProfile} rules={rules} setRules={setRules} config={config} setConfig={setConfig} history={history} setHistory={setHistory} />;
       default: return null;
     }
   };
@@ -1909,10 +2326,9 @@ export default function ContentBrain() {
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
       <div style={{ width: 220, background: "#141210", borderRight: "1px solid #2A2724", padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px", marginBottom: 32 }}><div style={{ fontSize: 17, fontWeight: 700, color: "#C5FF4A", letterSpacing: "-0.5px" }}>Content Brain</div><div style={{ fontSize: 11, color: "#6A6560", marginTop: 2 }}>Personal AI Prompt Builder</div></div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 10px" }}>{SECTIONS.map(s => (<button key={s.id} onClick={() => setActive(s.id)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: active === s.id ? "#2A2724" : "transparent", border: "none", borderRadius: 8, padding: "10px 12px", color: active === s.id ? "#E8E4E0" : "#6A6560", fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%" }}><span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 15 }}>{s.icon}</span>{s.label}</span>{s.id === "business" && filled > 0 && <span style={{ fontSize: 10, color: "#6A6560" }}>{filled}</span>}{s.id === "history" && history.length > 0 && <span style={{ fontSize: 10, color: "#6A6560" }}>{history.length}</span>}</button>))}</div>
-        <div style={{ marginTop: "auto", padding: "0 20px" }}><div style={{ background: "#2A2724", borderRadius: 10, padding: 14, border: "1px solid #3A3632" }}><div style={{ fontSize: 11, color: "#8A8580", marginBottom: 6 }}>Data status</div><div style={{ fontSize: 11, color: "#6A6560", display: "flex", flexDirection: "column", gap: 3 }}><span>📝 {filled}/{Object.keys(profile).length} profile</span><span>⚡ {Object.values(rules).flat().length} rules</span><span>📋 {history.length} prompts</span></div></div></div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 10px" }}>{SECTIONS.map(s => (<button key={s.id} onClick={() => setActive(s.id)} style={{ display: "flex", alignItems: "center", background: active === s.id ? "#2A2724" : "transparent", border: "none", borderRadius: 8, padding: "10px 12px", color: active === s.id ? "#E8E4E0" : "#6A6560", fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%" }}><span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 15 }}>{s.icon}</span>{s.label}</span></button>))}</div>
       </div>
-      <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}><div style={{ maxWidth: 820 }}>{render()}</div></div>
+      {active === "settings" ? <div style={{ flex: 1, overflow: "hidden" }}>{render()}</div> : <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}><div style={{ maxWidth: 820 }}>{render()}</div></div>}
     </div>
   );
 }
