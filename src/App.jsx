@@ -34,7 +34,7 @@ const SLASH_COMMANDS = [
 const EMOJI_QUICK = ["🔥", "💡", "🚀", "💰", "⚡", "🎯", "📈", "🧠", "💪", "👀", "🤔", "✅", "❌", "→", "•"];
 
 // ─── CUSTOMIZABLE CONFIG (stored in localStorage) ─────
-const CONFIG_VERSION = 3; // bump this to force-reset config on next load
+const CONFIG_VERSION = 4; // bump this to force-reset config on next load
 const DEFAULT_CONFIG = {
   approaches: [
     { id: "personal", label: "Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
@@ -1252,7 +1252,7 @@ function BusinessSection({ profile, setProfile }) {
     <h2 style={{ margin: "0 0 4px", fontSize: 22, color: "#E8E4E0" }}>Business Profile</h2>
     <p style={{ margin: "0 0 16px", fontSize: 13, color: "#8A8580" }}>This feeds into every prompt — the more you fill, the better the output</p>
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24 }}>
-      <div style={{ flex: 1, height: 4, background: "#2A2724", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${(filled / total) * 100}%`, height: "100%", background: "#C5FF4A", borderRadius: 2, transition: "width 0.3s" }} /></div>
+      <div style={{ flex: 1, height: 4, background: "#2A2724", borderRadius: 2, overflow: "hidden" }}><div className="cb-progress" style={{ width: `${(filled / total) * 100}%`, height: "100%", background: "#C5FF4A", borderRadius: 2 }} /></div>
       <span style={{ fontSize: 11, color: "#6A6560" }}>{filled}/{total} fields</span>
     </div>
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>{S.map(s => {
@@ -1738,7 +1738,7 @@ function SettingsPage({ settingsTab, setSettingsTab, profile, setProfile, rules,
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 8px" }}>
           {SETTINGS_PAGES.map(p => (
-            <button key={p.id} onClick={() => setSettingsTab(p.id)} style={{
+            <button key={p.id} className="cb-settings-btn" onClick={() => setSettingsTab(p.id)} style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               background: settingsTab === p.id ? "#2A2724" : "transparent",
               border: "none", borderRadius: 8, padding: "10px 12px",
@@ -1822,9 +1822,9 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
     <div style={{ marginBottom: 24 }}><h2 style={{ margin: 0, fontSize: 22, color: "#E8E4E0" }}>Prompt Maker</h2><p style={{ margin: "4px 0 0", fontSize: 13, color: "#8A8580" }}>Build a prompt → copy to your AI tool → get great content</p></div>
 
     {/* Approach selector */}
-    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 24 }}>{approaches.map(m => (<button key={m.id} onClick={() => setApproach(m.id)} style={{ flex: "0 0 auto", minWidth: 170, background: approach === m.id ? "#2A2724" : "transparent", border: approach === m.id ? `2px solid ${m.color}` : "1px solid #3A3632", borderRadius: 10, padding: "10px 14px", cursor: "pointer", textAlign: "left" }}><div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}><span style={{ fontSize: 16 }}>{m.icon}</span><span style={{ fontSize: 13, fontWeight: 600, color: approach === m.id ? m.color : "#8A8580" }}>{m.label}</span></div><div style={{ fontSize: 11, color: "#6A6560" }}>{m.desc}</div></button>))}</div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 24 }}>{approaches.map(m => (<button key={m.id} className="cb-approach-card" onClick={() => setApproach(m.id)} style={{ background: approach === m.id ? "#2A2724" : "transparent", border: approach === m.id ? `2px solid ${m.color}` : "1px solid #3A3632", borderRadius: 10, padding: "12px 14px", cursor: "pointer", textAlign: "left" }}><div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}><span className="cb-card-icon" style={{ fontSize: 16 }}>{m.icon}</span><span className="cb-card-label" style={{ fontSize: 13, fontWeight: 600, color: approach === m.id ? m.color : "#8A8580" }}>{m.label}</span></div><div style={{ fontSize: 11, color: "#6A6560", lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.desc}</div></button>))}</div>
 
-    <div style={{ background: "#2A2724", borderRadius: 12, padding: 20, border: "1px solid #3A3632", marginBottom: 24 }}>
+    <div className="cb-panel" style={{ background: "#2A2724", borderRadius: 12, padding: 20, border: "1px solid #3A3632", marginBottom: 24 }}>
       <IdeaEditor ref={editorRef} onTagsChange={setEditorTags} config={config} />
 
       {any && <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16, padding: "10px 12px", background: "#1A1816", borderRadius: 8, border: "1px solid #3A3632" }}><span style={{ fontSize: 11, color: "#6A6560", lineHeight: "24px", marginRight: 4 }}>Active:</span>{selPlatform && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.platform.bg, color: TAG_COLORS.platform.color }}>{selPlatform}</span>}{selFormat && <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: TAG_COLORS.format.bg, color: TAG_COLORS.format.color }}>{selFormat}</span>}</div>}
@@ -1849,8 +1849,8 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
               <input value={newLabel} onChange={e => setNewLabel(e.target.value)} onKeyDown={e => { if (e.key === "Enter") addNewItem("platforms", { cat: "Custom" }); if (e.key === "Escape") { setAddingCol(null); setAddingMode(null); } }} placeholder="Name..." autoFocus style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>}
           </div>}
-          <input value={pltSearch} onChange={e => setPltSearch(e.target.value)} placeholder="Search..." style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(pltSearch ? activePlatforms.filter(p => p.label.toLowerCase().includes(pltSearch.toLowerCase())) : activePlatforms).map(p => (<button key={p.id} onClick={() => toggleSingle("ed-platform", selPlatform, p.label)} style={colSt(selPlatform === p.label)}>{p.label}</button>))}</div>
+          <input value={pltSearch} onChange={e => setPltSearch(e.target.value)} placeholder="Search..." className="cb-input" style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(pltSearch ? activePlatforms.filter(p => p.label.toLowerCase().includes(pltSearch.toLowerCase())) : activePlatforms).map(p => (<button key={p.id} className="cb-pill" onClick={() => toggleSingle("ed-platform", selPlatform, p.label)} style={colSt(selPlatform === p.label)}>{p.label}</button>))}</div>
         </div>
         {/* Format */}
         <div>
@@ -1871,8 +1871,8 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
               <input value={newLabel} onChange={e => setNewLabel(e.target.value)} onKeyDown={e => { if (e.key === "Enter") addNewItem("formats", {}); if (e.key === "Escape") { setAddingCol(null); setAddingMode(null); } }} placeholder="Name..." autoFocus style={{ flex: 1, background: "#2A2724", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
             </div>}
           </div>}
-          <input value={fmtSearch} onChange={e => setFmtSearch(e.target.value)} placeholder="Search..." style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(fmtSearch ? activeFormats.filter(f => f.label.toLowerCase().includes(fmtSearch.toLowerCase())) : activeFormats).map(f => (<button key={f.id} onClick={() => toggleSingle("ed-format", selFormat, f.label)} style={colSt(selFormat === f.label)}>{f.label}</button>))}</div>
+          <input value={fmtSearch} onChange={e => setFmtSearch(e.target.value)} placeholder="Search..." className="cb-input" style={{ width: "100%", background: "#1A1816", border: "1px solid #3A3632", borderRadius: 6, padding: "5px 8px", color: "#E8E4E0", fontSize: 11, outline: "none", fontFamily: "inherit", marginBottom: 4, boxSizing: "border-box" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 240, overflowY: "auto" }}>{(fmtSearch ? activeFormats.filter(f => f.label.toLowerCase().includes(fmtSearch.toLowerCase())) : activeFormats).map(f => (<button key={f.id} className="cb-pill" onClick={() => toggleSingle("ed-format", selFormat, f.label)} style={colSt(selFormat === f.label)}>{f.label}</button>))}</div>
         </div>
       </div>
 
@@ -1886,13 +1886,13 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
         <span style={{ fontSize: 12, color: "#6A6560" }}>⚡ {activeRules} rules</span>
       </div>
 
-      <button onClick={handleBuild} style={{ width: "100%", background: mode.color, color: "#1A1816", border: "none", borderRadius: 10, padding: "14px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>{mode.icon} Build Prompt</button>
+      <button className="cb-btn" onClick={handleBuild} style={{ width: "100%", background: mode.color, color: "#1A1816", border: "none", borderRadius: 10, padding: "14px", fontWeight: 700, fontSize: 15, cursor: "pointer", transition: "transform 0.15s, box-shadow 0.15s" }}>{mode.icon} Build Prompt</button>
     </div>
 
     {builtPrompt && (<div style={{ background: "#2A2724", borderRadius: 12, border: `1px solid ${mode.color}40`, overflow: "hidden" }}>
       <div style={{ padding: "16px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #3A3632" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 16 }}>{mode.icon}</span><div><div style={{ fontSize: 14, fontWeight: 600, color: "#E8E4E0" }}>Prompt Ready</div><div style={{ fontSize: 11, color: "#6A6560" }}>{builtPrompt.length} chars · ~{Math.ceil(builtPrompt.length / 4)} tokens</div></div></div>
-        <button onClick={copy} style={{ background: copied ? "#4CAF50" : mode.color, color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{copied ? "✓ Copied!" : "📋 Copy prompt"}</button>
+        <button className="cb-btn" onClick={copy} style={{ background: copied ? "#4CAF50" : mode.color, color: "#1A1816", border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{copied ? "✓ Copied!" : "📋 Copy prompt"}</button>
       </div>
       <div style={{ padding: "16px 18px", maxHeight: 400, overflowY: "auto", background: "#1A1816" }}><pre style={{ margin: 0, fontSize: 12, color: "#C0BCB8", lineHeight: 1.7, whiteSpace: "pre-wrap", fontFamily: "'DM Sans', monospace" }}>{builtPrompt}</pre></div>
       <div style={{ padding: "12px 18px", background: "#2A2724", borderTop: "1px solid #3A3632" }}><span style={{ fontSize: 11, color: "#8A8580" }}>💡 Paste this prompt into any AI tool (ChatGPT, Gemini, Claude, Perplexity, etc.)</span></div>
@@ -2187,11 +2187,60 @@ export default function ContentBrain() {
   return (
     <div style={{ display: "flex", height: "100vh", background: "#1A1816", fontFamily: "'DM Sans', -apple-system, sans-serif", color: "#E8E4E0" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <style>{`
+        * { box-sizing: border-box; }
+        /* Sidebar nav items */
+        .cb-nav-btn { transition: background 0.2s, color 0.2s, transform 0.15s !important; }
+        .cb-nav-btn:hover { background: #2A2724 !important; color: #E8E4E0 !important; }
+        .cb-nav-btn:active { transform: scale(0.97); }
+        /* Approach cards */
+        .cb-approach-card { transition: all 0.2s ease !important; transform: translateY(0); }
+        .cb-approach-card:hover { background: #2A2724 !important; border-color: #4A4642 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .cb-approach-card:active { transform: translateY(0) scale(0.98); }
+        .cb-approach-card .cb-card-icon { transition: transform 0.2s ease; }
+        .cb-approach-card:hover .cb-card-icon { transform: scale(1.15); }
+        .cb-approach-card .cb-card-label { transition: color 0.2s ease; }
+        .cb-approach-card:hover .cb-card-label { color: #E8E4E0 !important; }
+        /* Pill / tag buttons */
+        .cb-pill { transition: all 0.15s ease !important; }
+        .cb-pill:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.2); filter: brightness(1.1); }
+        .cb-pill:active { transform: translateY(0) scale(0.97); }
+        /* Generic interactive buttons */
+        .cb-btn { transition: all 0.15s ease !important; }
+        .cb-btn:hover { filter: brightness(1.15); }
+        .cb-btn:active { transform: scale(0.97); }
+        /* Settings page sidebar */
+        .cb-settings-btn { transition: background 0.2s, color 0.2s !important; }
+        .cb-settings-btn:hover { background: #2A2724 !important; color: #E8E4E0 !important; }
+        /* Input focus glow */
+        .cb-input { transition: border-color 0.2s, box-shadow 0.2s !important; }
+        .cb-input:focus { border-color: #C5FF4A !important; box-shadow: 0 0 0 2px rgba(197,255,74,0.1) !important; }
+        /* Expandable sections */
+        .cb-expand { transition: background 0.15s !important; }
+        .cb-expand:hover { background: #2A2724 !important; }
+        /* Rule items */
+        .cb-rule-item { transition: background 0.15s, opacity 0.2s !important; }
+        .cb-rule-item:hover { background: rgba(42,39,36,0.5) !important; }
+        /* Copy / action buttons */
+        .cb-action { transition: all 0.15s ease !important; }
+        .cb-action:hover { background: #3A3632 !important; transform: translateY(-1px); }
+        .cb-action:active { transform: translateY(0) scale(0.96); }
+        /* Cards / panels */
+        .cb-panel { transition: border-color 0.2s, box-shadow 0.2s !important; }
+        .cb-panel:hover { border-color: #3A3632 !important; }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3A3632; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4A4642; }
+        /* Progress bar animation */
+        .cb-progress { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; }
+      `}</style>
       <div style={{ width: 220, background: "#141210", borderRight: "1px solid #2A2724", padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "0 20px", marginBottom: 32 }}><div style={{ fontSize: 17, fontWeight: 700, color: "#C5FF4A", letterSpacing: "-0.5px" }}>Content Brain</div><div style={{ fontSize: 11, color: "#6A6560", marginTop: 2 }}>Personal AI Prompt Builder</div></div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 10px" }}>{SECTIONS.map(s => (<button key={s.id} onClick={() => setActive(s.id)} style={{ display: "flex", alignItems: "center", background: active === s.id ? "#2A2724" : "transparent", border: "none", borderRadius: 8, padding: "10px 12px", color: active === s.id ? "#E8E4E0" : "#6A6560", fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%" }}><span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 15 }}>{s.icon}</span>{s.label}</span></button>))}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 10px" }}>{SECTIONS.map(s => (<button key={s.id} className="cb-nav-btn" onClick={() => setActive(s.id)} style={{ display: "flex", alignItems: "center", background: active === s.id ? "#2A2724" : "transparent", border: "none", borderRadius: 8, padding: "10px 12px", color: active === s.id ? "#E8E4E0" : "#6A6560", fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%" }}><span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 15 }}>{s.icon}</span>{s.label}</span></button>))}</div>
       </div>
-      {active === "settings" ? <div style={{ flex: 1, overflow: "hidden" }}>{render()}</div> : <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}><div style={{ maxWidth: 820 }}>{render()}</div></div>}
+      {active === "settings" ? <div style={{ flex: 1, overflow: "hidden" }}>{render()}</div> : <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}><div style={{ maxWidth: 960 }}>{render()}</div></div>}
     </div>
   );
 }
