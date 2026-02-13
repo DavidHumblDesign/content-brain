@@ -45,8 +45,8 @@ const DEFAULT_CONFIG = {
     { id: "observational", label: "Observational / Current Events", icon: "👀", color: "#FB923C", desc: "Real-time pattern spotting — connecting signals into trends with predictions", examples: ["Everyone missed the real lesson from Twitter's rebrand", "The creator economy is splitting in two", "I'm noticing a pattern in every failing startup", "What Threads' launch tells us about attention"] },
     { id: "humorous", label: "Humorous / Entertaining", icon: "😂", color: "#F472B6", desc: "Comedy-first content where the joke carries a real insight underneath", examples: ["My content calendar vs. what I actually post", "Things my clients say that keep me up at night", "A day in the life of a solopreneur (honest edition)", "If business advice were honest"] },
     { id: "motivational", label: "Motivational / Inspirational", icon: "🚀", color: "#4ADE80", desc: "Reader-focused transformation — your struggle becomes their action plan", examples: ["I started with zero followers and no plan. Here's year one.", "The moment I stopped caring what people think", "You don't need permission to start", "What I'd tell my younger self about business"] },
-    { id: "behindScenes", label: "Behind-the-Scenes", icon: "🎬", color: "#E879F9", desc: "Process transparency — tools, costs, systems, decisions, and real numbers", examples: ["Exactly how I made $12K this month (breakdown)", "Here's my actual Notion dashboard for content", "The messy truth behind my 'polished' launch", "Revenue, expenses, failures — my March in review"] },
-    { id: "curated", label: "Curated / Roundup", icon: "📦", color: "#22D3EE", desc: "Organized collections with personal picks, verdicts, and hidden gems", examples: ["7 tools I actually use every day (not sponsored)", "The best free resources for learning copywriting", "My top 5 podcasts for founders", "Every book that changed how I think about marketing"] },
+    { id: "guideline", label: "Guideline / Reference", icon: "📐", color: "#22D3EE", desc: "Comprehensive reference that maps rules, standards, and considerations for a topic — the reader bookmarks this and returns to it", examples: ["The Ultimate Colour Guideline for Brand Design in 2026", "The Complete Guideline for Choosing a CMS Provider", "Website Accessibility Guideline for Small Business Owners", "The Definitive Email Deliverability Guideline"] },
+    { id: "glossary", label: "Glossary / Definitions", icon: "📖", color: "#E879F9", desc: "Structured reference defining and explaining essential terminology of a specific domain — each term explained for someone encountering it for the first time", examples: ["The Designer's Glossary: 80+ UI and UX Terms Explained", "SEO Glossary for Business Owners: Every Term Your Agency Uses", "The Complete SaaS Metrics Glossary: MRR, ARR, Churn, and More", "Email Marketing Glossary: From A/B Testing to Zero-Party Data"] },
     { id: "caseStudy", label: "Case Study / Proof-Based", icon: "📊", color: "#F59E0B", desc: "Before/after results with specific metrics, isolation of what worked, and transferable lessons", examples: ["How one email sequence generated $87K in 3 months", "This client went from 200 to 15K followers in 90 days", "Before/after: rewriting a homepage that converts at 8%", "The exact strategy that grew my newsletter to 10K"] },
   ],
   customRuleCategories: [],
@@ -72,7 +72,7 @@ const DEFAULT_CONFIG = {
     { id: "youtube_shorts", label: "YouTube Shorts", cat: "Social Media", inst: "PLATFORM: YouTube Shorts\n- Under 60 seconds. Ideally 30-45 seconds.\n- HOOK in first 2 seconds — text on screen + spoken.\n- One single takeaway. No multi-point videos.\n- Vertical format. Write for mobile viewing.\n- End with 'Follow for more' or loop back to the hook.", active: false },
     { id: "pinterest", label: "Pinterest", cat: "Social Media", inst: "PLATFORM: Pinterest\n- Pin title: 40-100 characters, keyword-rich for search.\n- Description: 150-300 characters, natural keywords, light CTA.\n- Pinterest is a search engine — think SEO, not social.\n- Evergreen content performs best. Avoid time-sensitive references.\n- Actionable and aspirational: tutorials, tips, how-tos, checklists.", active: false },
     // Content Platforms
-    { id: "blog", label: "Blog", cat: "Content Platforms", inst: "PLATFORM: Blog\n- Length: 800-1500 words.\n- Structure: Hook → Context → Main points → Actionable takeaway.\n- Use subheadings every 200-300 words.\n- Include at least one personal anecdote or specific example.\n- Write for skimmers: bold key phrases, short paragraphs.", active: true },
+    { id: "blog", label: "Blog", cat: "Content Platforms", inst: "PLATFORM: Blog\n- Length: 800-3000+ words (scale to the topic — guidelines and glossaries should be comprehensive).\n- Structure: Hook → Context → Main points → Actionable takeaway.\n- Use subheadings (H2/H3) every 200-300 words.\n- Include at least one personal anecdote or specific example.\n- Write for skimmers: bold key phrases, short paragraphs, bullet lists.\n- For long-form reference content (guidelines, glossaries): include a table of contents, comparison tables, and a summary checklist at the end.", active: true },
     { id: "newsletter", label: "Newsletter", cat: "Content Platforms", inst: "PLATFORM: Newsletter\n- Tone: like writing to a smart friend, not broadcasting.\n- Structure: One big idea → supporting points → what to do about it.\n- Include a personal opener (what you're thinking about, what happened this week).\n- Conversational — this is 1-to-1, not 1-to-many.", active: true },
     { id: "medium", label: "Medium", cat: "Content Platforms", inst: "PLATFORM: Medium\n- 1000-2000 words. Medium rewards depth and original thinking.\n- Strong subtitle — it shows in the preview and determines clicks.\n- Use subheadings, pull quotes, and images to break up text.\n- Write for the publication's audience if submitting to one.\n- First paragraph must hook — Medium shows it in the preview.", active: false },
     { id: "substack", label: "Substack", cat: "Content Platforms", inst: "PLATFORM: Substack\n- Newsletter-style but with more depth than email.\n- Personal voice is everything — subscribers are here for YOU.\n- 800-2000 words. Include personal takes and behind-the-scenes.\n- Structure for scanning: headers, bold text, short paragraphs.\n- End with something that invites replies — build the relationship.", active: false },
@@ -86,15 +86,16 @@ const DEFAULT_CONFIG = {
     { id: "product_hunt", label: "Product Hunt", cat: "Professional", inst: "PLATFORM: Product Hunt Launch\n- Tagline: under 60 characters. Clear, benefit-driven.\n- Description: 3-4 lines max. Problem → Solution → Why now.\n- Be authentic and maker-voiced. No corporate speak.\n- Include a personal 'maker story' — why you built this.\n- First comment should add context and invite questions.", active: false },
   ],
   formats: [
-    { id: "short_post", label: "Short post", inst: "FORMAT: Short post — Under 100 words. Every word must earn its place. One idea only. Fragments are fine. Punchier > longer.", active: true },
-    { id: "long_post", label: "Long-form post", inst: "FORMAT: Long-form post — 200-400 words. Structure: Hook → Story/Evidence → Insight → CTA. Line breaks for readability. No walls of text.", active: true },
+    { id: "short_post", label: "Short post", inst: "FORMAT: Short post — Under 80 words. Every word must earn its place. One idea only. Fragments are fine. Punchier > longer. If you can say it in 40 words, don't use 80.", active: true },
+    { id: "long_post", label: "Long-form post", inst: "FORMAT: Long-form post — 300-600 words. Structure: Hook → Story/Evidence → Insight → CTA. Line breaks for readability. No walls of text. This is your standard social media post with real depth.", active: true },
+    { id: "deep_dive", label: "Deep-dive article", inst: "FORMAT: Deep-dive article — 800-2000+ words. This is for comprehensive content: guidelines, research breakdowns, tutorials, and reference pieces. Structure with clear H2 sections. Each section should stand alone. Include comparison tables, checklists, or decision frameworks where relevant. The reader should be able to bookmark this and return to it.", active: true },
     { id: "carousel", label: "Carousel", inst: "FORMAT: Carousel (slide sequence)\n- Slide 1: Bold hook/headline (8 words max).\n- Each slide: 1 idea, 20 words max per slide.\n- Last slide: CTA or key takeaway.\n- 7-10 slides total.\n- Output as: [Slide 1] ... [Slide 2] ... etc.", active: true },
     { id: "thread", label: "Thread", inst: "FORMAT: Thread (multi-post sequence)\n- Tweet 1 is the hook — must work standalone as a banger.\n- Each tweet should be valuable on its own.\n- Number: 1/, 2/, 3/ etc.\n- End with summary tweet + CTA.\n- 5-10 tweets.", active: true },
     { id: "comment_reply", label: "Comment/Reply", inst: "FORMAT: Comment/Reply — Short, punchy (1-3 sentences). Add a unique perspective, don't just agree. Ask a follow-up question.", active: true },
-    { id: "research_paper", label: "Research paper", inst: "FORMAT: Research-style post — Thesis → Evidence → Counter-arguments → Conclusion. 400-800 words. Every claim backed by data.", active: true },
+    { id: "research_paper", label: "Research paper", inst: "FORMAT: Research-style post — Thesis → Evidence → Counter-arguments → Conclusion. 600-1500 words. Every claim backed by data. Use subheadings for each major argument. Include at least one data table or comparison.", active: true },
     { id: "engagement_bait", label: "Engagement bait", inst: "FORMAT: Engagement bait — Short, polarizing, opinion-driven. Ask questions with no right answer. Make it low-effort to respond. Under 50 words ideal.", active: true },
     { id: "listicle", label: "Listicle", inst: "FORMAT: Listicle — Numbered list (5-10 items). Each item: bold statement + 1-2 sentence explanation. Hook explains why this list matters.", active: false },
-    { id: "how_to_guide", label: "How-to guide", inst: "FORMAT: How-to guide — Step-by-step. Number every step. Each step: what to do + why it works. End with expected result.", active: false },
+    { id: "how_to_guide", label: "How-to guide", inst: "FORMAT: How-to guide — 600-2000 words. Step-by-step. Number every step. Each step: what to do + why it works + what to watch out for. Start with prerequisites and expected outcome. End with the finished result and next steps.", active: false },
     { id: "case_study", label: "Case study", inst: "FORMAT: Case study — Before → Challenge → Solution → Result. Include specific numbers. Let the story prove the point.", active: false },
     { id: "comparison", label: "Comparison / Vs", inst: "FORMAT: Comparison — X vs Y side-by-side. Clear criteria. Verdict at the end. Be opinionated, not neutral.", active: false },
     { id: "quote_card", label: "Quote card", inst: "FORMAT: Quote card — One powerful quote or line (under 15 words). Context line below. Designed to be screenshotted and shared.", active: false },
@@ -369,49 +370,39 @@ const DEFAULT_RULES = {
     { id: 7088, text: "Frame the reader as the hero — you are the guide, not the protagonist. Their transformation is the story.", active: true },
     { id: 7089, text: "Include a 'try this today' micro-challenge they can do in under 5 minutes — immediate action beats future plans.", active: true },
   ],
-  behindScenes: [
-    { id: 6120, text: "Show the messy middle, not just the polished result. Include real screenshots, numbers, or process details.", active: true },
-    { id: 6121, text: "Include specific numbers: revenue, costs, hours spent, conversion rates. Vague BTS is boring BTS.", active: true },
-    { id: 6122, text: "Structure: what I'm building/doing -> what actually happened -> what I learned.", active: true },
-    { id: 6123, text: "Include at least one thing that went wrong. Failure details are more interesting than success details.", active: true },
-    { id: 6124, text: "Name the specific tools, apps, and systems you used. Your audience wants to copy your stack.", active: true },
-    { id: 6125, text: "Show your actual thought process: 'I chose X over Y because...' Decisions are the real content.", active: true },
-    { id: 6126, text: "Include a timeline: when you started, key milestones, where you are now.", active: true },
-    { id: 6127, text: "Don't perform authenticity. Skip 'I don't usually share this but...' — just share it.", active: true },
-    { id: 6128, text: "Make it reproducible: could someone follow your process and get a similar result?", active: true },
-    { id: 6129, text: "End with what you'd do differently next time. Hindsight is the most valuable part.", active: true },
-    { id: 7090, text: "Break down a single decision into the full context: constraints, tradeoffs, and what you almost did instead.", active: true },
-    { id: 7091, text: "Include actual costs with specifics: '$X/month for Y tool, Z hours per week on maintenance'.", active: true },
-    { id: 7092, text: "Show the workflow as a sequence: 'Step 1 → Step 2 → Step 3' with time estimates for each.", active: true },
-    { id: 7093, text: "Use screenshots, screen recordings, or annotated images — visual proof is 10x more compelling than description.", active: true },
-    { id: 7094, text: "Share your actual daily or weekly routine for this process with real times and durations.", active: true },
-    { id: 7095, text: "Reveal your iteration count — how many versions did it take? Show the evolution from v1 to current.", active: true },
-    { id: 7096, text: "Include what you automated vs. what you still do manually, and explain why.", active: true },
-    { id: 7097, text: "Address the unsexy parts: maintenance, bugs, support, the ongoing cost of keeping things running.", active: true },
-    { id: 7098, text: "Name the prerequisite skills or knowledge needed before someone could replicate your process.", active: true },
-    { id: 7099, text: "Compare your expectations before starting vs. reality after finishing — the gap is the real story.", active: true },
+  guideline: [
+    { id: 6120, text: "Open with the scope and who this is for. First 2-3 sentences must state exactly what this guideline covers, what it does NOT cover, and who should read it.", active: true },
+    { id: 6121, text: "Organise by consideration, never by sequence. Each section should be a distinct area of consideration. A reader must be able to jump to any section without reading prior sections.", active: true },
+    { id: 6122, text: "State rules as rules. Use direct, prescriptive language: 'Never use more than 5 primary brand colours.' Do not hedge with 'you might want to consider maybe...'", active: true },
+    { id: 6123, text: "Back every rule with a reason. Pattern: Rule → Reason → (optional) Exception. Unsupported rules feel arbitrary.", active: true },
+    { id: 6124, text: "Name specific tools, standards, and benchmarks — not generic concepts. 'Use the WebAIM Contrast Checker, minimum ratio 4.5:1 per WCAG 2.1 AA' not 'use a contrast checker.'", active: true },
+    { id: 6125, text: "Include at least one comparison table or decision matrix. Guidelines thrive on structured comparison.", active: true },
+    { id: 6126, text: "Address the 'it depends' explicitly. Name the 2-3 most common situations and what the guideline recommends for each. Never leave the reader with vague 'it depends on your needs.'", active: true },
+    { id: 6127, text: "Include a 'Common Mistakes' section. Frame as concrete anti-patterns: 'Mistake: X. Why it's wrong: Y. Fix: Z.'", active: true },
+    { id: 6128, text: "Write for the beginner but don't dumb down the technical content. Explain jargon on first use, but keep the correct terminology.", active: true },
+    { id: 6129, text: "Every section must be independently bookmarkable and shareable. Don't rely on 'as we discussed above' — restate minimum necessary context.", active: true },
+    { id: 7090, text: "Include specific numbers, thresholds, and specs wherever they exist. 'Minimum font size: 16px. Maximum line length: 75 characters.' Exact parameters, not just principles.", active: true },
+    { id: 7091, text: "End with a checklist or summary of all rules. After the full deep-dive, provide a condensed reference the reader can screenshot or print.", active: true },
+    { id: 7092, text: "Date-stamp it: 'This guideline reflects standards as of [Month Year].' Signals authority and acknowledges evolution.", active: true },
+    { id: 7093, text: "NEVER include step-by-step implementation instructions. If you catch yourself writing 'Step 1... Step 2...' — stop. That's a how-to. Guidelines tell WHAT and WHY, not HOW.", active: true },
+    { id: 7094, text: "Aim for 1500-5000+ words. A thin guideline signals incomplete coverage. If it's under 1500 words, you're missing critical considerations.", active: true },
   ],
-  curated: [
-    { id: 6130, text: "Every item needs YOUR take: why you chose it, who it's best for, what surprised you about it.", active: true },
-    { id: 6131, text: "Organize with clear structure: numbered list, ranked order, or categorized by use case.", active: true },
-    { id: 6132, text: "Include a mix: free/paid, beginner/advanced, well-known/hidden gems.", active: true },
-    { id: 6133, text: "Add context that saves time: pricing, best use case, biggest limitation, alternatives.", active: true },
-    { id: 6134, text: "Open with why this curation matters NOW — what problem does this list solve?", active: true },
-    { id: 6135, text: "Close with your #1 pick and a clear reason why. Don't be neutral — be opinionated.", active: true },
-    { id: 6136, text: "Include one 'wild card' pick that most people haven't heard of. Surprise earns saves.", active: true },
-    { id: 6137, text: "For each item: what it does, what it costs, and who should use it (one sentence each).", active: true },
-    { id: 6138, text: "Disclose any affiliations or personal relationships. Transparency is non-negotiable.", active: true },
-    { id: 6139, text: "Only recommend things you've personally used or evaluated. Never curate blind.", active: true },
-    { id: 7100, text: "State your selection criteria upfront — readers need to know your filter before trusting your picks.", active: true },
-    { id: 7101, text: "Give a clear verdict for each item: 'Best for X', 'Skip if Y', 'Worth it only when Z'.", active: true },
-    { id: 7102, text: "Organize items by use case or reader type, not alphabetically or by popularity — help people find THEIR pick.", active: true },
-    { id: 7103, text: "Include one item you almost included but cut, and explain why — shows rigor in your curation process.", active: true },
-    { id: 7104, text: "Compare at least two similar items head-to-head — direct comparison is the most useful curation you can offer.", active: true },
-    { id: 7105, text: "Add a 'quick pick' summary at the top for readers who don't want the full breakdown.", active: true },
-    { id: 7106, text: "Note when you last tested or used each item — dated recommendations build trust and show recency.", active: true },
-    { id: 7107, text: "Tell readers what you deliberately left OUT of the roundup and why — boundaries show expertise.", active: true },
-    { id: 7108, text: "Update the post publicly when items change (price increases, shutdowns, pivots) — living curation builds authority.", active: true },
-    { id: 7109, text: "Include an 'if you can only pick one' recommendation with a specific use case — force yourself to commit.", active: true },
+  glossary: [
+    { id: 6130, text: "Define the domain boundary in the introduction. State exactly what field this glossary covers and where it draws the line.", active: true },
+    { id: 6131, text: "Every definition must follow the same structural template: Term → One-sentence plain-English definition → 2-3 sentence expanded explanation → Real-world example → Related terms.", active: true },
+    { id: 6132, text: "Write definitions for a smart 15-year-old, not a peer. If a designer already knows what 'kerning' means, they won't look it up.", active: true },
+    { id: 6133, text: "Never define a term using the term itself. 'A wireframe is a wireframe-level representation...' is useless. Explain without circular reference.", active: true },
+    { id: 6134, text: "Include a concrete 'in practice' example for every single term. Abstract definitions are forgettable.", active: true },
+    { id: 6135, text: "Cross-reference related terms aggressively. Every entry should link to 2-4 related terms. Helps readers build a mental map of the domain.", active: true },
+    { id: 6136, text: "Group terms into logical categories, not just A-Z. For a design glossary: 'Typography Terms', 'Layout Terms', 'Colour Terms', 'UX Research Terms'.", active: true },
+    { id: 6137, text: "Include the 'why it matters' for every term. Don't just define — contextualise. After explaining what 'bounce rate' means, explain why a high one is a problem.", active: true },
+    { id: 6138, text: "Aim for a minimum of 40 terms. The sweet spot is 60-100. A glossary with 15 terms feels thin and won't rank.", active: true },
+    { id: 6139, text: "Identify the 5-10 most commonly confused term pairs and address them head-on with 'X vs. Y' callout boxes.", active: true },
+    { id: 7100, text: "Use a consistent, scannable visual hierarchy. Term = bold/H3. One-line definition = italicised or highlighted. Extended explanation = regular paragraph.", active: true },
+    { id: 7101, text: "Include pronunciation or common abbreviation if non-obvious. 'WCAG (often pronounced wuh-cag)', 'CTA (Call to Action).'", active: true },
+    { id: 7102, text: "Don't editorialize or give opinions in definitions. A glossary is a reference, not an essay. Neutral, factual, clear.", active: true },
+    { id: 7103, text: "Add a term count to the title or subtitle. '80+ Design Terms Explained' is more compelling than just 'Design Glossary.'", active: true },
+    { id: 7104, text: "Include a visible A-Z jump navigation or table of contents for glossaries longer than 30 terms.", active: true },
   ],
   caseStudy: [
     { id: 6140, text: "Structure: Context (who/what) -> Challenge (the problem) -> Action (what was done) -> Result (numbers).", active: true },
@@ -986,35 +977,40 @@ Key principles:
 
 `,
 
-  behindScenes: `You are helping me create a BEHIND-THE-SCENES post. This is process transparency — show the actual machinery: tools, costs, systems, decisions, and real numbers.
+  guideline: `You are helping me create a GUIDELINE / REFERENCE post. This is a comprehensive, opinionated reference that maps the full landscape of rules, standards, and considerations for a specific topic.
 
-This approach is DIFFERENT from personal storytelling (which tells a narrative) and case study (which proves results). Behind-the-scenes posts expose HOW things work — the systems, stack, workflows, and tradeoffs — not just what happened.
+This approach is DIFFERENT from instructional/how-to (which walks through sequential steps) and research (which presents data/studies). A guideline tells the reader WHAT the rules and standards are and WHY — not step-by-step HOW to implement them. Think rulebook, not recipe.
 
 Key principles:
-- Show the actual infrastructure: tools used, costs per month, time invested, manual vs automated parts.
-- Structure: What I'm building → How it actually works → What I'd change. Systems, not stories.
-- Include real numbers: "$X/month", "takes Y hours/week", "v3 of this process."
-- Name every tool and service specifically — your audience wants to copy your stack.
-- Show the decision-making: "I chose X over Y because..." Tradeoffs are the real content.
-- Include what's broken, inefficient, or held together with duct tape. Perfect systems aren't believable.
-- Don't perform authenticity — skip "I don't usually share this." Just share it.
-- BANNED: "I don't usually share this", "Transparency post", "Real talk", "game-changer", "In the spirit of honesty", "Pulling back the curtain".
+- Open with exact scope: what this guideline covers, what it doesn't, and who it's for.
+- Organise by CONSIDERATION (topics, rules, criteria), never by sequence. No "Step 1, Step 2."
+- State rules as rules — prescriptive, direct: "Never exceed 5 primary colours." No hedging.
+- Back every rule with a reason. Pattern: Rule → Why → Exception (if any).
+- Name specific tools, standards, thresholds, and benchmarks. Not "use a checker" but "use WebAIM Contrast Checker, minimum 4.5:1 ratio per WCAG 2.1 AA."
+- Include comparison tables or decision matrices for any multi-option consideration.
+- Address "it depends" explicitly — name the 2-3 situations and what's recommended for each.
+- Include a Common Mistakes section with concrete anti-patterns.
+- End with a condensed checklist of all rules for quick reference.
+- BANNED: "Step 1", "First, do this", "Ultimate guide", "game-changer", "Everything you need to know", "Without further ado".
 
 `,
 
-  curated: `You are helping me create a CURATED / ROUNDUP post. This is editorial curation — organized collections where YOUR judgment, verdicts, and rankings are the value.
+  glossary: `You are helping me create a GLOSSARY / DEFINITIONS post. This is a structured reference that defines and explains the essential terminology of a specific domain.
 
-This approach is DIFFERENT from research (which presents data/studies) and instructional (which teaches a method). Curated posts organize existing resources/tools/examples and add your EDITORIAL OPINION to each one.
+This approach is DIFFERENT from guideline (which maps rules and standards) and instructional (which teaches a method). A glossary answers "What does this mean?" — it defines terms so someone encountering them for the first time can understand, remember, and use them correctly.
 
 Key principles:
-- State your selection criteria upfront: how you evaluated, what made the cut, what didn't.
-- Every item needs a VERDICT: "Best for X", "Skip if Y", "Worth it only when Z." Be opinionated.
-- Organize by use case or reader type, not alphabetically. Help people find THEIR pick.
-- Include context that saves time: pricing, best use case, biggest limitation, alternatives.
-- Add one "sleeper pick" — an underrated option most roundups miss. This is your editorial edge.
-- Include a mix: free/paid, beginner/advanced, well-known/hidden gems.
-- Close with your definitive #1 pick and a clear reason why. Don't be neutral.
-- BANNED: "Without further ado", "Here's a comprehensive list", "game-changer", "Must-have", "Ultimate guide", "Top X tools for".
+- Define the domain boundary upfront: what field this covers, what it excludes.
+- Every entry follows the SAME template: Term → One-sentence definition → Expanded explanation → Real-world example → Related terms.
+- Write for beginners, not peers. If someone already knew the term, they wouldn't look it up.
+- Never define a term using the term itself. No circular definitions.
+- Include a concrete "in practice" example for EVERY term — abstract definitions are forgettable.
+- Cross-reference related terms: every entry links to 2-4 related terms in the same glossary.
+- Group by logical category (Typography, Layout, Colour, etc.), not just alphabetically.
+- Include "why it matters" for each term — context turns a definition into understanding.
+- Call out commonly confused term pairs: "UX vs. UI", "serif vs. sans-serif" with explicit comparison.
+- Don't editorialize. A glossary is a reference, not an opinion piece. Neutral, factual, clear.
+- BANNED: "Simply put", "In layman's terms", "Basically", "game-changer", "It's just", "Everyone knows".
 
 `,
 
