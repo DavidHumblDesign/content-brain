@@ -36,18 +36,14 @@ const EMOJI_QUICK = ["🔥", "💡", "🚀", "💰", "⚡", "🎯", "📈", "�
 // ─── CUSTOMIZABLE CONFIG (stored in localStorage) ─────
 const DEFAULT_CONFIG = {
   approaches: [
-    { id: "personal", label: "Personal / Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
-    { id: "research", label: "Research / Data-driven", icon: "🔍", color: "#A78BFA", desc: "Evidence-backed posts with real statistics from multiple named sources", examples: ["73% of startups fail because of this one thing", "New data: remote workers are 23% more productive", "I analyzed 500 landing pages. Here's what converts.", "The surprising stat nobody is talking about"] },
-    { id: "instructional", label: "Instructional / Educational", icon: "📚", color: "#34D399", desc: "Complete step-by-step guides with prerequisites, edge cases, and expected results", examples: ["How to write a sales page in 30 minutes", "The exact process I use to plan a week of content", "5 steps to double your email open rate", "Build your first landing page today"] },
-    { id: "opinionated", label: "Opinionated / Controversial", icon: "🔥", color: "#F87171", desc: "Bold argument against a specific belief, backed by evidence and conviction", examples: ["Consistency is the worst content advice ever", "Stop building an audience. Build a customer base.", "Newsletters are dead. Here's what's replacing them.", "Your marketing strategy is 5 years out of date"] },
-    { id: "action", label: "Action-Oriented", icon: "🎯", color: "#FBBF24", desc: "One named framework or tactic the reader can copy and use today", examples: ["The 3-2-1 framework for writing any LinkedIn post", "Copy this email template. It books meetings.", "My exact morning routine for writing 2 posts a day", "Use this checklist before you hit publish"] },
-    { id: "philosophical", label: "Philosophical / Reflective", icon: "💭", color: "#38BDF8", desc: "Deep questions and paradoxes that make people think — essays, not answers", examples: ["Why the best creators are also the loneliest", "The paradox of building in public", "What chess taught me about content strategy", "Success isn't what I thought it was at 25"] },
-    { id: "observational", label: "Observational / Current Events", icon: "👀", color: "#FB923C", desc: "Real-time pattern spotting — connecting signals into trends with predictions", examples: ["Everyone missed the real lesson from Twitter's rebrand", "The creator economy is splitting in two", "I'm noticing a pattern in every failing startup", "What Threads' launch tells us about attention"] },
-    { id: "humorous", label: "Humorous / Entertaining", icon: "😂", color: "#F472B6", desc: "Comedy-first content where the joke carries a real insight underneath", examples: ["My content calendar vs. what I actually post", "Things my clients say that keep me up at night", "A day in the life of a solopreneur (honest edition)", "If business advice were honest"] },
-    { id: "motivational", label: "Motivational / Inspirational", icon: "🚀", color: "#4ADE80", desc: "Reader-focused transformation — your struggle becomes their action plan", examples: ["I started with zero followers and no plan. Here's year one.", "The moment I stopped caring what people think", "You don't need permission to start", "What I'd tell my younger self about business"] },
-    { id: "guideline", label: "Guideline / Reference", icon: "📐", color: "#22D3EE", desc: "Comprehensive reference that maps rules, standards, and considerations for a topic — the reader bookmarks this and returns to it", examples: ["The Ultimate Colour Guideline for Brand Design in 2026", "The Complete Guideline for Choosing a CMS Provider", "Website Accessibility Guideline for Small Business Owners", "The Definitive Email Deliverability Guideline"] },
-    { id: "glossary", label: "Glossary / Definitions", icon: "📖", color: "#E879F9", desc: "Structured reference defining and explaining essential terminology of a specific domain — each term explained for someone encountering it for the first time", examples: ["The Designer's Glossary: 80+ UI and UX Terms Explained", "SEO Glossary for Business Owners: Every Term Your Agency Uses", "The Complete SaaS Metrics Glossary: MRR, ARR, Churn, and More", "Email Marketing Glossary: From A/B Testing to Zero-Party Data"] },
-    { id: "caseStudy", label: "Case Study / Proof-Based", icon: "📊", color: "#F59E0B", desc: "Before/after results with specific metrics, isolation of what worked, and transferable lessons", examples: ["How one email sequence generated $87K in 3 months", "This client went from 200 to 15K followers in 90 days", "Before/after: rewriting a homepage that converts at 8%", "The exact strategy that grew my newsletter to 10K"] },
+    { id: "personal", label: "Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
+    { id: "research", label: "Research", icon: "🔍", color: "#A78BFA", desc: "Evidence-backed posts with real statistics from multiple named sources", examples: ["73% of startups fail because of this one thing", "New data: remote workers are 23% more productive", "I analyzed 500 landing pages. Here's what converts.", "The surprising stat nobody is talking about"] },
+    { id: "instructional", label: "How-To", icon: "📚", color: "#34D399", desc: "Complete step-by-step guides with prerequisites, edge cases, and expected results", examples: ["How to write a sales page in 30 minutes", "The exact process I use to plan a week of content", "5 steps to double your email open rate", "Build your first landing page today"] },
+    { id: "opinionated", label: "Opinion", icon: "🔥", color: "#F87171", desc: "Bold argument against a specific belief, backed by evidence and conviction", examples: ["Consistency is the worst content advice ever", "Stop building an audience. Build a customer base.", "Newsletters are dead. Here's what's replacing them.", "Your marketing strategy is 5 years out of date"] },
+    { id: "philosophical", label: "Thought Piece", icon: "💭", color: "#38BDF8", desc: "Deep questions and paradoxes that make people think — essays, not answers", examples: ["Why the best creators are also the loneliest", "The paradox of building in public", "What chess taught me about content strategy", "Success isn't what I thought it was at 25"] },
+    { id: "guideline", label: "Guideline", icon: "📐", color: "#22D3EE", desc: "Comprehensive reference that maps rules, standards, and considerations for a topic — the reader bookmarks this and returns to it", examples: ["The Ultimate Colour Guideline for Brand Design in 2026", "The Complete Guideline for Choosing a CMS Provider", "Website Accessibility Guideline for Small Business Owners", "The Definitive Email Deliverability Guideline"] },
+    { id: "glossary", label: "Glossary", icon: "📖", color: "#E879F9", desc: "Structured reference defining and explaining essential terminology of a specific domain — each term explained for someone encountering it for the first time", examples: ["The Designer's Glossary: 80+ UI and UX Terms Explained", "SEO Glossary for Business Owners: Every Term Your Agency Uses", "The Complete SaaS Metrics Glossary: MRR, ARR, Churn, and More", "Email Marketing Glossary: From A/B Testing to Zero-Party Data"] },
+    { id: "caseStudy", label: "Case Study", icon: "📊", color: "#F59E0B", desc: "Before/after results with specific metrics, isolation of what worked, and transferable lessons", examples: ["How one email sequence generated $87K in 3 months", "This client went from 200 to 15K followers in 90 days", "Before/after: rewriting a homepage that converts at 8%", "The exact strategy that grew my newsletter to 10K"] },
   ],
   customRuleCategories: [],
   bannedWords: [
@@ -260,28 +256,6 @@ const DEFAULT_RULES = {
     { id: 7038, text: "The closing line should be a standalone statement someone would screenshot. Compress the argument into one line.", active: true },
     { id: 7039, text: "If your opinion makes nobody uncomfortable, it's not opinionated enough. Push harder.", active: true },
   ],
-  action: [
-    { id: 5020, text: "Every sentence must pass the 'so what do I do?' test.", active: true },
-    { id: 5021, text: "Use imperative voice: 'Do X' not 'You should consider X'.", active: true },
-    { id: 5022, text: "Include specific numbers: timeframes, quantities, metrics.", active: true },
-    { id: 5023, text: "Structure as a framework or checklist they can save and reuse.", active: true },
-    { id: 5024, text: "No theory without application. Every insight must have an action step.", active: true },
-    { id: 5025, text: "End with the single most impactful thing to do first.", active: true },
-    { id: 6040, text: "Name the tool, app, or platform specifically. 'Use a project manager' is useless — 'Use Notion with this template' is actionable.", active: true },
-    { id: 6041, text: "Include a 'do this right now' micro-action that takes under 2 minutes.", active: true },
-    { id: 6042, text: "Show the expected outcome with numbers: 'You should see X within Y days/weeks.'", active: true },
-    { id: 6043, text: "If it's a framework, give it a memorable name. Named frameworks get saved and shared.", active: true },
-    { id: 7040, text: "One tactic per post. If you have three tips, pick the strongest one and go deep. Save the rest for later.", active: true },
-    { id: 7041, text: "Include a real example of the framework in action. Show actual inputs and outputs, not just theory.", active: true },
-    { id: 7042, text: "Specify the exact trigger: 'Do this every Monday morning' or 'Use this right before you hit publish.'", active: true },
-    { id: 7043, text: "Include the expected time investment: 'This takes 5 minutes' or 'Block 30 minutes for this.'", active: true },
-    { id: 7044, text: "Make it copy-paste ready. Templates, scripts, checklists, or exact phrasing the reader can use verbatim.", active: true },
-    { id: 7045, text: "Show the before/after of applying the tactic. 'Before: 2% CTR. After the framework: 8% CTR.'", active: true },
-    { id: 7046, text: "Skip the theory. Don't explain WHY it works — show HOW to use it. The proof is in the results.", active: true },
-    { id: 7047, text: "End with: 'Do this right now.' Give a micro-action under 2 minutes that gets them started immediately.", active: true },
-    { id: 7048, text: "Include the one scenario where this tactic does NOT work. Showing limits proves you know what you're talking about.", active: true },
-    { id: 7049, text: "Impact > completeness. Give the one thing that changes the game, not a complete system. Depth on one tactic.", active: true },
-  ],
   philosophical: [
     { id: 5030, text: "Open with a question or paradox that reframes how they see the topic.", active: true },
     { id: 5031, text: "Use analogies and metaphors — connect unfamiliar ideas to familiar ones.", active: true },
@@ -303,72 +277,6 @@ const DEFAULT_RULES = {
     { id: 7057, text: "Don't resolve the paradox. Leave it open. The question is more valuable than any answer you could give.", active: true },
     { id: 7058, text: "Write at least one sentence that works as a standalone quote — something worth screenshotting on its own.", active: true },
     { id: 7059, text: "The goal is not to convince anyone. It's to make them see something familiar in a completely new way.", active: true },
-  ],
-  observational: [
-    { id: 5040, text: "Anchor to a specific, recent event, trend, or data point.", active: true },
-    { id: 5041, text: "State what most people see, then reveal what they're missing.", active: true },
-    { id: 5042, text: "Connect the observation to a broader pattern or prediction.", active: true },
-    { id: 5043, text: "Cite the source — link, date, or specifics so it's verifiable.", active: true },
-    { id: 5044, text: "End with your personal take: why this matters for your audience.", active: true },
-    { id: 5045, text: "Write like it's happening now, not a history lesson.", active: true },
-    { id: 6060, text: "Name the pattern explicitly: 'Here's what I'm seeing...' then describe 2-3 supporting data points.", active: true },
-    { id: 6061, text: "Separate observation from opinion — first show what's happening, then say what you think.", active: true },
-    { id: 6062, text: "Include a timestamp or recency marker. Observations lose power when they feel stale.", active: true },
-    { id: 6063, text: "Make a specific prediction — 'Within 12 months, we'll see X.' Predictions build authority.", active: true },
-    { id: 7060, text: "Anchor to something that happened THIS week or month. Recency is credibility for observational posts.", active: true },
-    { id: 7061, text: "Name at least 2-3 different signals that form the pattern. One example is an anecdote; three is a trend.", active: true },
-    { id: 7062, text: "Show what everyone else is seeing, THEN reveal the layer underneath. 'Everyone's talking about X. The real story is Y.'", active: true },
-    { id: 7063, text: "Make a specific, dated prediction. 'By Q4 2025, we'll see X.' Vague predictions are worthless.", active: true },
-    { id: 7064, text: "Include links, screenshots, or dates as sources. Verifiability is non-negotiable for trend analysis.", active: true },
-    { id: 7065, text: "Explain who benefits and who gets hurt by this shift. Every trend has winners and losers.", active: true },
-    { id: 7066, text: "Connect the current trend to a historical pattern. 'We saw this before in 2015 when...' adds depth.", active: true },
-    { id: 7067, text: "Write with urgency. This is happening NOW. Use present tense and time markers throughout.", active: true },
-    { id: 7068, text: "End with 'what this means for you' — translate the observation into a specific action for your audience.", active: true },
-    { id: 7069, text: "Don't cover trends everyone is already covering. Find the signal in the noise, not the noise itself.", active: true },
-  ],
-  humorous: [
-    { id: 6100, text: "Lead with the punchline or absurd observation. Don't build up — land it immediately.", active: true },
-    { id: 6101, text: "Use specific, vivid details. 'My 3pm Zoom with 47 people and no cameras on' beats 'meetings are bad'.", active: true },
-    { id: 6102, text: "Self-deprecation works better than mocking others. Punch up or inward, never down.", active: true },
-    { id: 6103, text: "Exaggerate ONE real truth to absurd proportions. Comedy = truth + distortion.", active: true },
-    { id: 6104, text: "Use unexpected comparisons: connect two things that don't belong together.", active: true },
-    { id: 6105, text: "Keep it tight. Every extra word dilutes the funny. Cut anything that doesn't serve the joke.", active: true },
-    { id: 6106, text: "Read it out loud. If it doesn't make YOU laugh or smile, rewrite it.", active: true },
-    { id: 6107, text: "Embed a real insight inside the humor. The best comedy makes people laugh AND think.", active: true },
-    { id: 6108, text: "Use the callback technique — reference the opening joke at the end for a satisfying loop.", active: true },
-    { id: 6109, text: "Never explain the joke. If it needs a 'get it?' it's not landing. Trust the audience.", active: true },
-    { id: 7070, text: "Use the rule of three: set up a pattern with two serious items, then break it with an absurd third.", active: true },
-    { id: 7071, text: "Use timing and white space — put punchlines on their own line. The pause before the joke is half the comedy.", active: true },
-    { id: 7072, text: "Contrast formal language with absurd content for comedic effect — corporate jargon about ridiculous things.", active: true },
-    { id: 7073, text: "Write punchlines shorter than setups — brevity multiplies impact.", active: true },
-    { id: 7074, text: "Describe a universal experience so precisely that people feel personally called out — observational humor earns shares.", active: true },
-    { id: 7075, text: "Use anti-humor or subversion — set up a joke, then deliver something unexpectedly sincere for a bigger impact.", active: true },
-    { id: 7076, text: "Vary comedy formats: lists, fake definitions, mock advice, absurd analogies, fake breaking news.", active: true },
-    { id: 7077, text: "Build running themes or recurring bits across posts to create a comedy universe your audience recognizes.", active: true },
-    { id: 7078, text: "Write 5 punch options for your best joke and pick the funniest — comedy requires more revision than any other format.", active: true },
-    { id: 7079, text: "Study your specific audience's in-jokes and industry humor — niche references land 10x harder than generic comedy.", active: true },
-  ],
-  motivational: [
-    { id: 6110, text: "Ground every motivational claim in a specific moment: a failure, turning point, or hard-won insight.", active: true },
-    { id: 6111, text: "Show the struggle before the lesson. Unearned optimism feels hollow and performative.", active: true },
-    { id: 6112, text: "Use short, punchy sentences for impact. Rhythm matters in motivational writing.", active: true },
-    { id: 6113, text: "Include a specific action the reader can take — motivation without direction is just noise.", active: true },
-    { id: 6114, text: "Write like a coach in the locker room, not a motivational poster. Direct, urgent, personal.", active: true },
-    { id: 6115, text: "Name the specific fear, doubt, or excuse your audience uses — then dismantle it.", active: true },
-    { id: 6116, text: "End with a line worth screenshotting. Compress the entire message into one sentence.", active: true },
-    { id: 6117, text: "Use 'I' statements about your journey, then pivot to 'you' for the reader's application.", active: true },
-    { id: 6118, text: "Avoid toxic positivity. Acknowledge that things are hard while showing they're possible.", active: true },
-    { id: 6119, text: "Include a timeline: 'It took me X months/years.' Real timelines set realistic expectations.", active: true },
-    { id: 7080, text: "Open with the reader's current frustration, not your success — they need to feel seen before they'll listen.", active: true },
-    { id: 7081, text: "Build a 'then vs. now' bridge — show the exact moment the shift happened and make it feel inevitable.", active: true },
-    { id: 7082, text: "Give exactly one mindset shift per post — multiple shifts dilute all of them.", active: true },
-    { id: 7083, text: "Replace platitudes with protocols — 'believe in yourself' becomes 'write down 3 wins from this week every Friday'.", active: true },
-    { id: 7084, text: "Acknowledge the cost of change honestly — motivation without realism creates guilt, not action.", active: true },
-    { id: 7085, text: "Use contrast structure: 'You think X, but actually Y' — reframes are more motivating than affirmations.", active: true },
-    { id: 7086, text: "Include a 'smallest first step' — the action should be so small it feels almost too easy to skip.", active: true },
-    { id: 7087, text: "Never use 'just' or 'simply' before difficult actions — it invalidates the reader's real obstacles.", active: true },
-    { id: 7088, text: "Frame the reader as the hero — you are the guide, not the protagonist. Their transformation is the story.", active: true },
-    { id: 7089, text: "Include a 'try this today' micro-challenge they can do in under 5 minutes — immediate action beats future plans.", active: true },
   ],
   guideline: [
     { id: 6120, text: "Open with the scope and who this is for. First 2-3 sentences must state exactly what this guideline covers, what it does NOT cover, and who should read it.", active: true },
@@ -897,22 +805,6 @@ Key principles:
 
 `,
 
-  action: `You are helping me create an ACTION-ORIENTED post. This delivers ONE specific tactic, framework, or method the reader can copy and use TODAY.
-
-This approach is DIFFERENT from instructional (which is comprehensive education). Action posts are laser-focused: one technique, stripped to its essentials, ready to use in under 10 minutes.
-
-Key principles:
-- Every sentence answers "so what do I do with this RIGHT NOW?"
-- Use direct, imperative language: "Do X" not "You might want to consider X."
-- Give the method a NAME if possible — named frameworks get saved and shared.
-- Include specific numbers: timeframes, quantities, benchmarks, expected results.
-- Structure for copy-paste scannability: numbered steps, bullets, or a fill-in-the-blank template.
-- ONE method per post. If you need a second method, it's a second post.
-- End with the single highest-impact first action: "Start here."
-- BANNED: "Here are some tips", "You should consider", "game-changer", "In today's world", "There are many ways to".
-
-`,
-
   philosophical: `You are helping me create a PHILOSOPHICAL / REFLECTIVE post. This explores a deep question, paradox, or mental model — the value is in the thinking, not the answer.
 
 This approach is DIFFERENT from opinionated (which argues a definitive position). Philosophical posts sit with tension, explore multiple angles, and sometimes end with a better question rather than an answer.
@@ -926,54 +818,6 @@ Key principles:
 - Write like an essayist exploring an idea, not a guru delivering answers.
 - Don't rush to a conclusion. Sometimes the question IS the post.
 - BANNED: "In today's fast-paced world", "Food for thought", "Let that sink in", "Think about it", "game-changer", "At the end of the day".
-
-`,
-
-  observational: `You are helping me create an OBSERVATIONAL / CURRENT EVENTS post. This spots a real-time pattern or emerging trend and makes a specific prediction.
-
-This approach is DIFFERENT from research (which cites published studies and existing data). Observational posts connect LIVE signals — recent events, launches, shifts — into a trend that others haven't named yet.
-
-Key principles:
-- Anchor to something specific and RECENT — a news event, product launch, earnings report, cultural moment from the last 30 days.
-- Name what everyone sees on the surface, then reveal the deeper pattern underneath.
-- Connect at least 2-3 separate signals into one coherent trend. One data point is an anecdote; three is a pattern.
-- Make a specific, falsifiable prediction: "Within X months, Y will happen because Z."
-- Cite your sources with links, dates, and specifics. Verifiability is everything.
-- Write like a sharp analyst briefing a room, not a news reporter summarizing headlines.
-- End with what this means for YOUR audience specifically — not the world at large.
-- BANNED: "Breaking news", "As we all know", "It's no secret", "game-changer", "In today's world", "Time will tell".
-
-`,
-
-  humorous: `You are helping me create a HUMOROUS / ENTERTAINING post. Comedy is the vehicle — the joke CARRIES the insight. If it's not genuinely funny, it fails.
-
-This approach is DIFFERENT from personal storytelling (which uses narrative arc) and observational (which analyzes trends). Humorous posts prioritize the LAUGH first, then sneak in a real point underneath.
-
-Key principles:
-- Lead with the joke, punchline, or absurd observation. Never build up — land it in the first line.
-- Use hyper-specific details. "My 47-slide deck about minimalism" is funnier than "my long presentation."
-- Formats: rule of three (serious, serious, absurd), unexpected comparisons, exaggerated truths, self-deprecation, mock-formal language.
-- Timing matters in text — use short paragraphs, line breaks before punchlines, and sentence rhythm.
-- Read it out loud. If it doesn't make YOU laugh, rewrite it. Then rewrite it again.
-- The insight should be discoverable, not stated. Never say "but seriously though" — let the comedy do the teaching.
-- Keep it tight. Every extra word dilutes the funny. Cut ruthlessly.
-- BANNED: "Am I right?", "LOL", "It's funny because", "game-changer", "We've all been there" (show it, don't tell it), "But on a serious note".
-
-`,
-
-  motivational: `You are helping me create a MOTIVATIONAL / INSPIRATIONAL post. This is about the READER'S transformation — your story is just the bridge to their action.
-
-This approach is DIFFERENT from personal storytelling (which is about the narrative itself). Motivational posts use your experience as EVIDENCE that change is possible, then pivot entirely to the reader's next move.
-
-Key principles:
-- Open with the reader's current frustration or fear — they need to feel seen before they'll listen.
-- Your struggle is the setup, their action plan is the payoff. Spend 30% on your story, 70% on their path.
-- One mindset shift per post. "You think X, but actually Y" — then prove it.
-- Replace every platitude with a protocol. "Believe in yourself" → "Write down 3 wins from this week every Friday."
-- Acknowledge the real cost of change — motivation without realism creates guilt, not action.
-- Use "you" 3x more than "I." Frame the reader as the hero; you are the guide.
-- End with a specific micro-action they can take in the next 5 minutes.
-- BANNED: "Hustle harder", "Rise and grind", "You got this", "Believe in yourself", "game-changer", "Your future self will thank you", "Just start".
 
 `,
 
@@ -1016,7 +860,7 @@ Key principles:
 
   caseStudy: `You are helping me create a CASE STUDY / PROOF-BASED post. This isolates what worked, proves it with specific metrics, and extracts transferable lessons.
 
-This approach is DIFFERENT from behind-the-scenes (which shows process/systems) and personal storytelling (which tells a narrative). Case studies are about PROOF — measurable before/after results with controlled analysis of what caused the change.
+This approach is DIFFERENT from guideline (which maps rules and standards) and personal storytelling (which tells a narrative). Case studies are about PROOF — measurable before/after results with controlled analysis of what caused the change.
 
 Key principles:
 - Lead with the result number in the first two sentences: "Revenue went from $12K to $89K in 6 months."
