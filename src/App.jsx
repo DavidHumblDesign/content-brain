@@ -34,7 +34,7 @@ const SLASH_COMMANDS = [
 const EMOJI_QUICK = ["🔥", "💡", "🚀", "💰", "⚡", "🎯", "📈", "🧠", "💪", "👀", "🤔", "✅", "❌", "→", "•"];
 
 // ─── CUSTOMIZABLE CONFIG (stored in localStorage) ─────
-const CONFIG_VERSION = 2; // bump this to force-reset config on next load
+const CONFIG_VERSION = 3; // bump this to force-reset config on next load
 const DEFAULT_CONFIG = {
   approaches: [
     { id: "personal", label: "Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
@@ -411,6 +411,18 @@ const DEFAULT_RULES = {
     { id: 115, text: "Use concrete examples and specifics, not abstract advice. Show don't tell.", active: true },
     { id: 116, text: "Structure with a clear arc: setup → tension/problem → insight → resolution/takeaway.", active: true },
     { id: 117, text: "Bold or capitalize key phrases to help skimmers get the core message.", active: true },
+  ],
+  fmt_deep_dive: [
+    { id: 4100, text: "Open with a 2-3 sentence summary of what this article covers and who it's for. Respect the reader's time upfront.", active: true },
+    { id: 4101, text: "Use clear H2 sections — each section must stand alone if someone lands on it from search or a shared link.", active: true },
+    { id: 4102, text: "Include a table of contents at the top for anything over 1000 words. Readers need to navigate.", active: true },
+    { id: 4103, text: "Use comparison tables, checklists, or decision matrices wherever you're comparing options or listing criteria.", active: true },
+    { id: 4104, text: "Every section needs at least one concrete example, specific number, or named tool. No section should be pure theory.", active: true },
+    { id: 4105, text: "Write for skimmers AND deep readers — bold key phrases, use bullet lists for scannable facts, but include full paragraphs for context.", active: true },
+    { id: 4106, text: "Include a 'Common Mistakes' or 'What to Avoid' callout. Readers learn as much from anti-patterns as from best practices.", active: true },
+    { id: 4107, text: "End with a condensed summary or checklist — the 'TL;DR for people who scrolled to the bottom' version.", active: true },
+    { id: 4108, text: "Cite sources, name tools, and include specific numbers. Depth without specificity is just length.", active: true },
+    { id: 4109, text: "Don't pad. If a section doesn't add new information, cut it. Long-form earns its length through density, not repetition.", active: true },
   ],
   fmt_carousel: [
     { id: 120, text: "Slide 1 is the hook — treat it like a billboard. Bold claim, curiosity gap, or surprising stat.", active: true },
