@@ -902,6 +902,11 @@ function buildPrompt({ approach, profile, rules, config, selPlatform, selFormat,
   const has = (key) => { const val = profile[key]; if (Array.isArray(val)) return val.length > 0; return !!v(key); };
   let o = "";
 
+  // ═══ LAYER 0: User's idea (top of prompt so the LLM sees it first) ═══
+  if (ideaText) {
+    o += `${ideaText}\n\n---\n\n`;
+  }
+
   // ═══ LAYER 1: System Role ═══
   o += APPROACH_SYSTEM_ROLES[approach] || APPROACH_SYSTEM_ROLES.personal;
 
@@ -978,13 +983,9 @@ function buildPrompt({ approach, profile, rules, config, selPlatform, selFormat,
     o += `\n`;
   }
 
-  // ═══ LAYER 4: Content Task ═══
-  if (ideaText) {
-    o += `=== MY IDEA / DIRECTION ===\n${ideaText}\n`;
-    const cmds = (commands || []).filter(c => CMD_TRANSLATE[c]);
-    if (cmds.length) { o += `\nAdditional instructions:\n`; cmds.forEach(c => o += `- ${CMD_TRANSLATE[c]}\n`); }
-    o += `\n`;
-  }
+  // ═══ LAYER 4: Slash commands ═══
+  const cmds = (commands || []).filter(c => CMD_TRANSLATE[c]);
+  if (cmds.length) { o += `Additional instructions:\n`; cmds.forEach(c => o += `- ${CMD_TRANSLATE[c]}\n`); o += `\n`; }
 
   // Output format
   o += `=== WHAT I NEED FROM YOU ===\n\n`;
