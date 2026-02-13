@@ -34,6 +34,7 @@ const SLASH_COMMANDS = [
 const EMOJI_QUICK = ["🔥", "💡", "🚀", "💰", "⚡", "🎯", "📈", "🧠", "💪", "👀", "🤔", "✅", "❌", "→", "•"];
 
 // ─── CUSTOMIZABLE CONFIG (stored in localStorage) ─────
+const CONFIG_VERSION = 2; // bump this to force-reset config on next load
 const DEFAULT_CONFIG = {
   approaches: [
     { id: "personal", label: "Storytelling", icon: "🧠", color: "#60A5FA", desc: "First-person narrative with a scene, conflict, and resolution — the story IS the content", examples: ["My biggest business mistake cost me $40K", "What nobody tells you about pricing", "I almost quit last Tuesday. Here's what changed.", "The email that turned my business around"] },
@@ -2037,6 +2038,16 @@ export default function ContentBrain() {
   const [rules, setRules] = useStickyState(DEFAULT_RULES, "cb_rules");
   const [config, setConfig] = useStickyState(DEFAULT_CONFIG, "cb_config");
   const [history, setHistory] = useStickyState([], "cb_history");
+
+  // Migrate config when version bumps
+  useEffect(() => {
+    const savedVer = parseInt(window.localStorage.getItem("cb_config_version") || "0", 10);
+    if (savedVer < CONFIG_VERSION) {
+      setConfig(DEFAULT_CONFIG);
+      setRules(DEFAULT_RULES);
+      window.localStorage.setItem("cb_config_version", String(CONFIG_VERSION));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const saveToHistory = useCallback((entry) => {
     setHistory(prev => [entry, ...prev]);
