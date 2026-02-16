@@ -1,0 +1,244 @@
+<!-- Humbl LinkedIn Preview Tool — hlp- prefix -->
+<div id="hlp-root">
+<style>
+  #hlp-root { --hlp-bg: #09090b; --hlp-card: #111113; --hlp-border: #27272a; --hlp-text: #e4e4e7; --hlp-muted: #71717a; --hlp-faint: #52525b; --hlp-focus: #818cf8; --hlp-success: #22c55e; --hlp-warning: #f59e0b; --hlp-error: #ef4444; --hlp-font: 'Plus Jakarta Sans', -apple-system, sans-serif; --hlp-mono: 'IBM Plex Mono', monospace; font-family: var(--hlp-font); background: var(--hlp-bg); color: var(--hlp-text); padding: 24px; max-width: 900px; margin: 0 auto; box-sizing: border-box; }
+  #hlp-root *, #hlp-root *::before, #hlp-root *::after { box-sizing: border-box; }
+  .hlp-title { font-size: .84rem; font-weight: 600; color: var(--hlp-text); margin: 0 0 4px; }
+  .hlp-subtitle { font-size: .62rem; color: var(--hlp-muted); margin: 0 0 20px; }
+  .hlp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .hlp-grid { grid-template-columns: 1fr; } }
+
+  /* Editor */
+  .hlp-editor-wrap { background: var(--hlp-card); border: 1px solid var(--hlp-border); border-radius: 10px; padding: 16px; }
+  .hlp-label { font-size: .6rem; color: var(--hlp-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .hlp-textarea { width: 100%; min-height: 240px; background: var(--hlp-bg); border: 1px solid var(--hlp-border); border-radius: 8px; padding: 12px 14px; color: var(--hlp-text); font-size: .82rem; line-height: 1.6; font-family: var(--hlp-font); resize: vertical; outline: none; transition: border-color .2s; }
+  .hlp-textarea:focus { border-color: var(--hlp-focus); box-shadow: 0 0 0 2px rgba(129,140,248,.15); }
+
+  /* Counters */
+  .hlp-counters { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .hlp-counter { font-size: .6rem; padding: 3px 8px; border-radius: 12px; background: rgba(113,113,122,.1); color: var(--hlp-muted); }
+  .hlp-counter.hlp-warn { background: rgba(245,158,11,.12); color: var(--hlp-warning); }
+  .hlp-counter.hlp-danger { background: rgba(239,68,68,.12); color: var(--hlp-error); }
+  .hlp-counter.hlp-ok { background: rgba(34,197,94,.12); color: var(--hlp-success); }
+
+  /* Format buttons */
+  .hlp-format-bar { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+  .hlp-fmt-btn { background: var(--hlp-bg); border: 1px solid var(--hlp-border); border-radius: 6px; padding: 5px 10px; color: var(--hlp-muted); font-size: .62rem; cursor: pointer; font-family: var(--hlp-font); transition: all .15s; }
+  .hlp-fmt-btn:hover { border-color: var(--hlp-faint); color: var(--hlp-text); background: #18181b; }
+  .hlp-fmt-btn:active { transform: scale(.96); }
+
+  /* Preview */
+  .hlp-preview-wrap { background: var(--hlp-card); border: 1px solid var(--hlp-border); border-radius: 10px; padding: 16px; }
+  .hlp-li-card { background: #1c1c1e; border-radius: 8px; padding: 16px; border: 1px solid var(--hlp-border); }
+  .hlp-li-header { display: flex; gap: 10px; margin-bottom: 12px; }
+  .hlp-li-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #818cf8); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .hlp-li-meta { flex: 1; }
+  .hlp-li-name { font-size: .82rem; font-weight: 600; color: var(--hlp-text); }
+  .hlp-li-title-text { font-size: .62rem; color: var(--hlp-muted); margin-top: 1px; }
+  .hlp-li-time { font-size: .56rem; color: var(--hlp-faint); margin-top: 1px; }
+  .hlp-li-body { font-size: .82rem; line-height: 1.6; color: var(--hlp-text); white-space: pre-wrap; word-break: break-word; }
+  .hlp-see-more { color: var(--hlp-faint); cursor: pointer; font-size: .82rem; }
+  .hlp-see-more:hover { color: var(--hlp-muted); text-decoration: underline; }
+  .hlp-li-actions { display: flex; gap: 0; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--hlp-border); }
+  .hlp-li-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 0; font-size: .62rem; color: var(--hlp-muted); background: none; border: none; cursor: default; font-family: var(--hlp-font); }
+
+  /* Copy button */
+  .hlp-copy-bar { display: flex; gap: 8px; margin-top: 12px; }
+  .hlp-copy-btn { background: var(--hlp-bg); border: 1px solid var(--hlp-border); border-radius: 8px; padding: 8px 16px; color: var(--hlp-text); font-size: .66rem; cursor: pointer; font-family: var(--hlp-font); transition: all .15s; font-weight: 500; }
+  .hlp-copy-btn:hover { border-color: var(--hlp-faint); background: #18181b; }
+  .hlp-copy-btn:active { transform: scale(.96); }
+  .hlp-copy-btn.hlp-copied { border-color: var(--hlp-success); color: var(--hlp-success); }
+
+  /* Link warning */
+  .hlp-link-warn { margin-top: 10px; padding: 8px 12px; background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.2); border-radius: 8px; font-size: .62rem; color: var(--hlp-warning); display: none; }
+  .hlp-link-warn.hlp-visible { display: block; }
+</style>
+
+<div class="hlp-title">LinkedIn Preview</div>
+<div class="hlp-subtitle">Write your post, see the live LinkedIn preview, copy formatted text.</div>
+
+<div class="hlp-grid">
+  <!-- Editor column -->
+  <div>
+    <div class="hlp-editor-wrap">
+      <div class="hlp-label">Your post</div>
+      <div class="hlp-format-bar">
+        <button class="hlp-fmt-btn" data-fmt="bold" title="Bold (Unicode)">𝗕</button>
+        <button class="hlp-fmt-btn" data-fmt="italic" title="Italic (Unicode)">𝘐</button>
+        <button class="hlp-fmt-btn" data-fmt="boldSans" title="Bold Sans">𝗕𝘀</button>
+        <button class="hlp-fmt-btn" data-fmt="italicSans" title="Italic Sans">𝘐𝘴</button>
+      </div>
+      <textarea class="hlp-textarea" id="hlp-input" placeholder="Start writing your LinkedIn post..."></textarea>
+      <div class="hlp-counters">
+        <span class="hlp-counter" id="hlp-chars">0 chars</span>
+        <span class="hlp-counter" id="hlp-hashtags">0 hashtags</span>
+        <span class="hlp-counter" id="hlp-words">0 words</span>
+      </div>
+      <div class="hlp-link-warn" id="hlp-link-warn">Links in the post body hurt reach. Move links to the first comment.</div>
+    </div>
+    <div class="hlp-copy-bar">
+      <button class="hlp-copy-btn" id="hlp-copy">Copy text</button>
+      <button class="hlp-copy-btn" id="hlp-clear">Clear</button>
+    </div>
+  </div>
+
+  <!-- Preview column -->
+  <div>
+    <div class="hlp-preview-wrap">
+      <div class="hlp-label">LinkedIn preview</div>
+      <div class="hlp-li-card">
+        <div class="hlp-li-header">
+          <div class="hlp-li-avatar">DP</div>
+          <div class="hlp-li-meta">
+            <div class="hlp-li-name">David Pokorny</div>
+            <div class="hlp-li-title-text">Founder @ Humbl Design — Design for Startups</div>
+            <div class="hlp-li-time">2h · 🌐</div>
+          </div>
+        </div>
+        <div class="hlp-li-body" id="hlp-preview"></div>
+        <div class="hlp-li-actions">
+          <span class="hlp-li-action">👍 Like</span>
+          <span class="hlp-li-action">💬 Comment</span>
+          <span class="hlp-li-action">🔄 Repost</span>
+          <span class="hlp-li-action">📤 Send</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function() {
+  const input = document.getElementById('hlp-input');
+  const preview = document.getElementById('hlp-preview');
+  const charsEl = document.getElementById('hlp-chars');
+  const hashtagsEl = document.getElementById('hlp-hashtags');
+  const wordsEl = document.getElementById('hlp-words');
+  const linkWarn = document.getElementById('hlp-link-warn');
+  const copyBtn = document.getElementById('hlp-copy');
+  const clearBtn = document.getElementById('hlp-clear');
+
+  const FOLD_MOBILE = 210;
+  const FOLD_DESKTOP = 300;
+  let expanded = false;
+
+  // Unicode formatting maps
+  const BOLD_MAP = {};
+  const ITALIC_MAP = {};
+  const BOLD_SANS_MAP = {};
+  const ITALIC_SANS_MAP = {};
+
+  function buildMap(map, start, offset) {
+    for (let i = 0; i < 26; i++) {
+      map[String.fromCharCode(65 + i)] = String.fromCodePoint(start + i);
+      map[String.fromCharCode(97 + i)] = String.fromCodePoint(start + 26 + i);
+    }
+    if (offset !== undefined) {
+      for (let i = 0; i < 10; i++) {
+        map[String.fromCharCode(48 + i)] = String.fromCodePoint(offset + i);
+      }
+    }
+  }
+
+  // Mathematical Bold
+  buildMap(BOLD_MAP, 0x1D400, 0x1D7CE);
+  // Mathematical Italic
+  buildMap(ITALIC_MAP, 0x1D434);
+  // Mathematical Sans-Serif Bold
+  buildMap(BOLD_SANS_MAP, 0x1D5D4, 0x1D7EC);
+  // Mathematical Sans-Serif Italic
+  buildMap(ITALIC_SANS_MAP, 0x1D608);
+
+  function applyFormat(text, map) {
+    return [...text].map(c => map[c] || c).join('');
+  }
+
+  function update() {
+    const text = input.value;
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const hashtags = (text.match(/#\w+/g) || []).length;
+    const hasLink = /https?:\/\/|www\./i.test(text);
+
+    // Char counter coloring
+    charsEl.textContent = chars + ' chars';
+    charsEl.className = 'hlp-counter' + (chars > 3000 ? ' hlp-danger' : chars > 2500 ? ' hlp-warn' : chars > 0 ? ' hlp-ok' : '');
+
+    // Hashtag counter
+    hashtagsEl.textContent = hashtags + ' hashtag' + (hashtags !== 1 ? 's' : '');
+    hashtagsEl.className = 'hlp-counter' + (hashtags > 5 ? ' hlp-warn' : hashtags > 0 ? ' hlp-ok' : '');
+
+    // Word counter
+    wordsEl.textContent = words + ' word' + (words !== 1 ? 's' : '');
+    wordsEl.className = 'hlp-counter';
+
+    // Link warning
+    linkWarn.className = 'hlp-link-warn' + (hasLink ? ' hlp-visible' : '');
+
+    // Preview with fold
+    const foldAt = window.innerWidth < 768 ? FOLD_MOBILE : FOLD_DESKTOP;
+    if (text.length === 0) {
+      preview.innerHTML = '<span style="color: var(--hlp-faint)">Your post preview will appear here...</span>';
+      expanded = false;
+    } else if (text.length <= foldAt || expanded) {
+      preview.textContent = text;
+    } else {
+      const truncated = text.substring(0, foldAt);
+      const lastSpace = truncated.lastIndexOf(' ');
+      const cutAt = lastSpace > foldAt * 0.7 ? lastSpace : foldAt;
+      preview.innerHTML = '';
+      preview.appendChild(document.createTextNode(text.substring(0, cutAt)));
+      const seeMore = document.createElement('span');
+      seeMore.className = 'hlp-see-more';
+      seeMore.textContent = '...see more';
+      seeMore.onclick = function() { expanded = true; update(); };
+      preview.appendChild(seeMore);
+    }
+  }
+
+  input.addEventListener('input', function() { expanded = false; update(); });
+
+  // Format buttons
+  document.querySelectorAll('.hlp-fmt-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const fmt = btn.getAttribute('data-fmt');
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      if (start === end) return;
+      const selected = input.value.substring(start, end);
+      let formatted;
+      if (fmt === 'bold') formatted = applyFormat(selected, BOLD_MAP);
+      else if (fmt === 'italic') formatted = applyFormat(selected, ITALIC_MAP);
+      else if (fmt === 'boldSans') formatted = applyFormat(selected, BOLD_SANS_MAP);
+      else if (fmt === 'italicSans') formatted = applyFormat(selected, ITALIC_SANS_MAP);
+      else return;
+      input.value = input.value.substring(0, start) + formatted + input.value.substring(end);
+      input.selectionStart = start;
+      input.selectionEnd = start + formatted.length;
+      input.focus();
+      update();
+    });
+  });
+
+  // Copy
+  copyBtn.addEventListener('click', function() {
+    if (input.value) {
+      navigator.clipboard.writeText(input.value);
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('hlp-copied');
+      setTimeout(function() { copyBtn.textContent = 'Copy text'; copyBtn.classList.remove('hlp-copied'); }, 2000);
+    }
+  });
+
+  // Clear
+  clearBtn.addEventListener('click', function() {
+    input.value = '';
+    expanded = false;
+    update();
+    input.focus();
+  });
+
+  update();
+})();
+</script>

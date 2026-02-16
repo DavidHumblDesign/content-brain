@@ -1,10 +1,56 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react";
+import Dashboard from "./Dashboard.jsx";
+import Backlog from "./Backlog.jsx";
+import Calendar from "./Calendar.jsx";
+import Pillars from "./Pillars.jsx";
 
 // ─── CONSTANTS ─────────────────────────────────────────
 const SECTIONS = [
+  { id: "dashboard", label: "Dashboard", icon: "📊" },
+  { id: "backlog", label: "Backlog", icon: "📋" },
+  { id: "calendar", label: "Calendar", icon: "📅" },
+  { id: "pillars", label: "Pillars", icon: "🏛️" },
   { id: "generator", label: "Prompt Maker", icon: "✨" },
   { id: "hooks", label: "Hook Generator", icon: "🪝" },
   { id: "settings", label: "Settings", icon: "⚙️" },
+];
+
+const DEFAULT_PILLARS = [
+  {
+    id: 1,
+    name: "SaaS & Startup Design",
+    description: "UX strategy, hero sections, conversion optimization, login flows, design debt, product design patterns for startups",
+    color: "#60A5FA",
+    topics: ["hero sections", "SaaS UX", "conversion", "login UX", "landing pages", "MRR", "product design", "design debt", "customer proof"],
+  },
+  {
+    id: 2,
+    name: "AI × Design",
+    description: "How designers use AI tools, will AI replace designers, vibe coding, template libraries, the future of design work",
+    color: "#A78BFA",
+    topics: ["AI tools", "vibe coding", "shadcn", "automation", "designer careers", "AI workflows"],
+  },
+  {
+    id: 3,
+    name: "Founder-First Freelancing",
+    description: "Pricing models, hourly vs value-based, client relationships, agency alternatives, the business of design",
+    color: "#F59E0B",
+    topics: ["pricing", "hourly rates", "freelancing", "client work", "agency model", "value-based"],
+  },
+  {
+    id: 4,
+    name: "Webflow & Technical Design",
+    description: "Webflow project setup, CMS architecture, accessibility, color theory, design systems, interactive tools",
+    color: "#34D399",
+    topics: ["Webflow", "CMS", "accessibility", "color theory", "design systems", "WCAG", "dark mode"],
+  },
+  {
+    id: 5,
+    name: "Honest Design Takes",
+    description: "Unfiltered opinions, industry critique, personal philosophy, hot takes that challenge conventional wisdom",
+    color: "#F87171",
+    topics: ["hot takes", "opinions", "design industry", "philosophy", "rants"],
+  },
 ];
 
 const SETTINGS_PAGES = [
@@ -101,6 +147,11 @@ const DEFAULT_CONFIG = {
     { id: "faq", label: "FAQ / Q&A", inst: "FORMAT: FAQ — Question → Direct answer → Why it matters. 3-7 questions. Most common objections first.", active: false },
     { id: "behind_scenes", label: "Behind the scenes", inst: "FORMAT: Behind the scenes — Show the messy process. Raw > polished. Include what went wrong. Make the audience feel like insiders.", active: false },
     { id: "hot_take", label: "Hot take", inst: "FORMAT: Hot take — One bold contrarian statement. Under 50 words. No hedge. No disclaimer. Let it stand on its own.", active: false },
+    // Blog-specific formats for Humbl Engine
+    { id: "blog_glossary", label: "Blog: Glossary Entry", inst: "FORMAT: Blog Glossary Entry\n- A-Z reference of essential terms for a specific domain.\n- Each term: Definition (1 sentence) → Explanation (2-3 sentences) → Real example → Related terms.\n- 100-200 words per entry. Aim for 40-100 terms total.\n- Group by category, not just alphabetical.\n- Include 'X vs Y' callout boxes for commonly confused terms.\n- Output in Markdown suitable for Webflow Rich Text.\n- This format OVERRIDES any platform length suggestions.", active: true },
+    { id: "blog_guide", label: "Blog: Guide (Block)", inst: "FORMAT: Blog Guide (Block)\n- STRICT LENGTH: 2000-5000+ words. This is comprehensive, pillar-page content.\n- Deep technical guide with action steps, code examples, comparison tables.\n- Structure: Intro (scope + audience) → Sections (each standalone) → Summary checklist.\n- Each section needs examples, specific tools/numbers, and a 'Common Mistakes' callout.\n- Include table of contents. SEO pillar page — cover every angle.\n- May include interactive tool embeds (reference by name).\n- Output in Markdown suitable for Webflow Rich Text.\n- This format OVERRIDES any platform length suggestions.", active: true },
+    { id: "blog_thought", label: "Blog: Humbl Thought", inst: "FORMAT: Blog Humbl Thought\n- STRICT LENGTH: 500-1500 words. Personal rant/opinion piece.\n- First-person, conversational, slightly irreverent. David's unfiltered take.\n- Structure: Hook → Hot take → Supporting evidence → Nuance → Closing question.\n- Output TWO versions:\n  1. Full blog post (500-1500 words, Markdown for Webflow)\n  2. Condensed LinkedIn version (under 1300 characters, formatted for LinkedIn)\n- This format OVERRIDES any platform length suggestions.", active: true },
+    { id: "blog_tool_spec", label: "Blog: Tool Spec", inst: "FORMAT: Blog Tool Spec\n- Specification for an interactive HTML embed tool.\n- Output: Title + Description + Tutorial section + Embed code.\n- Embed rules: single file, CSS prefix (3-letter, e.g. abc-), IIFE pattern, no external deps.\n- No html/head/body tags, no h1/h2/p tags, no localStorage, no ids without prefix.\n- Must be responsive, accessible (keyboard nav, ARIA), dark theme.\n- Follow Humbl Design tool design system tokens.\n- This format OVERRIDES any platform length suggestions.", active: true },
   ],
 };
 
@@ -721,6 +772,54 @@ const DEFAULT_RULES = {
     { id: 4092, text: "Back it up with one piece of evidence or personal experience.", active: true },
     { id: 4093, text: "Don't soften it with 'just my opinion' or 'but everyone's different'. Own it.", active: true },
     { id: 4094, text: "Engage with replies — hot takes earn their value in the comment section.", active: true },
+  ],
+  // Blog-specific format rules for Humbl Engine
+  fmt_blog_glossary: [
+    { id: 8000, text: "Define the domain boundary in the introduction. State exactly what field this glossary covers.", active: true },
+    { id: 8001, text: "Every definition: Term → One-sentence definition → 2-3 sentence explanation → Real example → Related terms.", active: true },
+    { id: 8002, text: "Write for a smart 15-year-old encountering the term for the first time.", active: true },
+    { id: 8003, text: "Never define a term using the term itself. No circular definitions.", active: true },
+    { id: 8004, text: "Cross-reference related terms aggressively. Every entry links to 2-4 related terms.", active: true },
+    { id: 8005, text: "Group terms into logical categories, not just A-Z.", active: true },
+    { id: 8006, text: "Include 'why it matters' context for every term. Don't just define — contextualise.", active: true },
+    { id: 8007, text: "Aim for 40-100 terms minimum. Under 30 feels thin and won't rank.", active: true },
+    { id: 8008, text: "Identify 5-10 commonly confused term pairs with 'X vs Y' callouts.", active: true },
+    { id: 8009, text: "Output in Markdown. Use H3 for terms, bold for definitions, regular text for explanations.", active: true },
+  ],
+  fmt_blog_guide: [
+    { id: 8100, text: "Open with scope and audience. First 2-3 sentences: what this covers, what it doesn't, who should read it.", active: true },
+    { id: 8101, text: "Organise by consideration, not sequence. Each section standalone — reader can jump to any section.", active: true },
+    { id: 8102, text: "Include a table of contents at the top.", active: true },
+    { id: 8103, text: "Use comparison tables, checklists, or decision matrices wherever comparing options.", active: true },
+    { id: 8104, text: "Every section needs at least one concrete example, specific number, or named tool.", active: true },
+    { id: 8105, text: "Write for skimmers AND deep readers — bold key phrases, bullet lists, plus full paragraphs.", active: true },
+    { id: 8106, text: "Include a 'Common Mistakes' section. Frame as: 'Mistake: X. Why: Y. Fix: Z.'", active: true },
+    { id: 8107, text: "End with a condensed summary checklist.", active: true },
+    { id: 8108, text: "Name specific tools, standards, and benchmarks. Not 'use a contrast checker' but 'use WebAIM, minimum 4.5:1 per WCAG 2.1 AA'.", active: true },
+    { id: 8109, text: "Aim for 2000-5000+ words. If under 2000, you're missing critical considerations.", active: true },
+  ],
+  fmt_blog_thought: [
+    { id: 8200, text: "First-person throughout. This is David's unfiltered perspective.", active: true },
+    { id: 8201, text: "Open with a bold claim or observation — no throat-clearing.", active: true },
+    { id: 8202, text: "Back opinions with personal experience or specific data. Not just 'I feel' — 'I saw X happen when Y.'", active: true },
+    { id: 8203, text: "Include the nuance. Acknowledge the best counter-argument before addressing it.", active: true },
+    { id: 8204, text: "End with a question that invites discussion, not a neat conclusion.", active: true },
+    { id: 8205, text: "Blog version: 500-1500 words, Markdown for Webflow.", active: true },
+    { id: 8206, text: "LinkedIn version: Under 1300 characters. Same core argument, tighter. First line hooks before the fold.", active: true },
+    { id: 8207, text: "Conversational tone — like a smart friend over coffee, not a blog post.", active: true },
+    { id: 8208, text: "One idea per piece. Go deep, not wide.", active: true },
+  ],
+  fmt_blog_tool_spec: [
+    { id: 8300, text: "Output: Title + Description paragraph + Tutorial section + Full embed code.", active: true },
+    { id: 8301, text: "Embed: single HTML file. CSS prefix (3-letter, e.g. hsc-). IIFE JavaScript pattern.", active: true },
+    { id: 8302, text: "No external dependencies. No html/head/body tags. No h1/h2/p tags. No localStorage.", active: true },
+    { id: 8303, text: "All IDs must use the 3-letter prefix. No unprefixed IDs.", active: true },
+    { id: 8304, text: "Responsive: breakpoints at 900px, 768px, 480px.", active: true },
+    { id: 8305, text: "Accessible: tabindex='0', role='button'/role='switch', aria-label, Enter+Space handlers.", active: true },
+    { id: 8306, text: "Dark theme: near-black backgrounds (#09090b), 1px borders (#27272a), focus ring #818cf8.", active: true },
+    { id: 8307, text: "Smart defaults: pre-populate with values that look good out of the box.", active: true },
+    { id: 8308, text: "Include three-tab output section (Tokens/CSS/Tailwind) with copy buttons and syntax highlighting.", active: true },
+    { id: 8309, text: "JS architecture: IIFE with items array, mode variable, render/update function split.", active: true },
   ],
 };
 
@@ -2046,12 +2145,15 @@ function HookGenerator({ profile }) {
 // ─── MAIN (state lives here) ───────────────────────────
 
 export default function ContentBrain() {
-  const [active, setActive] = useStickyState("generator", "cb_active");
+  const [active, setActive] = useStickyState("dashboard", "cb_active");
   const [settingsTab, setSettingsTab] = useStickyState("business", "cb_settingsTab");
   const [profile, setProfile] = useStickyState(DEFAULT_PROFILE, "cb_profile");
   const [rules, setRules] = useStickyState(DEFAULT_RULES, "cb_rules");
   const [config, setConfig] = useStickyState(DEFAULT_CONFIG, "cb_config");
   const [history, setHistory] = useStickyState([], "cb_history");
+  const [pillars, setPillars] = useStickyState(DEFAULT_PILLARS, "cb_pillars");
+  const [backlog, setBacklog] = useStickyState([], "cb_backlog");
+  const [calendarEntries, setCalendarEntries] = useStickyState([], "cb_calendar");
 
   // Migrate config when version bumps
   useEffect(() => {
@@ -2177,12 +2279,23 @@ export default function ContentBrain() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Migrate: add default pillars if none exist
+  useEffect(() => {
+    if (!pillars || pillars.length === 0) {
+      setPillars(DEFAULT_PILLARS);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const render = () => {
     switch (active) {
+      case "dashboard": return <Dashboard backlog={backlog} calendarEntries={calendarEntries} pillars={pillars} setActive={setActive} />;
+      case "backlog": return <Backlog backlog={backlog} setBacklog={setBacklog} pillars={pillars} calendarEntries={calendarEntries} setCalendarEntries={setCalendarEntries} setActive={setActive} />;
+      case "calendar": return <Calendar calendarEntries={calendarEntries} setCalendarEntries={setCalendarEntries} backlog={backlog} setBacklog={setBacklog} pillars={pillars} setActive={setActive} />;
+      case "pillars": return <Pillars pillars={pillars} setPillars={setPillars} backlog={backlog} />;
       case "generator": return <PromptMaker profile={profile} rules={rules} config={config} setConfig={setConfig} onSaveToHistory={saveToHistory} history={history} />;
       case "hooks": return <HookGenerator profile={profile} />;
       case "settings": return <SettingsPage settingsTab={settingsTab} setSettingsTab={setSettingsTab} profile={profile} setProfile={setProfile} rules={rules} setRules={setRules} config={config} setConfig={setConfig} history={history} setHistory={setHistory} />;
-      default: return null;
+      default: return <Dashboard backlog={backlog} calendarEntries={calendarEntries} pillars={pillars} setActive={setActive} />;
     }
   };
 
@@ -2239,7 +2352,7 @@ export default function ContentBrain() {
         .cb-progress { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; }
       `}</style>
       <div style={{ width: 220, background: "#141210", borderRight: "1px solid #2A2724", padding: "24px 0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
-        <div style={{ padding: "0 20px", marginBottom: 32 }}><div style={{ fontSize: 17, fontWeight: 700, color: "#C5FF4A", letterSpacing: "-0.5px" }}>Content Brain</div><div style={{ fontSize: 11, color: "#6A6560", marginTop: 2 }}>Personal AI Prompt Builder</div></div>
+        <div style={{ padding: "0 20px", marginBottom: 32 }}><div style={{ fontSize: 17, fontWeight: 700, color: "#C5FF4A", letterSpacing: "-0.5px" }}>Humbl Engine</div><div style={{ fontSize: 11, color: "#6A6560", marginTop: 2 }}>Content Ops</div></div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 10px" }}>{SECTIONS.map(s => (<button key={s.id} className="cb-nav-btn" onClick={() => setActive(s.id)} style={{ display: "flex", alignItems: "center", background: active === s.id ? "#2A2724" : "transparent", border: "none", borderRadius: 8, padding: "10px 12px", color: active === s.id ? "#E8E4E0" : "#6A6560", fontSize: 13, fontWeight: 500, cursor: "pointer", width: "100%" }}><span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ fontSize: 15 }}>{s.icon}</span>{s.label}</span></button>))}</div>
       </div>
       {active === "settings" ? <div style={{ flex: 1, overflow: "hidden" }}>{render()}</div> : <div style={{ flex: 1, overflow: "auto", padding: "32px 40px" }}><div style={{ maxWidth: 960 }}>{render()}</div></div>}
