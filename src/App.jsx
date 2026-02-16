@@ -172,20 +172,42 @@ const SECTION_DESCRIPTIONS = {
 
 // ─── DEFAULT DATA ──────────────────────────────────────
 const DEFAULT_PROFILE = {
+  _v: 2,
   // Voice & Personality
-  adjectives: "", dos: "", donts: "", catchphrases: "",
+  adjectives: "Direct, confident, irreverent, conversational, data-backed",
+  dos: "Use short sentences. Reference real numbers. Speak TO the reader with 'you'. Be specific — '$12M raised' not 'successful funding'. Say 'this doesn't work' not 'may present challenges'. Tell stories from real projects.",
+  donts: "Never use corporate jargon. No buzzwords (leverage, synergy, robust, seamless, game-changing). No wishy-washy hedging. Never start with 'In today's...'. No passive voice. No filler (basically, essentially, in order to, it's important to note). No AI openers (Dive in, Delve, Let's explore).",
+  catchphrases: "\"Here's the thing...\", \"Most people get this wrong\", \"This sucks and here's why\", \"Let me be real\", \"Stop doing X, start doing Y\"",
   // Content DNA
-  oneLiner: "", pillars: "", mission: "", beliefs: "",
+  oneLiner: "Design partner for tech startups — fast, transparent, obsessed with detail",
+  pillars: "SaaS & Startup Design, AI × Design, Founder-First Freelancing, Webflow & Technical Design, Honest Design Takes",
+  mission: "To help startups ship better products through design that actually converts — not just looks pretty",
+  beliefs: "\"Most SaaS sites lose signups to bad hero sections.\" \"Hourly billing hurts startups.\" \"You don't need a 6-month redesign to fix your product.\" \"AI won't replace designers who understand strategy.\" \"Design debt is silently killing your product.\"",
   // About Me
-  name: "", role: "", background: "", story: "",
+  name: "David Pokorny",
+  role: "Founder, Humbl Design",
+  background: "7 years in product design for startups. Self-taught — started from curiosity about CSS/HTML and freelanced from day one. Deep experience with SaaS onboarding flows, sign-up UX, data tables, and conversion-focused design. Expert-level Figma and Webflow.",
+  story: "I've always been a creative guy — designing t-shirts, making music, developing games. I got into web design out of curiosity (and let's be honest, I heard there's good money in it). Started learning CSS and HTML, then freelancing. 7 years later, I run Humbl Design — a design studio for tech startups where I work as an embedded design partner, not a faceless agency.",
   // My Audience
-  icp: "", painPoints: "", transformation: "",
+  icp: "SaaS and tech startup founders and product leaders — CEOs, CTOs, Heads of Product — at companies with 11-200 employees, pre-seed to Series A. Industries: SaaS, Fintech, AI/ML, HealthTech, EdTech.",
+  painPoints: "Design that doesn't convert. Slow agency turnaround. Generic templates that all look the same. Design debt slowing down customers. No design partner who actually understands their product deeply. Spending too much on agencies that don't care.",
+  transformation: "From scattered, inconsistent design to a polished product that converts — with a design partner who works fast, communicates clearly, and actually gets their product.",
   // Offers
-  offers: [], usps: "",
+  offers: [
+    { id: 1, name: "Monthly Design Retainer", desc: "Unlimited revisions, unlimited task assignments, one priority at a time. I join your Slack, your calls — a full design partner embedded in your team. 3-5 clients max so I stay fast and focused.", pricing: "$6,000/month" },
+    { id: 2, name: "Fixed Project", desc: "Same unlimited revisions and quality, scoped to a defined project with a fixed price we agree on upfront. Great for redesigns, MVPs, or specific product features.", pricing: "Custom quote" },
+  ],
+  usps: "I work insanely fast while maintaining high quality — because I only take 3-5 clients max. 7 years of SaaS product design experience. I sell myself as a person, not a service: transparent, honest, detail-obsessed. I understand your product deeply from day one because I know how to ask the right questions.",
   // Social Proof
-  proof: [],
+  proof: [
+    { id: 1, text: "Helped clients raise $12M+ in funding with investor-ready product design", type: "result" },
+    { id: 2, text: "Worked with 41+ startups across SaaS, Fintech, AI, HealthTech, and EdTech", type: "stat" },
+    { id: 3, text: "3 shipped interactive design tools (Humbl Contrast, Humbl Mode, Humbl States) with full accessibility compliance", type: "stat" },
+  ],
   // Links
-  website: "", twitter: "", linkedin: "",
+  website: "https://humbldesign.io",
+  twitter: "",
+  linkedin: "https://www.linkedin.com/in/pokornydavidcom/",
 };
 
 const PROFILE_LABELS = {
@@ -1276,8 +1298,9 @@ function BusinessSection({ profile, setProfile }) {
     { id: "links", label: "Links", desc: "For reference. Included in CTAs when using /cta.", fields: [["website", 0], ["twitter", 0], ["linkedin", 0]] },
   ];
 
-  const filled = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
-  const total = Object.keys(profile).length;
+  const profileKeys = Object.keys(profile).filter(k => k !== "_v");
+  const filled = profileKeys.filter(k => { const v = profile[k]; return Array.isArray(v) ? v.length > 0 : typeof v === "string" && v.trim(); }).length;
+  const total = profileKeys.length;
 
   const sectionCount = (s) => {
     const sf = s.fields.filter(([k]) => { const val = profile[k]; return typeof val === "string" && val.trim(); }).length;
@@ -1818,7 +1841,7 @@ function AntiRobotSection({ rules, setRules, config, setConfig }) {
 
 // ─── SETTINGS PAGE (container) ─────────────────────────
 function SettingsPage({ settingsTab, setSettingsTab, profile, setProfile, rules, setRules, config, setConfig, history, setHistory }) {
-  const filled = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
+  const filled = Object.entries(profile).filter(([k, v]) => k !== "_v" && (Array.isArray(v) ? v.length > 0 : typeof v === "string" && v.trim())).length;
 
   const renderContent = () => {
     switch (settingsTab) {
@@ -1913,7 +1936,7 @@ function PromptMaker({ profile, rules, config, setConfig, onSaveToHistory, histo
     }
   };
 
-  const filledProfile = Object.values(profile).filter(v => Array.isArray(v) ? v.length > 0 : v?.trim()).length;
+  const filledProfile = Object.entries(profile).filter(([k, v]) => k !== "_v" && (Array.isArray(v) ? v.length > 0 : typeof v === "string" && v.trim())).length;
   const activeRules = (rules[approach]?.filter(r => r.active).length || 0);
   const pillSt = (on) => ({ background: on ? "#C5FF4A" : "#1A1816", color: on ? "#1A1816" : "#8A8580", border: on ? "none" : "1px solid #3A3632", borderRadius: 20, padding: "6px 14px", fontSize: 12, cursor: "pointer", fontWeight: 500 });
   const colSt = (on) => ({ background: on ? "#C5FF4A" : "#1A1816", color: on ? "#1A1816" : "#8A8580", border: on ? "none" : "1px solid #3A3632", borderRadius: 6, padding: "7px 12px", fontSize: 12, cursor: "pointer", fontWeight: 500, textAlign: "left" });
@@ -2245,10 +2268,10 @@ export default function ContentBrain() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Migrate: add new profile fields, remove old ones, convert old services/socialProof
+  // Migrate: add new profile fields, remove old ones, convert old services/socialProof, pre-fill defaults
   useEffect(() => {
-    const defaultKeys = Object.keys(DEFAULT_PROFILE);
-    const currentKeys = Object.keys(profile);
+    const defaultKeys = Object.keys(DEFAULT_PROFILE).filter(k => k !== "_v");
+    const currentKeys = Object.keys(profile).filter(k => k !== "_v");
     const toAdd = defaultKeys.filter(k => !currentKeys.includes(k));
     const toRemove = currentKeys.filter(k => !defaultKeys.includes(k));
     // Migrate old service1/service2 fields to offers array
@@ -2258,7 +2281,9 @@ export default function ContentBrain() {
     // Migrate old socialProof field to proof array
     const migratedProof = [];
     if (profile.socialProof?.trim() && !profile.proof?.length) migratedProof.push({ id: 1, text: profile.socialProof.trim(), type: "result" });
-    const needsMigrate = toAdd.length || toRemove.length || migratedOffers.length || migratedProof.length;
+    // Pre-fill empty fields from defaults (v2: David's real info)
+    const needsPreFill = (profile._v || 0) < 2;
+    const needsMigrate = toAdd.length || toRemove.length || migratedOffers.length || migratedProof.length || needsPreFill;
     if (needsMigrate) {
       setProfile(prev => {
         const next = { ...prev };
@@ -2266,6 +2291,16 @@ export default function ContentBrain() {
         toRemove.forEach(k => { delete next[k]; });
         if (migratedOffers.length && !(next.offers || []).length) next.offers = migratedOffers;
         if (migratedProof.length) next.proof = migratedProof;
+        // Pre-fill empty string fields with defaults, don't overwrite user edits
+        if (needsPreFill) {
+          defaultKeys.forEach(k => {
+            const val = next[k];
+            const def = DEFAULT_PROFILE[k];
+            if (typeof def === "string" && def && (!val || !val.trim())) next[k] = def;
+            if (Array.isArray(def) && def.length > 0 && (!val || !val.length)) next[k] = [...def];
+          });
+          next._v = 2;
+        }
         return next;
       });
     }
