@@ -1,0 +1,159 @@
+{
+  "pageWidth": 375,
+  "viewportWidth": 375,
+  "hasHorizontalScroll": false,
+  "touchTargets": [
+    {
+      "tag": "A",
+      "text": "",
+      "width": 160,
+      "height": 22.96875,
+      "tooSmall": true,
+      "visible": true
+    },
+    {
+      "tag": "A",
+      "text": "How we helped Augment raise $12M in the seed round",
+      "width": 474.24053955078125,
+      "height": 379.22216796875,
+      "tooSmall": false,
+      "visible": true
+    },
+    {
+      "tag": "A",
+      "text": "A 3-month sprint to simplify creative connections",
+      "width": 474.24053955078125,
+      "height": 379.22216796875,
+      "tooSmall": false,
+      "visible": true
+    },
+    {
+      "tag": "A",
+      "text": "24-hour sprint for an AI startup",
+      "width": 474.24053955078125,
+      "height": 379.22216796875,
+      "tooSmall": false,
+      "visible": true
+    },
+    {
+      "tag": "A",
+      "text": "View all projectsView all projects",
+      "width": 159.953125,
+      "height": 44.78125,
+      "tooSmall": false,
+      "visible": true
+    },
+    {
+      "tag": "A",
+      "text": "Secure your spot",
+      "width": 279,
+      "height": 70.390625,
+      "tooSmall": false,
+      "visible": true
+    }
+  ],
+  "fontSizes": [
+    {
+      "tag": "A",
+      "text": "",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "ServicesServices",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "TimelinesTimelines",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "WorkWork",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "PricingPricing",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "AboutAbout",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "Blog posts",
+      "fontSize": "18px"
+    },
+    {
+      "tag": "A",
+      "text": "Humbl thoughts",
+      "fontSize": "18px"
+    },
+    {
+      "tag": "A",
+      "text": "Free audit?\ud83e\udd14Free audit?\ud83e\udd14",
+      "fontSize": "32px"
+    },
+    {
+      "tag": "A",
+      "text": "Schedule callSchedule call",
+      "fontSize": "14px"
+    },
+    {
+      "tag": "A",
+      "text": "ServicesServices",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "TimelinesTimelines",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "WorkWork",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "PricingPricing",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "AboutAbout",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "BlogBlog",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "Humbl thoughtsHumbl thoughts",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "Free audit?\ud83e\udd14Free audit?\ud83e\udd14",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "A",
+      "text": "Schedule callSchedule call",
+      "fontSize": "16px"
+    },
+    {
+      "tag": "H1",
+      "text": "From idea to investor- ready design in d",
+      "fontSize": "52.5px"
+    }
+  ],
+  "h1MobileAboveFold": true,
+  "h1MobileTop": 80
+}

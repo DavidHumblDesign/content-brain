@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Humbl Design — Wireframe v2</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: #111;
+    background: #fff;
+    line-height: 1.6;
+  }
+
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 80px 0; border-bottom: 1px solid #e0e0e0; }
+  section.alt { background: #f5f5f5; }
+  section.dark { background: #111; color: #fff; }
+
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #999;
+    border: 1px solid #ddd;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 28px;
+  }
+  section.dark .section-label { color: #666; border-color: #333; }
+
+  h1 { font-size: 52px; font-weight: 700; line-height: 1.1; margin-bottom: 20px; max-width: 800px; }
+  h2 { font-size: 38px; font-weight: 700; line-height: 1.15; margin-bottom: 16px; max-width: 640px; }
+  h3 { font-size: 19px; font-weight: 600; margin-bottom: 10px; }
+  p { color: #444; margin-bottom: 12px; max-width: 620px; }
+  p.large { font-size: 19px; color: #555; max-width: 540px; margin-bottom: 28px; line-height: 1.55; }
+  section.dark p, section.dark p.large { color: #bbb; }
+  section.dark h2 { color: #fff; }
+  section.dark h3 { color: #fff; }
+
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    border: 2px solid #111;
+    color: #111;
+    background: transparent;
+  }
+  .btn.primary { background: #111; color: #fff; }
+  section.dark .btn.primary { background: #fff; color: #111; border-color: #fff; }
+  section.dark .btn.ghost { color: #fff; border-color: #555; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+  .badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #555;
+    border: 1px solid #ddd;
+    padding: 7px 13px;
+    border-radius: 4px;
+    background: #fafafa;
+  }
+  .badge::before { content: "✓"; font-weight: 700; color: #111; font-size: 12px; }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: #e0e0e0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+  .stat { background: #fff; padding: 22px 24px; text-align: center; }
+  .stat-num { font-size: 30px; font-weight: 700; color: #111; }
+  .stat-label { font-size: 12px; color: #999; margin-top: 4px; }
+
+  .logo-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+  .logo-box {
+    width: 120px; height: 38px;
+    background: #eee;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #aaa;
+  }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 40px; }
+
+  .card { border: 1px solid #ddd; border-radius: 8px; padding: 28px; background: #fff; }
+  .card.problem { border-top: 3px solid #111; }
+  .card p { font-size: 14px; margin-bottom: 0; max-width: none; }
+  .card h3 { margin-bottom: 10px; font-size: 17px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 48px; }
+  .step { padding: 36px 32px; border: 1px solid #ddd; border-right: none; background: #fff; }
+  .step:last-child { border-right: 1px solid #ddd; }
+  .step-day { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+  .step-num {
+    width: 30px; height: 30px;
+    border: 2px solid #111;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .step p { font-size: 14px; margin-bottom: 0; max-width: none; }
+
+  .audit-block {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 56px 48px;
+    text-align: center;
+    background: #f9f9f9;
+  }
+  .audit-block h2 { margin: 0 auto 14px; text-align: center; max-width: none; }
+  .audit-block p { margin: 0 auto 28px; text-align: center; max-width: 520px; }
+  .audit-block .btn-group { justify-content: center; }
+
+  .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+  .portfolio-item { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+  .portfolio-thumb {
+    background: #e8e8e8; height: 190px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #aaa;
+  }
+  .portfolio-meta { padding: 16px; border-top: 1px solid #eee; }
+  .portfolio-meta h3 { font-size: 14px; margin-bottom: 4px; }
+  .portfolio-meta p { font-size: 12px; color: #999; margin: 0; }
+
+  .case-study { border: 1px solid #ddd; border-radius: 8px; padding: 36px; background: #fff; }
+  .case-result { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 2px; }
+  .case-label { font-size: 12px; color: #999; margin-bottom: 22px; }
+  .case-study h3 { margin-bottom: 10px; }
+  .case-study p { font-size: 14px; max-width: none; }
+  .case-tag {
+    display: inline-block; background: #f0f0f0; color: #666;
+    font-size: 11px; padding: 3px 8px; border-radius: 3px;
+    margin-top: 14px; margin-right: 6px;
+  }
+
+  .testimonial { border: 1px solid #ddd; border-radius: 8px; padding: 28px; background: #fff; }
+  .testimonial-text { font-size: 15px; color: #333; font-style: italic; margin-bottom: 22px; line-height: 1.7; max-width: none; }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #e0e0e0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #999; flex-shrink: 0;
+  }
+  .author-name { font-size: 14px; font-weight: 600; }
+  .author-title { font-size: 12px; color: #999; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+  .service-card { border: 1px solid #ddd; border-radius: 8px; padding: 28px; background: #fff; }
+  .service-card.addon { background: #fafafa; border-style: dashed; }
+  .service-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #999; border: 1px solid #ddd; padding: 2px 7px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .service-price { font-size: 15px; font-weight: 700; margin-top: 14px; color: #111; }
+  .service-card p { font-size: 14px; margin-bottom: 0; max-width: none; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; }
+  .price-card { border: 1px solid #ddd; border-radius: 8px; padding: 24px; background: #fff; }
+  .price-card.featured { border: 2px solid #111; }
+  .price-card h3 { font-size: 15px; margin-bottom: 10px; }
+  .price-amount { font-size: 30px; font-weight: 700; margin: 10px 0 3px; }
+  .price-note { font-size: 12px; color: #999; margin-bottom: 18px; }
+  .price-features { list-style: none; padding: 0; }
+  .price-features li { font-size: 13px; color: #555; padding: 6px 0; border-top: 1px solid #f0f0f0; }
+  .price-features li::before { content: "— "; color: #bbb; }
+
+  .faq-list { max-width: 700px; margin-top: 40px; }
+  .faq-item { border-bottom: 1px solid #e0e0e0; padding: 22px 0; }
+  .faq-q { font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #111; }
+  .faq-a { font-size: 14px; color: #555; line-height: 1.65; }
+
+  nav {
+    position: sticky; top: 0;
+    background: rgba(255,255,255,0.96);
+    border-bottom: 1px solid #e5e5e5;
+    z-index: 100; padding: 14px 0;
+    backdrop-filter: blur(4px);
+  }
+  .nav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-size: 16px; font-weight: 700; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { font-size: 14px; color: #555; text-decoration: none; }
+  .nav-cta {
+    font-size: 14px; font-weight: 600; color: #111; text-decoration: none;
+    border: 1.5px solid #111; padding: 8px 18px; border-radius: 5px;
+  }
+
+  footer { padding: 40px 0; border-top: 1px solid #e0e0e0; }
+  .footer-inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { font-size: 13px; color: #999; line-height: 1.7; }
+  .footer-right { display: flex; gap: 20px; }
+  .footer-right a { font-size: 13px; color: #999; text-decoration: none; }
+
+  .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+  .diff-item { padding: 0; }
+  .diff-item h3 { font-size: 16px; margin-bottom: 8px; }
+  .diff-item p { font-size: 14px; margin-bottom: 0; max-width: none; }
+
+  .audit-note { font-size: 13px; color: #999; text-align: center; margin-top: 16px; max-width: none; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 34px; }
+    h2 { font-size: 28px; }
+    .grid-3, .grid-2, .steps, .portfolio-grid, .pricing-grid,
+    .services-grid, .diff-grid { grid-template-columns: 1fr; }
+    .step { border-right: 1px solid #ddd; border-bottom: none; }
+    .step:last-child { border-bottom: 1px solid #ddd; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Humbl Design</div>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#audit" class="nav-cta">Free audit →</a>
+  </div>
+</nav>
+
+
+<!-- 01 — HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="section-label">01 — Hero</div>
+
+    <h1>Your landing page is losing you signups. I can show you exactly where.</h1>
+
+    <p class="large">Work directly with one designer who ships fast and knows what's broken. First visuals in 72 hours, live in Webflow in 2 weeks. No agency process, no handoffs, no waiting.</p>
+
+    <div class="btn-group">
+      <a href="#audit" class="btn primary">Get a free audit</a>
+      <a href="#work" class="btn ghost">See the work ↓</a>
+    </div>
+
+    <div class="badges">
+      <span class="badge">First visuals in 72 hours</span>
+      <span class="badge">50+ founders served</span>
+      <span class="badge">No hidden fees</span>
+      <span class="badge">One designer, your direct line</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 02 — LOGOS + STATS -->
+<section class="alt" id="logos">
+  <div class="container">
+    <div class="section-label">02 — Trust bar</div>
+
+    <p style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 16px; max-width: none;">50+ founders trusted me with the page that mattered most</p>
+
+    <div class="logo-row">
+      <div class="logo-box">Augment</div>
+      <div class="logo-box">Refundid</div>
+      <div class="logo-box">Logo</div>
+      <div class="logo-box">Logo</div>
+      <div class="logo-box">Logo</div>
+      <div class="logo-box">Logo</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Founders served</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">72h</div>
+        <div class="stat-label">First delivery</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$12M</div>
+        <div class="stat-label">Raised by clients</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4+ yrs</div>
+        <div class="stat-label">Avg. client relationship</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 — PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="section-label">03 — Problem</div>
+
+    <h2>Is that your company?</h2>
+    <p class="large">Traffic isn't the problem. The page is. Most founders figure this out after they've already spent money on ads.</p>
+
+    <div class="grid-3">
+      <div class="card problem">
+        <h3>The freelancer who disappeared</h3>
+        <p>You hired someone fast and cheap. It went fine until you needed a change 3 days before launch. They've seen the message. They haven't replied. You're shipping without the fix.</p>
+      </div>
+      <div class="card problem">
+        <h3>The agency that booked six meetings before touching Figma</h3>
+        <p>Discovery workshops. Brand alignment sessions. A project manager who's never opened Figma. Six weeks later, you had a deck. Not a page. Not something live. A deck.</p>
+      </div>
+      <div class="card problem">
+        <h3>The page that looks clean but doesn't move a number</h3>
+        <p>Visitors land, scroll halfway, leave. Your ads are running. Your bounce rate is climbing. You've rewritten the headline twice and nothing changed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 04 — SOLUTION -->
+<section class="alt" id="solution">
+  <div class="container">
+    <div class="section-label">04 — Solution</div>
+
+    <h2>Humbl was built to fix exactly that.</h2>
+    <p class="large">I'm David. I've worked with 50+ AI and SaaS founders since 2019. No handoffs, no account managers, no process. You talk to the person designing your page.</p>
+
+    <p>Every page starts with one question: what do you need visitors to do? Hero copy, CTA placement, social proof, pricing structure. Everything follows from the answer. That's CRO-first design. Pages that get your visitors to act, built fast enough to matter.</p>
+
+    <div class="diff-grid">
+      <div class="diff-item">
+        <h3>Ships fast</h3>
+        <p>First version in 72 hours. Live in Webflow in 2 weeks. If you have a hard launch date, tell me on day one and I work backward from it.</p>
+      </div>
+      <div class="diff-item">
+        <h3>Conversion before aesthetics</h3>
+        <p>I'll tell you if your copy structure is wrong before I touch a single visual. A pretty page that doesn't convert is an expensive mistake. I try not to make those.</p>
+      </div>
+      <div class="diff-item">
+        <h3>One designer, one number to call</h3>
+        <p>Daily Slack or WhatsApp. If something's wrong at 11pm before launch, I'm there. No tickets, no queue, no 24-hour response windows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 05 — HOW IT WORKS -->
+<section id="process">
+  <div class="container">
+    <div class="section-label">05 — Process</div>
+
+    <h2>How it works</h2>
+    <p class="large">No 90-minute kickoff calls. No weeks of waiting to see a first draft.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-day">Day 1</div>
+        <h3>You send the brief</h3>
+        <p>Fill in a short questionnaire. I ask the questions that matter for conversion: who are you trying to get to do what, where's your traffic coming from, what's broken. We're aligned the same day.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-day">Day 3</div>
+        <h3>You get first designs</h3>
+        <p>Full Figma designs, not wireframes. Roast them, approve them, redirect me. This is where the fast feedback loop starts and most of the real design decisions get made.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-day">Day 7 to 14</div>
+        <h3>It goes live</h3>
+        <p>I build it in Webflow. Responsive, fast-loading, CMS-ready if you need it. You get the keys, the source files, and a page that's yours to run.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 06 — MID-PAGE AUDIT CTA -->
+<section id="audit">
+  <div class="container">
+    <div class="section-label">06 — Free audit</div>
+
+    <div class="audit-block">
+      <h2>Not sure what's broken on your page?</h2>
+      <p class="large">Send me your URL. I'll come back with the 3 biggest conversion problems, why they're costing you demos, and what to fix first. Free. Takes 15 minutes of my time.</p>
+      <div class="btn-group">
+        <a href="mailto:david@humbldesign.io" class="btn primary">DM "AUDIT" + your URL</a>
+      </div>
+      <p class="audit-note">Screen-share call or written teardown. Your choice.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- 07 — PORTFOLIO -->
+<section class="alt" id="work">
+  <div class="container">
+    <div class="section-label">07 — Work</div>
+
+    <h2>The work</h2>
+    <p class="large">Landing pages, full websites, and product UI for AI, SaaS, and Fintech companies. 50+ projects since 2019.</p>
+
+    <div class="portfolio-grid">
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Augment</h3>
+          <p>Landing page + product UI · Private markets</p>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Refundid</h3>
+          <p>Landing page · Fintech, Sydney</p>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Project name</h3>
+          <p>Landing page · AI SaaS, seed stage</p>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Project name</h3>
+          <p>Full website · Fintech, Series A</p>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Project name</h3>
+          <p>Landing page · B2B SaaS, pre-seed</p>
+        </div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-thumb">[ Screenshot ]</div>
+        <div class="portfolio-meta">
+          <h3>Project name</h3>
+          <p>Landing page + Webflow · AI tooling</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 08 — CASE STUDIES -->
+<section id="results">
+  <div class="container">
+    <div class="section-label">08 — Results</div>
+
+    <h2>What actually happened</h2>
+    <p class="large">Two projects worth knowing about.</p>
+
+    <div class="grid-2">
+      <div class="case-study">
+        <div class="case-result">$12M</div>
+        <div class="case-label">Raised in funding</div>
+        <h3>Augment</h3>
+        <p>A private markets platform that hired me for a landing page in 2020. Four years later, we're still working together. Product UI, investor materials, website updates, the lot. They raised $12M along the way. I'd like to think the design helped.</p>
+        <span class="case-tag">Landing page</span>
+        <span class="case-tag">Product UI</span>
+        <span class="case-tag">4-year partnership</span>
+      </div>
+      <div class="case-study">
+        <div class="case-result">FT</div>
+        <div class="case-label">Featured in the Financial Times</div>
+        <h3>Refundid</h3>
+        <p>An early-stage Sydney startup that needed a landing page fast. We built it. They got funded. They ended up in the Financial Times. This was one of my first startup projects. It's what made me realize this was the work I wanted to do.</p>
+        <span class="case-tag">Landing page</span>
+        <span class="case-tag">Seed stage</span>
+        <span class="case-tag">Secured funding</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 09 — TESTIMONIALS -->
+<section class="alt" id="testimonials">
+  <div class="container">
+    <div class="section-label">09 — Testimonials</div>
+
+    <h2>What founders say</h2>
+
+    <div class="grid-3" style="margin-top: 40px;">
+      <div class="testimonial">
+        <div class="testimonial-text">"[Real quote needed. Replace this placeholder with an actual client testimonial.]"</div>
+        <div class="testimonial-author">
+          <div class="avatar">AB</div>
+          <div>
+            <div class="author-name">Founder name</div>
+            <div class="author-title">CEO, Augment</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-text">"[Real quote needed. Replace this placeholder with an actual client testimonial.]"</div>
+        <div class="testimonial-author">
+          <div class="avatar">CD</div>
+          <div>
+            <div class="author-name">Founder name</div>
+            <div class="author-title">CEO, [Company]</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-text">"[Real quote needed. Replace this placeholder with an actual client testimonial.]"</div>
+        <div class="testimonial-author">
+          <div class="avatar">EF</div>
+          <div>
+            <div class="author-name">Founder name</div>
+            <div class="author-title">CTO, [Company]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 10 — SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-label">10 — Services</div>
+
+    <h2>What I build</h2>
+    <p class="large">Landing pages and websites are the focus. Everything else is secondary and I'll tell you upfront if it's not a fit.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-tag">Core offer</div>
+        <h3>Landing page design</h3>
+        <p>Full Figma design with CRO baked in from the start. Hero, social proof, pricing, CTA. Delivered as Figma files ready for your dev team to build.</p>
+        <div class="service-price">From $5,000</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Core offer</div>
+        <h3>Landing page design + Webflow build</h3>
+        <p>Figma to live Webflow page. Responsive, fast, CMS-ready. You get the keys. This is the full package and what most founders actually need.</p>
+        <div class="service-price">From $10,000</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Core offer</div>
+        <h3>Full website design + Webflow build</h3>
+        <p>Multi-page website with the same CRO-first approach applied to every page. Home, features, pricing, about, blog. Custom quote based on scope.</p>
+        <div class="service-price">From $15,000</div>
+      </div>
+      <div class="service-card">
+        <div class="service-tag">Core offer</div>
+        <h3>CRO audit</h3>
+        <p>A teardown of your landing page or website. The 3 biggest conversion problems, why they matter, what to fix, in what order. Screen-share or written format. Free to start.</p>
+        <div class="service-price">Free / paid version available</div>
+      </div>
+      <div class="service-card addon">
+        <div class="service-tag">Add-on</div>
+        <h3>Product design</h3>
+        <p>Web app UI, dashboards, onboarding flows. Available for clients who need clean product screenshots for their landing page or ongoing design support. Retainer-based.</p>
+        <div class="service-price">From $5,999/mo</div>
+      </div>
+      <div class="service-card addon">
+        <div class="service-tag">Add-on</div>
+        <h3>Brand design</h3>
+        <p>Logo, type, color system, brand guidelines. Available when the visual identity needs work before the site does. Usually paired with a landing page build.</p>
+        <div class="service-price">Custom quote</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 11 — PRICING -->
+<section class="alt" id="pricing">
+  <div class="container">
+    <div class="section-label">11 — Pricing</div>
+
+    <h2>Pricing</h2>
+    <p class="large">No retainer needed to start. One-off projects, clear scope, clear numbers. All pricing in USD.</p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Landing page design</h3>
+        <div class="price-amount">$5,000</div>
+        <div class="price-note">Figma files only</div>
+        <ul class="price-features">
+          <li>Full Figma design</li>
+          <li>CRO strategy included</li>
+          <li>Copy structure guidance</li>
+          <li>First version in 72h</li>
+          <li>2 revision rounds</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <h3>Landing page + Webflow</h3>
+        <div class="price-amount">$10,000</div>
+        <div class="price-note">Design + live build</div>
+        <ul class="price-features">
+          <li>Everything in design tier</li>
+          <li>Full Webflow build</li>
+          <li>Mobile responsive</li>
+          <li>CMS setup if needed</li>
+          <li>Live in approx. 2 weeks</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <h3>Full website</h3>
+        <div class="price-amount">$15K+</div>
+        <div class="price-note">Custom quote</div>
+        <ul class="price-features">
+          <li>5 to 10+ pages</li>
+          <li>Design + Webflow build</li>
+          <li>Blog or CMS setup</li>
+          <li>Scope call first</li>
+          <li>Timeline varies</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <h3>Design retainer</h3>
+        <div class="price-amount">$5,999</div>
+        <div class="price-note">Per month, cancel anytime</div>
+        <ul class="price-features">
+          <li>Ongoing product design</li>
+          <li>Website updates</li>
+          <li>Daily communication</li>
+          <li>Unlimited revisions</li>
+          <li>Month-to-month</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top: 20px; font-size: 13px; color: #999; max-width: none;">All projects start with a free audit. Open to sweat equity for the right pre-revenue company. Ask me directly.</p>
+  </div>
+</section>
+
+
+<!-- 12 — FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">12 — FAQ</div>
+
+    <h2>Common questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">How long does a landing page take?</div>
+        <div class="faq-a">First designs in 72 hours. A full design plus Webflow build is usually 10 to 14 days, depending on revision rounds. If you have a hard deadline, tell me on day one. I'll work backward from it.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What do you need from me to get started?</div>
+        <div class="faq-a">A short brief (I send a questionnaire), your logo and brand assets if you have them, and a few links to sites you like. If you already have copy written, I'll use it. If not, I'll tell you what each section needs to say. Actually writing the copy is on you though. I don't do copywriting.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">I just need a few small changes to my existing page. Do you take that?</div>
+        <div class="faq-a">For small fixes, the free audit is where to start. I'll tell you exactly what to change and you can implement it yourself or hand it to your developer. For anything more involved on an existing site, the retainer makes more sense. I don't do hourly work.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do you work with pre-revenue companies?</div>
+        <div class="faq-a">Yes. Most of my clients are seed-stage or earlier. Some are pre-launch. The landing page is often the thing that gets you to revenue in the first place. I'm open to sweat equity arrangements for the right company. Ask me directly and we can talk about it.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Design-only versus design plus Webflow build. What's the difference?</div>
+        <div class="faq-a">Design-only means you get Figma files and your team builds it. Design plus Webflow means I build it too. If you have developers on another stack, design-only is fine. If you want it live fast without adding to anyone's sprint, go with the full package.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why Webflow and not something else?</div>
+        <div class="faq-a">It's what I build fastest in. It's also genuinely the right tool for most early-stage startup sites: fast to update, CMS-ready, and no developer needed for small changes after launch. If your stack requires something else, I'll deliver design-only and your team can build it in whatever they use.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 13 — FINAL CTA -->
+<section class="dark" id="contact">
+  <div class="container">
+    <div class="section-label">13 — Final CTA</div>
+
+    <h2>Two ways to start.</h2>
+    <p class="large">Pick whichever fits where you are right now.</p>
+
+    <div class="grid-2" style="max-width: 760px; margin-top: 40px;">
+      <div class="card" style="background: #1a1a1a; border-color: #2a2a2a;">
+        <h3 style="color: #fff;">Start with a free audit</h3>
+        <p style="color: #aaa; max-width: none;">Send your URL. I'll come back with the 3 biggest things killing your conversions, why they matter, and what to fix first. No pitch. Takes 15 minutes of my time.</p>
+        <div style="margin-top: 24px;">
+          <a href="mailto:david@humbldesign.io" class="btn ghost" style="color: #fff; border-color: #444; font-size: 14px; padding: 11px 22px;">DM "AUDIT" + your URL →</a>
+        </div>
+      </div>
+      <div class="card" style="background: #fff;">
+        <h3>Start a project</h3>
+        <p style="max-width: none;">You know what you need. Let's talk scope and timeline. Landing page design from $5,000. Design plus Webflow build from $10,000.</p>
+        <div style="margin-top: 24px;">
+          <a href="mailto:david@humbldesign.io" class="btn primary" style="font-size: 14px; padding: 11px 22px;">Get in touch →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar" style="max-width: 640px; margin-top: 56px; background: #1a1a1a; border-color: #2a2a2a;">
+      <div class="stat" style="background: #161616;">
+        <div class="stat-num" style="color: #fff;">50+</div>
+        <div class="stat-label">Founders served</div>
+      </div>
+      <div class="stat" style="background: #161616;">
+        <div class="stat-num" style="color: #fff;">72h</div>
+        <div class="stat-label">First delivery</div>
+      </div>
+      <div class="stat" style="background: #161616;">
+        <div class="stat-num" style="color: #fff;">$12M</div>
+        <div class="stat-label">Raised for clients</div>
+      </div>
+      <div class="stat" style="background: #161616;">
+        <div class="stat-num" style="color: #fff;">2019</div>
+        <div class="stat-label">Doing this since</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>Humbl Design</strong> — humbldesign.io<br>
+      David Pokorny · Prague, CZ · david@humbldesign.io
+    </div>
+    <div class="footer-right">
+      <a href="https://linkedin.com/in/davidpokorny">LinkedIn</a>
+      <a href="https://figma.com/@humbldesign">Figma templates</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

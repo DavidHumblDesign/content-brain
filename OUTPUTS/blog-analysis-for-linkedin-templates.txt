@@ -1,0 +1,191 @@
+================================================================================
+HUMBL DESIGN BLOG POSTS: COMPLETE REFERENCE FOR LINKEDIN CONTENT TEMPLATES
+================================================================================
+
+[1] ALL POST TITLES (EXACT)
+================================================================================
+
+1. 10 SaaS UX mistakes killing your MRR (and how to fix them)
+2. Customer Proof Design: How to Turn Real Users into Your Best Salespeople in 2026
+3. Figma AI in 2026: Practical guide
+4. How design debt is secretly slowing down your customers
+5. How designers actually use AI in 2026 (without losing their jobs)
+6. How one headline can get you more customers
+7. How to build relationships with tech startups
+8. How to charge US clients - Wise and baking
+9. How to design products faster?
+10. How to design the best login UX that people will love
+11. How to fix your hero section and increase website signups
+12. How to fix your product without a 6-month redesign
+13. How to get more users in 2026? A data report
+14. How to give feedback to designer
+15. How to give feedback to designers
+16. How to implement AI into your design work in 2026
+17. How to set up your Webflow project in 2026
+18. Is your product making these 10 rookie design mistakes?
+19. The 2026 accessibility SaaS guide to WCAG 2.2, and APCA
+20. The best design tools to use in 2026
+21. What is the history of AI design?
+22. Why 1 hour can give you better results than 1 week
+23. Will AI replace designers in 2026? A data report
+24. Why hourly design costs can hurt startups more than help
+25. Why your landing page headline is killing conversions
+26. Is AI taking over design jobs?
+27. Why a design retainer wins over hiring, agencies, hourly, and fixed-scope
+28. The ultimate color guideline for 2026
+29. What Humbl design does - from first "Hello" to shipped product
+30. Claude Design: Everything you need to know
+
+================================================================================
+[2] ONE-SENTENCE SUMMARIES OF EACH POST'S MAIN POINT
+================================================================================
+
+1. Most SaaS founders think they have a pricing problem when they actually have a friction problem.
+
+2. Real customers are your best salespeople—replace vague claims with actual screenshots, workflows, and results.
+
+3. Most teams use AI as one-off tools, but Figma AI works best when baked into your actual design workflow.
+
+4. Every cluttered sidebar, confusing dashboard, and "we'll fix it later" decision is a tax on user patience that kills retention.
+
+5. AI won't replace designers—it will wipe out pixel-pushers while designers who own strategy, feedback, and taste thrive.
+
+6. [No description provided—content not fully captured]
+
+7. [No description provided—content not fully captured]
+
+8. [No description provided—content not fully captured]
+
+9. Most early-stage products fail because they are confusing, not because they look bad.
+
+10. A great login experience isn't about aesthetics—it's about psychology, clarity, and flow.
+
+11. Most sites need a hero section that stops the right people from bouncing and makes them think "this is about me" in three seconds.
+
+12. UX tips that lead to better product usage and fewer abandoned signups without requiring a full redesign.
+
+13. Tech founders think they have a traffic problem but actually have a story problem—define one clear narrative and design a page that gets strangers to a first win.
+
+14. [No description provided—content not fully captured]
+
+15. Bad designs start with worse feedback—structure your design feedback properly to cut four weeks of wasted revisions.
+
+16. A technical reference for product teams integrating AI, defining required workflows, tool benchmarks, and logic constraints.
+
+17. By the end of this guide, you'll have a professional Webflow architecture that scales on mobile and turns visitors into leads.
+
+18. Most startups don't have a product problem; they have a friction problem killing conversions and growth momentum.
+
+19. Move beyond basic contrast checks into engineering WCAG 2.2 and APCA so accessibility doesn't break under legal or complex state scrutiny.
+
+20. [No description provided—content not fully captured]
+
+21. AI adoption surged while trust didn't—designers now sit between tools and real users, strongest in early-stage exploration.
+
+22. [No description provided—content not fully captured]
+
+23. AI won't replace designers in 2026, but it will wipe out pixel-pushers—designers who own strategy and taste will thrive while AI churns out generic template work.
+
+24. Hourly design models create hesitation and financial friction that quietly eats into startup momentum.
+
+25. Weak headlines fail for the same reasons—your headline is the most valuable line of copy, not an afterthought.
+
+26. AI is changing design work faster than expected, already taking over production tasks and pushing designers toward strategy.
+
+27. A design retainer gives you senior-level design support without the salary, recruiting risk, or onboarding months that full-time hires require.
+
+28. A robust color system merges technical specs, human factors, and implementation standards for scalable, production-ready software.
+
+29. Humbl Design partners with founders to deliver design that helps them raise, sell, and scale with speed, focus, and clarity.
+
+30. Claude Design system setup burns tokens fast, slides are the best use case, and we're in the era of "good enough design."
+
+================================================================================
+[3] RECURRING THEMES, OPINIONS & STRONG STANCES
+================================================================================
+
+CORE THESIS: FRICTION > FEATURES
+David's foundational argument across 15+ posts is that SaaS founders misdiagnose problems.
+They blame pricing, features, or marketing. The real killer is invisible UX friction.
+Applies to: onboarding, dashboards, login flows, headlines, hero sections, form fields.
+
+CLARITY > BEAUTY (The Anti-Decoration Stance)
+A visually plain, perfectly clear interface beats a beautiful but confusing one.
+Decoration adds mental work. Clarity removes it. Design's job is removing obstacles, not adding polish.
+Counterpoint to modern design trends that prioritize aesthetics over utility.
+
+REAL PROOF > MARKETING COPY
+Stop hiding your best assets (real screenshots, workflows, before/afters) behind Loom links.
+Customer proof design puts messy, real moments next to CTAs so proof actually sells.
+Vague headlines and polished mockups underperform actual user workflows and results.
+
+DESIGN DEBT IS NOT OPTIONAL
+Each "we'll fix it later" is a tax on users. Cluttered sidebars, extra fields, confusing flows.
+Design debt directly impacts retention and MRR—it's not a tech debt problem engineers can ignore.
+Small friction compounds. Eventually, users stop paying it and churn.
+
+SPEED > PERFECTION
+Fast-moving startups need senior design help without hiring/recruiting/onboarding overhead.
+Retainers beat hourly models. Fixed-scope beats hourly. Both beat the hesitation of hourly billing.
+1 hour focused design work beats 1 week of perfectionism.
+
+PSYCHOLOGY DRIVES BEHAVIOR
+Design decisions are psychology decisions: expectation setting, visual hierarchy, clarity of next step.
+Login screens set the tone for product maturity. Headlines trigger emotional recognition ("this is for me").
+Accessibility isn't a compliance box—it's about operational design across complex user states.
+
+DESIGNERS MOVE UP OR GET SQUEEZED
+AI will commoditize pixel production. The designers who survive own strategy, feedback loops, taste.
+Judgment calls beat execution. Knowing *why* a design works beats knowing *how* to execute it.
+This is the gap between senior strategy and junior pixel-pushing.
+
+ACTIONABLE > THEORETICAL
+Posts are frameworks, guides, checklists—not design philosophy essays or industry takes.
+Every post answers: What's broken? How do I recognize it? Exactly how do I fix it?
+This positions David as builder/consultant, not theorist.
+
+SAAS IS THE PRIMARY LENS
+Every post assumes SaaS context: growth metrics, conversions, MRR, pricing, retention, churn.
+Applies to founders and product teams that ship fast and measure impact.
+Not about branding, print design, or "design for design's sake."
+
+ANTI-BULLSHIT STANCE
+Titles use words like "killing," "wasting," "secretly," "mistakes," "wrong."
+Rejects both extremes: "AI will replace designers" AND "AI is just a tool, relax."
+Real talk about what's actually happening on product teams.
+
+AI REALISM
+Not hype. Not doom. Practical breakdowns of what AI does well (early exploration, ideation),
+where it fails (judgment, taste, user feedback loops), and what that means for daily work.
+Designers need to know which tools work, when, and what to avoid—not inspirational takes.
+
+TECHNICAL DEPTH ON DESIGN SYSTEMS
+Posts on color systems, accessibility standards, Webflow architecture, Figma workflows.
+Systems thinking: how do foundational choices scale across complex applications?
+Not tutorials—technical references for engineers and designers shipping real products.
+
+================================================================================
+LINKEDIN CONTENT STRATEGY IMPLICATIONS
+================================================================================
+
+VOICE & AUTHORITY MARKERS:
+- Specific, data-backed claims ("Median landing page conversion is...")
+- Builder's perspective ("I've been using Claude Design on real projects...")
+- Contrarian takes ("You don't have a pricing problem; you have a friction problem")
+- Practical depth (detailed frameworks, not surface-level tips)
+
+CONTENT ANGLES FOR LINKEDIN:
+1. Friction diagnosis: "Your problem isn't X, it's Y"
+2. Quick wins: "One thing founders always get wrong about..."
+3. Myth-busting: "Why AI won't replace designers / Why hourly design fails"
+4. SaaS founder pain points: conversion, growth, speed, clarity
+5. Designer career advice: skill stacking, AI-proofing yourself
+6. Technical breakdowns: tools, workflows, systems thinking
+
+RECURRING POST TYPES:
+- How-to guides (10-item lists, step-by-step frameworks)
+- Myth-busting / contrarian takes (what founders get wrong)
+- Industry reports (AI adoption, job trends, tool comparisons)
+- Technical references (accessibility, color systems, workflows)
+- Service positioning (why retainers win, what Humbl delivers)
+

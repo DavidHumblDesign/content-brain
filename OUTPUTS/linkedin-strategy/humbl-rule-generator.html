@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Humbl Rule Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #111;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    gap: 48px;
+    padding: 40px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 40px;
+  }
+
+  .controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FF5500;
+    margin-bottom: 28px;
+  }
+
+  .field { margin-bottom: 20px; }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .field input[type="number"] {
+    width: 72px;
+    background: #1c1c1c;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 12px;
+    outline: none;
+  }
+
+  .field input[type="number"]:focus,
+  .field textarea:focus {
+    border-color: #FF5500;
+  }
+
+  .field textarea {
+    width: 100%;
+    background: #1c1c1c;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 12px;
+    outline: none;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .field input[type="range"] {
+    width: 100%;
+    accent-color: #FF5500;
+    margin-top: 4px;
+  }
+
+  .field .hint {
+    font-size: 11px;
+    color: #444;
+    margin-top: 6px;
+  }
+
+  .field .range-val {
+    font-size: 12px;
+    color: #888;
+    float: right;
+  }
+
+  .btn-download {
+    width: 100%;
+    background: #FF5500;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn-download:hover { background: #e04d00; }
+  .btn-download:active { background: #c44300; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #222;
+    margin: 24px 0;
+  }
+
+  /* ── Preview wrapper ── */
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .preview-label {
+    font-size: 11px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  #scale-wrap {
+    position: relative;
+  }
+
+  /* ── THE CARD — 1080×1350 ── */
+  #card {
+    width: 1080px;
+    height: 1350px;
+    background: #181818;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .c-bar {
+    width: 100%;
+    height: 10px;
+    background: #FF5500;
+    flex-shrink: 0;
+  }
+
+  .c-inner {
+    padding: 64px 72px 0 72px;
+    height: calc(1350px - 140px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .c-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .c-label {
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .c-number {
+    font-size: 22px;
+    font-weight: 800;
+    color: #555;
+    letter-spacing: 0.06em;
+  }
+
+  .c-text-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .c-text {
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    word-break: break-word;
+  }
+
+  .c-orange { color: #FF5500; }
+  .c-white  { color: #ffffff; }
+
+  .c-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    padding: 0 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #252525;
+  }
+
+  .c-bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .c-avatar {
+    width: 76px;
+    height: 76px;
+    border-radius: 14px;
+    background: #FF5500;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .c-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .c-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+  }
+
+  .c-url {
+    font-size: 20px;
+    color: #555;
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  .c-brand {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="controls-title">Humbl Rule Generator</div>
+
+  <div class="field">
+    <label>Rule number</label>
+    <input type="number" id="ruleNum" value="1" min="1" max="99" oninput="update()">
+  </div>
+
+  <div class="field">
+    <label>Orange text <span class="hint" style="display:inline">(highlighted part)</span></label>
+    <textarea id="orangeText" oninput="update()" placeholder="Fix your hero section">Fix your hero section</textarea>
+  </div>
+
+  <div class="field">
+    <label>White text</label>
+    <textarea id="whiteText" oninput="update()" placeholder="before you run a single ad.">before you run a single ad.</textarea>
+    <div class="hint">Leave orange text empty to make everything white</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="field">
+    <label>Font size <span class="range-val" id="fs-val">108px</span></label>
+    <input type="range" id="fontSize" min="60" max="160" value="108" oninput="update()">
+  </div>
+
+  <button class="btn-download" onclick="download()">↓ Download 1080 × 1350</button>
+</div>
+
+<!-- Preview -->
+<div class="preview-wrap">
+  <div class="preview-label">Preview</div>
+  <div id="scale-wrap">
+    <div id="card">
+      <div class="c-bar"></div>
+      <div class="c-inner">
+        <div class="c-header">
+          <span class="c-label">Rule</span>
+          <span class="c-number" id="d-num">01</span>
+        </div>
+        <div class="c-text-wrap">
+          <div class="c-text" id="d-text">
+            <span class="c-orange" id="d-orange">Fix your hero section</span><span class="c-white" id="d-white"> before you run a single ad.</span>
+          </div>
+        </div>
+      </div>
+      <div class="c-bottom">
+        <div class="c-bottom-left">
+          <div class="c-avatar">
+            <!-- Drop your photo here as avatar.jpg next to this file, or it shows orange -->
+            <img src="avatar.jpg" onerror="this.style.display='none'">
+          </div>
+          <div>
+            <div class="c-name">David Pokorny</div>
+            <div class="c-url">humbldesign.io</div>
+          </div>
+        </div>
+        <div class="c-brand">Humbl ✳ Design</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function scaleCard() {
+    const wrap = document.getElementById('scale-wrap');
+    const card = document.getElementById('card');
+    const availW = window.innerWidth - 300 - 48 - 80;
+    const availH = window.innerHeight - 80;
+    const scale  = Math.min(availW / 1080, availH / 1350, 0.52);
+    card.style.transform       = `scale(${scale})`;
+    card.style.transformOrigin = 'top left';
+    wrap.style.width           = (1080 * scale) + 'px';
+    wrap.style.height          = (1350 * scale) + 'px';
+  }
+
+  scaleCard();
+  window.addEventListener('resize', scaleCard);
+
+  function pad(n) {
+    return String(parseInt(n) || 1).padStart(2, '0');
+  }
+
+  function update() {
+    const num    = pad(document.getElementById('ruleNum').value);
+    const orange = document.getElementById('orangeText').value.trim();
+    const white  = document.getElementById('whiteText').value.trim();
+    const fs     = document.getElementById('fontSize').value;
+
+    document.getElementById('d-num').textContent    = num;
+    document.getElementById('d-orange').textContent = orange;
+    document.getElementById('d-white').textContent  = orange ? ' ' + white : white;
+    document.getElementById('d-text').style.fontSize = fs + 'px';
+    document.getElementById('fs-val').textContent   = fs + 'px';
+
+    // Hide orange span if empty
+    document.getElementById('d-orange').style.display = orange ? '' : 'none';
+  }
+
+  async function download() {
+    const card = document.getElementById('card');
+    const btn  = document.querySelector('.btn-download');
+
+    // Remove scale for capture
+    const prev = card.style.transform;
+    card.style.transform = 'none';
+    btn.textContent = 'Generating…';
+
+    try {
+      const canvas = await html2canvas(card, {
+        width: 1080,
+        height: 1350,
+        scale: 1,
+        useCORS: true,
+        backgroundColor: '#181818',
+        logging: false
+      });
+
+      const num  = pad(document.getElementById('ruleNum').value);
+      const link = document.createElement('a');
+      link.download = `humbl-rule-${num}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } finally {
+      card.style.transform = prev;
+      btn.textContent = '↓ Download 1080 × 1350';
+      scaleCard();
+    }
+  }
+
+  update();
+</script>
+</body>
+</html>

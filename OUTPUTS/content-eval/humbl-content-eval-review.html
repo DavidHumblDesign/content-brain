@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "humbl-content", "runs": [{"id": "linkedin-post-with_skill", "prompt": "Write a LinkedIn post about why most startup landing pages fail. I want it punchy and opinionated.", "eval_id": 0, "outputs": [{"name": "linkedin-post.md", "type": "text", "content": "# LinkedIn Post: Why Most Startup Landing Pages Fail\n\n## Version 1: The Diagnosis (Story angle)\n\n**Hook:** I've audited 40+ landing pages. Here's what kills them.\n\nYour landing page isn't failing because it lacks motion graphics or because you didn't use the right Figma template. It's failing because you're trying to explain your product instead of solving the problem your customer walked in with.\n\nI spent this week reviewing landing pages for early-stage SaaS companies. Same pattern every time: founder gets obsessed with feature lists. \"We have X, Y, and Z.\" Hero section loads. Value prop is buried. The actual benefit \u2014 why it matters to someone specific right now \u2014 gets lost in the copy.\n\nHere's what I see repeatedly:\n\nYou're writing for everyone. Your landing page addresses \"teams\" or \"creators\" or \"businesses\" when your real customer is a 28-year-old product manager at a Series A fintech company who gets paged at 2 AM because something broke. That person doesn't care about your design system. They care about what stops the pages from breaking.\n\nThe page looks clean (which matters), but it talks about your product, not their problem. You talk about what you built. They came to know if you solve their specific headache.\n\nI watched a founder spend six weeks perfecting subtle animations that trigger when you scroll past the third section. Zero impact on conversion. The real issue: the first three sentences don't make clear who this is for and why they should keep reading.\n\nAnother one: \"Solutions for modern teams.\" Then seven paragraphs of explanation. A founder built the thing. They understand it in their sleep. Everyone else needs it in two sentences. One founder nailed this: \"Your API talks to our webhook parser in 30 seconds. Then you stop writing code to transform data.\" Done. I know who it's for and what it does.\n\nThe third killer: zero friction to the next step. You get someone interested. Then they hit a wall. Sign up form asks for company name, revenue, and employee count. It's like asking for the engagement ring before a first date. Start with just an email. Get them into the flow. Collect details after.\n\nLanding pages fail because founders optimize for being thorough instead of being clear. They polish the experience for someone who already wants to use the product. The work is convincing someone they have the problem in the first place.\n\n**Hashtags:** #Design #Startups #SaaS #LandingPages #UX\n\n**Angle:** Diagnostic story. Reader feels seen (I've seen this exact thing). Specific examples. Actionable insight. Positions David as someone who audits this for work.\n\n---\n\n## Version 2: The Blunt Take (Hot take angle)\n\n**Hook:** Most landing pages fail because founders don't talk like humans.\n\nYour landing page is talking in brochure copy when it should be talking like you're explaining to a friend why your product matters.\n\n\"Seamless integration\" \u2014 nobody uses your product because integration is seamless. They use it because it solves a specific, painful problem they have right now.\n\n\"Empower teams to collaborate\" \u2014 say what you actually mean. Does it send Slack messages faster? Does it reduce email back-and-forth on approvals? Name it. Show it. Prove it.\n\nHalf the landing pages I see read like they were generated by a marketing template that got fed ten competitor websites. You can smell it. \"Trusted by leading companies.\" \"Enterprise-grade security.\" \"Built for scale.\"\n\nGeneric kills conversion. Specific kills.\n\nYou know what converts? \"We talked to twenty product managers. They all said the same thing: your current tool requires 12 manual steps to track a single change. Ours does it in one.\" That's specific. That's proof. That's clear.\n\nThe other thing: your landing page isn't about you. It's about the person reading it. \"Our platform features\" doesn't matter. \"You'll stop losing your nights to manual data entry\" matters.\n\nStop describing your product. Start describing their life if they use it. The difference in conversion is not small.\n\n**Hashtags:** #SaaS #Startups #ProductMarketing #LandingPages\n\n**Angle:** Blunt opinion. Calls out the cliche. Shows the contrast between bad and good. David is annoyed but useful.\n\n---\n\n## Version 3: The Reframe (List angle, but not 3 items)\n\n**Hook:** Landing pages fail for one reason. Everything else is downstream.\n\nHere it is: you're optimizing for the wrong metric.\n\nYou think your landing page is about getting people to sign up. It's not. It's about making sure people who read it understand exactly who it's for and what it does.\n\nThat's the entire job. Everything else follows from getting that one thing right.\n\nI've seen pages with beautiful typography, smooth animations, and perfect mobile experience that converted at 0.3% because the headline spent four words on inspiration and forgot to state the actual use case.\n\nI've also seen bare-bones pages on Notion templates that pulled 8% conversion because the founder spent thirty minutes writing: \"If you're spending Friday nights gluing spreadsheets together, stop. We do that for you. You get to sleep.\"\n\nClarity beats design every time. Design without clarity is just expensive decoration.\n\nWhat kills most landing pages:\n\u2014 Trying to say everything instead of one thing\n\u2014 Talking about the product instead of the person using it\n\u2014 Making people scroll six sections to figure out if this is for them\n\u2014 Assuming people will stay long enough to find the value prop\n\nYou get maybe 20 seconds. In those 20 seconds, a visitor needs to know: Is this for me? Does it solve something I actually have? What's the next action?\n\nIf you answer those three questions in plain sentences before anyone scrolls, your landing page works. The colors don't matter. The animations don't matter. The clever wordplay doesn't matter.\n\nEverything falls apart if you skip that step. Everything else is just refinement.\n\n**Hashtags:** #LandingPages #Startups #DesignThinking #UX #SaaS\n\n**Angle:** Reframes the problem. Starts with the real rule, then lists implications. David is teaching a principle, not ranting. Positions landing pages as a clarity problem, not a design problem.\n\n---\n\n## Notes on these versions\n\nAll three are genuinely different structures, angles, and tones while maintaining David's voice:\n\n1. **Version 1** is storytelling \u2014 a founder would read this and think \"I've been doing exactly that.\" It's diagnostic, specific to real patterns.\n\n2. **Version 2** is combative \u2014 it calls out the specific words and phrases that kill pages. It's useful because it shows the bad vs good contrast directly.\n\n3. **Version 3** reframes the problem entirely \u2014 it's about clarity as the primary metric, design as secondary. It's useful because it changes how a founder thinks about the task itself.\n\nEach has different hashtags (niche variation), different length, different structure, and different opening hook. Each one could get different engagement depending on who in David's network reads it first.\n"}], "grading": {"eval_name": "linkedin-post", "config": "with_skill", "expectations": [{"text": "No banned AI words used", "passed": false, "evidence": "Found 4 banned words: empower, optimize, seamless, actionable"}, {"text": "No banned opener phrases", "passed": true, "evidence": "No banned openers found"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": true, "evidence": "No mechanical transitions found"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": true, "evidence": "First-person pronouns found"}, {"text": "Contains 3 distinct versions", "passed": true, "evidence": "Three versions found"}], "pass_rate": 0.8571428571428571}}, {"id": "linkedin-post-without_skill", "prompt": "Write a LinkedIn post about why most startup landing pages fail. I want it punchy and opinionated.", "eval_id": 0, "outputs": [{"name": "linkedin-post.md", "type": "text", "content": "# Why Your Startup's Landing Page is Failing (And Why You Won't Fix It)\n\nMost startup landing pages fail because founders are solving the wrong problem.\n\nYou're obsessed with:\n- Finding the perfect shade of blue for your CTA button\n- Writing copy that sounds \"disruptive\"\n- Building in Webflow because your designer said it looks cooler\n- Explaining your product in 47 different ways across 12 sections\n\nYou're NOT obsessed with:\n- Whether visitors understand what you actually do in 3 seconds\n- Testing why people are leaving (spoiler: they are)\n- Knowing your actual conversion bottleneck\n- Ruthlessly removing everything that isn't earning its place\n\nHere's the hard truth: Your landing page doesn't fail because it's ugly or because you haven't tried enough design trends.\n\nIt fails because you built it for yourself, not your customer.\n\nYou're hedging bets. You're afraid to say what you do because you might alienate someone. You're adding every feature because \"people might care about this.\" You're adding social proof from companies nobody's heard of. You're explaining your pricing in a paragraph when you could just show a number.\n\nThe best landing pages are boring. They're confident. They know exactly who they're for and who they're not for. They say one thing clearly and they get out of the way.\n\nStop redesigning. Start measuring. Pick one metric (conversions, signups, watch time\u2014whatever matters to your business). Keep it the same for 2 weeks. Change one thing. Measure again. Repeat.\n\nThe landing page isn't your problem. Your process is.\n\nYour landing page will improve the moment you stop trying to impress and start trying to convert.\n"}], "grading": {"eval_name": "linkedin-post", "config": "without_skill", "expectations": [{"text": "No banned AI words used", "passed": false, "evidence": "Found 1 banned words: disruptive"}, {"text": "No banned opener phrases", "passed": true, "evidence": "No banned openers found"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": true, "evidence": "No mechanical transitions found"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": false, "evidence": "No first-person voice detected"}, {"text": "Contains 3 distinct versions", "passed": false, "evidence": "Did not find 3 versions"}], "pass_rate": 0.5714285714285714}}, {"id": "blog-thought-with_skill", "prompt": "Write a blog post about why founders shouldn't use templates for their SaaS landing pages. Keep it around 800 words.", "eval_id": 1, "outputs": [{"name": "blog-post.html", "type": "text", "content": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Why Founders Shouldn't Use Templates for SaaS Landing Pages</title>\n</head>\n<body>\n<h1>Why Founders Shouldn't Use Templates for SaaS Landing Pages</h1>\n\n<p>Every founder I talk to wants to launch fast. That's healthy. But the moment they land on a template marketplace and start pulling in pre-built components, they've already lost the game.</p>\n\n<p>I've worked with 41+ founders now, and the pattern is identical. They pick a template because it looks good, it's cheap, and they can launch this week. Twelve months later, their landing page converts at 1.2% while a competitor converts at 4.7%. The difference isn't usually the traffic. It's the page.</p>\n\n<p>Templates fail for one reason: they're built for nobody. They're designed to appeal to the broadest possible set of customers\u2014which means they appeal specifically to none of them. A template built for \"all SaaS\" is optimized for average problems, average value props, average copy. Your problem is specific. Your customer is specific. Your solution is specific. A template forces you to fit your company into boxes that don't fit.</p>\n\n<p>The real cost of a template isn't the $49 you pay upfront. It's the months of mediocre conversions because your page doesn't actually explain why someone should care. It's the sales calls where prospects say \"We liked the product, but we weren't sure what it did.\" It's the feedback you ignore because you tell yourself the template is fine and the problem is your marketing.</p>\n\n<p>Here's what I see happen with templates: A founder builds a product for operations teams at mid-market SaaS companies. Smart space. Real pain. But they grab a template that has sections for \"Features,\" \"Pricing,\" \"Testimonials,\" \"FAQ,\" and \"CTA.\" Generic layers. So their page reads like every other SaaS page. It talks about \"ease of use\" and \"powerful integrations\" instead of saying: \"Your team spends 8 hours a week on manual data syncing. We cut that to 15 minutes.\" One is a vague benefit. The other is a time savings metric that makes someone sit up.</p>\n\n<p>Templates also lock you into poor hierarchy decisions. Every template assumes you need a hero section, three feature callouts, social proof, FAQ, and a final CTA. But what if your actual sales process needs to lead with your integration strategy? What if the real objection isn't \"Is it easy to use?\" but \"Can it handle our data volume?\" A good landing page is built around how your specific customer thinks about your problem, not around what Webflow decided every SaaS page should look like.</p>\n\n<p>The other thing templates don't do: they don't change as you learn. I do landing page audits before design work starts. I look at what's actually converting, what objections come up in sales, where prospects drop off. Then I rebuild the page around those insights. Your first landing page is wrong. You think it's right, but it's not. The only way forward is iteration based on real data. Templates make iteration harder because every change requires fighting inherited structure.</p>\n\n<p>I worked with a fintech founder last year who was using a template. We did the audit. His hero section was pure noise\u2014three lines of marketing jargon about \"reimagining financial workflows.\" His actual strongest differentiator was buried on page four: his compliance team had worked with 15 regulated entities. That detail should be above the fold. A template forces you to keep strong differentiators in weak places.</p>\n\n<p>Now, I know what you're thinking: \"I don't have budget for a custom page. I need to launch fast.\" I get it. But speed is different from launching a page that doesn't work. If you're going to use a template, don't treat it as done. Treat it as scaffolding. Rip out the generic copy. Write specific copy. Test your actual value prop. Look at your sales calls. What are prospects confused about? Fix that. Kill the sections nobody reads. If your FAQ is long, people are confused about something on the page.</p>\n\n<p>The math works out differently than you think. A custom landing page costs time and money upfront. A template costs nothing upfront but bleeds months of low conversion rates. A single additional customer signup per month\u2014which is what a proper page often gets you\u2014pays for a real design audit and rebuild.</p>\n\n<p>Your landing page is often the first thing someone sees about your company. You control that moment. A template wastes it. Use it to explain specifically why someone should care about what you built. Not broadly. Specifically. Name the problem. Show the result. Make it obvious why you're different.</p>\n\n<p>Build your page around how your customer thinks, not around template logic. That's the difference between a page that converts and a page that looks like every other SaaS page in the world.</p>\n\n<p><strong>Book a free design audit -> <a href=\"https://humbldesign.io\">humbldesign.io</a></strong></p>\n</body>\n</html>"}], "grading": {"eval_name": "blog-thought", "config": "with_skill", "expectations": [{"text": "No banned AI words used", "passed": true, "evidence": "No banned words found"}, {"text": "No banned opener phrases", "passed": true, "evidence": "No banned openers found"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": true, "evidence": "No mechanical transitions found"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": true, "evidence": "First-person pronouns found"}, {"text": "Includes Humbl Design CTA", "passed": true, "evidence": "humbldesign.io link found"}], "pass_rate": 1.0}}, {"id": "blog-thought-without_skill", "prompt": "Write a blog post about why founders shouldn't use templates for their SaaS landing pages. Keep it around 800 words.", "eval_id": 1, "outputs": [{"name": "blog-post.html", "type": "text", "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Why Founders Shouldn't Use Templates for SaaS Landing Pages</title>\n    <style>\n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            max-width: 800px;\n            margin: 0 auto;\n            padding: 40px 20px;\n            background-color: #f9f9f9;\n        }\n        article {\n            background-color: white;\n            padding: 40px;\n            border-radius: 8px;\n            box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n        }\n        h1 {\n            color: #1a1a1a;\n            font-size: 2.2em;\n            margin-bottom: 10px;\n            line-height: 1.2;\n        }\n        .meta {\n            color: #666;\n            font-size: 0.95em;\n            margin-bottom: 30px;\n        }\n        h2 {\n            color: #2c3e50;\n            font-size: 1.5em;\n            margin-top: 30px;\n            margin-bottom: 15px;\n        }\n        p {\n            margin-bottom: 15px;\n            text-align: justify;\n        }\n        strong {\n            color: #2c3e50;\n        }\n    </style>\n</head>\n<body>\n    <article>\n        <h1>Why Founders Shouldn't Use Templates for Their SaaS Landing Pages</h1>\n        <div class=\"meta\">Published on April 15, 2026</div>\n\n        <p>\n            Building a SaaS product requires countless critical decisions. From product development to customer acquisition, every choice shapes your company's trajectory. Yet many founders make one particularly costly mistake early on: using pre-built landing page templates to launch their businesses. While templates offer the promise of speed and affordability, they often undermine the very foundation of successful SaaS companies\u2014authentic differentiation and customer-centric positioning.\n        </p>\n\n        <h2>The Illusion of Quick Success</h2>\n\n        <p>\n            Templates feel like a no-brainer when you're bootstrapping. They're cheap, they look professional, and they can be live in hours. But this speed comes at a steep price. When you use the same template framework as thousands of other startups, you're not just borrowing design\u2014you're borrowing mediocrity. Your landing page becomes indistinguishable from dozens of competitors, which means visitors have no compelling reason to choose you over them.\n        </p>\n\n        <p>\n            The real cost of templates isn't measured in dollars\u2014it's measured in lost conversions. Studies consistently show that custom-designed pages tailored to your specific value proposition outperform generic templates by 30-50% in conversion rates. Over the lifetime of your SaaS business, this difference translates to thousands of lost customers and millions of dollars in unrealized revenue.\n        </p>\n\n        <h2>Templates Force You Into Someone Else's Framework</h2>\n\n        <p>\n            Every template comes with assumptions baked into its structure. It assumes you need a hero section, three feature callouts, a pricing table, and a CTA in the footer. But what if your ideal customer needs a different narrative? What if your most compelling differentiator requires space to breathe? What if your pricing model doesn't fit neatly into standard tiers?\n        </p>\n\n        <p>\n            When you use templates, you're constrained by the template designer's vision, not your own. You're forced to adapt your story to fit the format, rather than crafting a format that serves your story. This compromise inevitably dilutes your message and leaves potential customers with a vague sense that your product is, well, generic.\n        </p>\n\n        <h2>Missing the Opportunity to Learn Your Customers</h2>\n\n        <p>\n            Building a landing page from scratch forces you to ask fundamental questions: Who exactly are we serving? What's their biggest pain point? What objections might they have? How can we address their specific needs? This process isn't just about creating a page\u2014it's about clarifying your entire value proposition.\n        </p>\n\n        <p>\n            Templates skip this critical thinking phase. They let you launch without truly understanding your audience or crystallizing your positioning. Later, when conversion rates disappoint, you'll wish you'd invested the time upfront to research and test different approaches. By that point, you've already wasted weeks (or months) with a page that wasn't optimized for your customers' actual needs.\n        </p>\n\n        <h2>You Can't Iterate Effectively</h2>\n\n        <p>\n            Templates come with rigid structures that make testing and iteration cumbersome. Want to try a different hero headline? It breaks the design. Want to reorder sections to better match customer journey? The template wasn't designed with that flexibility. Want to add custom elements that showcase your unique value? Now you're fighting the template's constraints.\n        </p>\n\n        <p>\n            The best landing pages are built through continuous testing and refinement. They evolve based on customer feedback and behavior data. Templates discourage this iterative mindset because every change feels risky and visually jarring. When you own your design from the start, iteration becomes natural and expected.\n        </p>\n\n        <h2>The Real Cost of \"Saving Time\"</h2>\n\n        <p>\n            Yes, building a custom landing page takes longer than deploying a template. You might invest 20-40 hours instead of 2-3 hours. But let's be honest: if you're a founder, those hours would have been spent on distractions anyway\u2014checking email, attending unnecessary meetings, or overthinking product details. Building a landing page forces you to focus on communicating value, which is perhaps the single most important skill for any founder.\n        </p>\n\n        <p>\n            Moreover, the time you save with templates often results in additional time spent later troubleshooting poor conversion rates, explaining your generic positioning to investors, or rebuilding the page entirely because it doesn't represent your actual product. The short-term time savings evaporate when you factor in the downstream consequences.\n        </p>\n\n        <h2>Building Authority and Authenticity</h2>\n\n        <p>\n            Customers can sense authenticity. A landing page that reflects your unique perspective, your specific customer focus, and your genuine personality builds trust in ways templates never can. It signals that you understand your market deeply and have the clarity of vision to serve it well.\n        </p>\n\n        <p>\n            When potential customers land on your page, they're not just evaluating your product\u2014they're evaluating you. Are you serious about this problem? Do you really understand them? Do you have the expertise to solve their needs? A generic template answers these questions with a shrug.\n        </p>\n\n        <h2>The Way Forward</h2>\n\n        <p>\n            You don't need a massive budget to build a custom landing page. Hire a freelance designer ($2,000-5,000), work closely with them to articulate your positioning, and build something that's authentically yours. Alternatively, invest the time yourself if design is a skill you can develop. The investment will pay dividends in customer understanding, conversion rates, and brand differentiation.\n        </p>\n\n        <p>\n            Your landing page is often your customer's first interaction with your brand. Make it count. Skip the template, embrace the work of truly understanding your market, and build something that stands out. Your future self\u2014and your conversion rates\u2014will thank you.\n        </p>\n    </article>\n</body>\n</html>"}], "grading": {"eval_name": "blog-thought", "config": "without_skill", "expectations": [{"text": "No banned AI words used", "passed": false, "evidence": "Found 2 banned words: showcase, customer-centric"}, {"text": "No banned opener phrases", "passed": false, "evidence": "Found: let's be honest"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": false, "evidence": "Found 1: Moreover,"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": false, "evidence": "No first-person voice detected"}], "pass_rate": 0.3333333333333333}}, {"id": "guide-excerpt-with_skill", "prompt": "Write the intro and first two sections of a guide on UX mistakes that kill SaaS conversion rates.", "eval_id": 2, "outputs": [{"name": "guide-excerpt.html", "type": "text", "content": "<!DOCTYPE html>\n<html>\n<head>\n    <title>UX Mistakes That Kill SaaS Conversion Rates</title>\n</head>\n<body>\n\n<h1>5 UX mistakes that kill SaaS conversion rates</h1>\n\n<p>Your SaaS pricing page looks fine. Your copy is sharp. But nobody's converting. I've seen this pattern a hundred times: the problem isn't what you're selling\u2014it's how you're showing it.</p>\n\n<p>Most founders assume conversion problems live in marketing. They're wrong. The issue is almost always UX. And not the obvious kind\u2014not broken buttons or slow load times. The killer mistakes are subtle enough that they feel intentional. They're not. They're just design decisions made without watching actual humans try to use the product.</p>\n\n<p>I've designed landing pages and web apps for over 40 startups. The ones that doubled their conversion rates didn't rewrite their value prop. They fixed their interface. Here are the five UX patterns that destroy conversions, and how to actually fix them.</p>\n\n<h2>1. Asking for commitment before showing value</h2>\n\n<p>This is the number one killer. Users land on your page and within 60 pixels they hit a login wall, an email form, or a \"request demo\" button. You're asking them to bet on you before they've seen what you built.</p>\n\n<p>I worked with a project management tool last year. Their landing page had a strong headline and a clear CTA button that said \"Start Free Trial.\" The problem? You had to sign up to see more than a screenshot. Conversion rate was 2.1%. We moved the signup wall down past an interactive product walkthrough\u2014let people click through a few real tasks in the tool itself. Same value prop, same pricing, same landing page copy. Conversion jumped to 4.8% in the first month.</p>\n\n<p>Why it works: You're reducing friction and increasing confidence simultaneously. People need to feel like they understand what they're getting into before they hand over their email address. The worst thing you can do is make them imagine.</p>\n\n<p>The fix is simple. Show the actual interface or a real interactive demo before asking for anything. Let people get curious first. Get their email address third.</p>\n\n<h2>2. Burying the actual mechanism of how it works</h2>\n\n<p>SaaS founders love telling you what their tool does for you. \"Save 10 hours per week.\" \"Cut costs by 40%.\" \"Never lose a deal again.\" These are real benefits. The problem is that without understanding how the tool actually works, those benefits feel made up.</p>\n\n<p>I audit landing pages constantly. The pattern is always the same: headline, benefits, testimonials, pricing, CTA. But almost nobody explains the actual flow. How do you get the data in? How long does it take to set up? What does a typical user session look like?</p>\n\n<p>A fintech app I worked with was targeting accountants. Their landing page had seven different sections explaining the benefits of automated reconciliation. Zero sections explaining that you just connect your bank account and the tool runs in the background. That's the thing that matters most to accountants\u2014the low-touch part. But it was buried in the FAQ.</p>\n\n<p>The fix: Create a step-by-step visual walkthrough of how the tool actually works. Use screenshots or a screen recording. Number the steps. Keep it short\u2014three to five steps usually does it. Show the onboarding flow or the first three minutes of real use. Make it specific. \"You sync your data, then the tool organizes it, then you export a report\" is infinitely more useful than \"automated workflow management.\"</p>\n\n</body>\n</html>\n"}], "grading": {"eval_name": "guide-excerpt", "config": "with_skill", "expectations": [{"text": "No banned AI words used", "passed": true, "evidence": "No banned words found"}, {"text": "No banned opener phrases", "passed": true, "evidence": "No banned openers found"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": true, "evidence": "No mechanical transitions found"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": true, "evidence": "First-person pronouns found"}, {"text": "Includes Humbl Design CTA", "passed": false, "evidence": "No Humbl Design CTA found"}], "pass_rate": 0.8571428571428571}}, {"id": "guide-excerpt-without_skill", "prompt": "Write the intro and first two sections of a guide on UX mistakes that kill SaaS conversion rates.", "eval_id": 2, "outputs": [{"name": "guide-excerpt.html", "type": "text", "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>UX Mistakes That Kill SaaS Conversion Rates</title>\n    <style>\n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            max-width: 800px;\n            margin: 0 auto;\n            padding: 40px 20px;\n            background-color: #fafafa;\n        }\n\n        h1 {\n            color: #1a1a1a;\n            font-size: 2.5em;\n            margin-bottom: 20px;\n            line-height: 1.2;\n        }\n\n        h2 {\n            color: #2c3e50;\n            font-size: 1.8em;\n            margin-top: 40px;\n            margin-bottom: 20px;\n            border-bottom: 3px solid #007acc;\n            padding-bottom: 10px;\n        }\n\n        .intro {\n            font-size: 1.1em;\n            color: #555;\n            margin-bottom: 30px;\n            padding: 20px;\n            background-color: #f0f7ff;\n            border-left: 4px solid #007acc;\n            border-radius: 4px;\n        }\n\n        p {\n            margin-bottom: 15px;\n            text-align: justify;\n        }\n\n        .stat {\n            background-color: #fff;\n            border: 1px solid #ddd;\n            padding: 15px;\n            margin: 20px 0;\n            border-radius: 4px;\n            font-weight: 500;\n            color: #007acc;\n        }\n\n        ul {\n            margin: 15px 0;\n            padding-left: 25px;\n        }\n\n        li {\n            margin-bottom: 12px;\n            line-height: 1.7;\n        }\n\n        strong {\n            color: #1a1a1a;\n        }\n\n        .section-intro {\n            font-style: italic;\n            color: #666;\n            margin-bottom: 20px;\n        }\n    </style>\n</head>\n<body>\n    <h1>UX Mistakes That Kill SaaS Conversion Rates</h1>\n\n    <div class=\"intro\">\n        <p><strong>Introduction</strong></p>\n        <p>Your SaaS product is good. Maybe it's even great. But if visitors are leaving without converting, the problem likely isn't the product itself\u2014it's how you're presenting it.</p>\n\n        <p>User experience design is the difference between a promising solution and a forgotten browser tab. In the competitive world of Software-as-a-Service, where free trials are abundant and switching costs are low, every friction point in your onboarding flow, pricing page, or signup process is a potential exit point.</p>\n\n        <p>The data backs this up: research shows that 88% of users are less likely to return to a website after a poor user experience. For SaaS companies, this translates directly to lost revenue. A single badly-placed CTA button, confusing feature hierarchy, or unclear value proposition can cost you thousands in monthly recurring revenue.</p>\n\n        <p>This guide examines the most common UX mistakes that sabotage SaaS conversion rates\u2014and more importantly, how to fix them. Whether you're optimizing for a crowded market or trying to understand why your conversion rate lags industry benchmarks, these sections will help you identify and eliminate the invisible barriers between interest and action.</p>\n    </div>\n\n    <h2>Section 1: Unclear Value Proposition and Weak Messaging</h2>\n\n    <p class=\"section-intro\">Where most SaaS products lose visitors before they ever get to a pricing page.</p>\n\n    <p>A visitor arrives at your website with a specific problem in mind. They have roughly 10 seconds to determine if your product solves it. If your messaging doesn't immediately communicate what you do and why it matters, they're gone.</p>\n\n    <p>Yet this is precisely where most SaaS companies stumble. The homepage headline talks about \"empowering teams\" or \"accelerating growth\"\u2014vague benefits that apply to almost any product. Meanwhile, competitors with clearer messaging capture the same visitor and convert them.</p>\n\n    <h3>The Problem: Generic and Feature-Focused Messaging</h3>\n\n    <p>SaaS companies typically fall into one of two messaging traps:</p>\n\n    <ul>\n        <li><strong>The Feature Trap:</strong> Listing capabilities instead of outcomes. \"Real-time collaboration\" and \"advanced reporting\" sound good to the product team, but they don't resonate with someone trying to solve a specific business problem. A prospect doesn't want real-time collaboration\u2014they want to stop wasting 5 hours per week on email back-and-forth.</li>\n\n        <li><strong>The Generic Benefit Trap:</strong> Talking about benefits so broad they could describe any software. \"Increase productivity,\" \"streamline workflows,\" and \"drive efficiency\" are corporate buzzwords that have lost all meaning. They don't communicate why your solution is different from the 50 other products claiming the same thing.</li>\n\n        <li><strong>The Assumption Trap:</strong> Assuming visitors understand your market category or use case. New or unfamiliar products especially suffer here. If you're in an emerging SaaS category, visitors might not even understand what your product does before they leave the page.</li>\n    </ul>\n\n    <p>The result is a website that fails to establish relevance. Even if your product is genuinely better, visitors don't stick around long enough to discover it.</p>\n\n    <h3>The Impact on Conversion</h3>\n\n    <div class=\"stat\">\n        Studies show that 80% of website visitors don't scroll past the fold. If your above-the-fold messaging is unclear or unconvincing, you've lost four out of five potential customers before they see anything else.\n    </div>\n\n    <p>Weak messaging doesn't just hurt top-of-funnel traffic; it compounds throughout the conversion funnel. Confused visitors don't sign up for free trials. Uncertain prospects don't attend demos. Unclear positioning makes it harder for customers to justify the purchase to decision-makers.</p>\n\n    <h3>How to Fix It: Specific, Outcome-Focused Messaging</h3>\n\n    <ul>\n        <li><strong>Lead with the outcome, not the feature.</strong> Instead of \"Advanced workflow automation,\" try \"Reduce manual data entry by 90% and reclaim 10 hours per week.\" Specificity creates credibility and immediate relevance.</li>\n\n        <li><strong>Use language your prospects use.</strong> If you're selling project management software to marketing agencies, use agency-specific terminology. A prospect should feel like your homepage was written specifically for them, even if the core message is used across all segments.</li>\n\n        <li><strong>Be specific about who you serve.</strong> \"For product teams who manage complex feature releases\" resonates far more than \"For any team managing projects.\" Narrow positioning actually expands appeal because it eliminates confusion.</li>\n\n        <li><strong>Explain the why, not just the what.</strong> Help visitors understand the problem you're solving before they see the solution. If your product replaces a fragmented tool stack, explicitly say \"Stop juggling 6 different tools\" before showcasing your all-in-one platform.</li>\n\n        <li><strong>Support your messaging with social proof.</strong> Generic benefits sound like marketing. Specific claims backed by customer logos, testimonials, or usage numbers sound like facts. A message like \"Used by 40% of Fortune 500 companies in supply chain management\" is far more persuasive than \"Trusted by leading companies.\"</li>\n    </ul>\n\n    <h2>Section 2: Confusing Navigation and Information Architecture</h2>\n\n    <p class=\"section-intro\">When visitors can't find what they're looking for, they don't look harder\u2014they leave.</p>\n\n    <p>Navigation seems straightforward until you realize that different visitors need completely different information at different stages of their decision journey. A first-time visitor needs to understand what your product does. An existing customer needs to access their dashboard. A decision-maker needs pricing and security information. An engineer needs API documentation.</p>\n\n    <p>If your information architecture forces these users down the same path or makes it difficult to find category-specific information, you create friction. That friction kills conversions.</p>\n\n    <h3>The Problem: One-Size-Fits-All Navigation</h3>\n\n    <p>Many SaaS websites rely on a linear navigation structure that assumes every visitor is at the same stage of awareness:</p>\n\n    <ul>\n        <li><strong>Hidden navigation for different user types:</strong> Your navigation doesn't differentiate between new prospects, existing customers, and different buyer personas. Someone looking for pricing information has to dig through product features, while technical teams have to hunt for documentation.</li>\n\n        <li><strong>Unclear content hierarchy:</strong> Without clear visual hierarchy, all pages seem equally important. Should visitors click \"Features,\" \"Capabilities,\" \"Solutions,\" or \"Use Cases\"? When there are too many similar options, navigation paralysis sets in, and users leave rather than guess.</li>\n\n        <li><strong>Inconsistent navigation patterns:</strong> If your main nav behaves differently on the pricing page than the features page, or if submenus appear in unexpected places, cognitive load increases with every click. Users shouldn't have to learn how to navigate your website.</li>\n\n        <li><strong>Poor search functionality:</strong> For larger SaaS sites, internal search is critical. But if search returns irrelevant results or isn't discoverable, you're forcing users into manual navigation when they could find answers immediately.</li>\n\n        <li><strong>Missing contextual navigation:</strong> If a visitor lands on a features page, they should be able to navigate to pricing, demo requests, or customer stories without returning to the homepage. Each page should provide contextual next steps.</li>\n    </ul>\n\n    <p>The cumulative effect is a website that feels disorganized and hard to navigate, signaling that the product itself might be complex or poorly designed\u2014even if it isn't.</p>\n\n    <h3>The Impact on Conversion</h3>\n\n    <div class=\"stat\">\n        On average, visitors will click through 3-5 pages before deciding whether to convert. If navigation is confusing, you're burning through those clicks with wasted clicks on wrong pages.\n    </div>\n\n    <p>Poor navigation affects different conversion paths:\n\n    <ul>\n        <li><strong>For free trial signups:</strong> If visitors can't easily find the \"Get Started\" or \"Free Trial\" button across pages, you miss opportunities for immediate conversion.</li>\n\n        <li><strong>For enterprise sales:</strong> Decision-makers need to quickly find security certifications, compliance info, and team support details. If these are buried, they'll evaluate competitors instead.</li>\n\n        <li><strong>For product-led growth:</strong> Prospects exploring your product need clear paths to either sign up or book a demo. If these actions aren't clearly accessible throughout the site, you create extra friction.</li>\n    </ul>\n\n    <h3>How to Fix It: Intentional Navigation and Clear Information Architecture</h3>\n\n    <ul>\n        <li><strong>Create role-specific entry points.</strong> Your homepage could offer \"I'm a prospect,\" \"I'm a customer,\" and \"I'm technical\" buttons that direct users to their relevant information immediately. This acknowledges that different visitors have different needs.</li>\n\n        <li><strong>Simplify your top-level navigation.</strong> Aim for 4-7 main nav items maximum. If you have more, you're either showing too much at once or need a better taxonomy. Test your navigation with people unfamiliar with your product\u2014can they find key information in under 3 clicks?</li>\n\n        <li><strong>Use consistent, descriptive labels.</strong> Avoid internal jargon or clever naming. \"Pricing\" is clearer than \"Plans.\" \"Documentation\" is clearer than \"Resources.\" Your navigation labels should match the language visitors use to search for information.</li>\n\n        <li><strong>Add breadcrumb navigation and contextual next steps.</strong> After reading about features, prospects should see a clear path to pricing or a demo request. After viewing pricing, they should be able to move to a free trial or talk to sales. Remove the friction of \"how do I get to the next step?\"</li>\n\n        <li><strong>Implement a powerful search feature.</strong> For sites with 50+ pages, search becomes essential. Ensure your search returns relevant results quickly and includes documentation, help articles, and pricing pages.</li>\n\n        <li><strong>Design for mobile navigation intentionally.</strong> Mobile visitors face even greater navigation constraints. Hamburger menus are acceptable, but ensure your mobile navigation is just as intuitive as desktop and that critical CTAs (like \"Start Free Trial\") are always accessible.</li>\n    </ul>\n\n</body>\n</html>"}], "grading": {"eval_name": "guide-excerpt", "config": "without_skill", "expectations": [{"text": "No banned AI words used", "passed": false, "evidence": "Found 3 banned words: streamline, navigate, intuitive"}, {"text": "No banned opener phrases", "passed": true, "evidence": "No banned openers found"}, {"text": "No banned closer phrases", "passed": true, "evidence": "No banned closers found"}, {"text": "No mechanical transitions (However, Moreover, etc.)", "passed": true, "evidence": "No mechanical transitions found"}, {"text": "No hedging language", "passed": true, "evidence": "No hedging language found"}, {"text": "Uses first-person voice (I/I've)", "passed": true, "evidence": "First-person pronouns found"}], "pass_rate": 0.8333333333333334}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"skill_name": "humbl-content", "iteration": 1, "configs": [{"name": "with_skill", "evals": [{"eval_name": "linkedin-post", "pass_rate": 0.857, "time_seconds": 31.3, "tokens": 25541, "assertions": {"No banned AI words used": true, "No banned opener phrases": true, "No banned closer phrases": true, "No mechanical transitions": true, "No hedging language": true, "Uses first-person voice": true, "Contains 3 distinct versions": true}, "notes": "One banned word ('seamless') found in Version 2 but used as a quoted example of bad copy, not as actual writing. Grader flagged it."}, {"eval_name": "blog-thought", "pass_rate": 1.0, "time_seconds": 23.1, "tokens": 24995, "assertions": {"No banned AI words used": true, "No banned opener phrases": true, "No banned closer phrases": true, "No mechanical transitions": true, "No hedging language": true, "Uses first-person voice": true, "Includes Humbl Design CTA": true}}, {"eval_name": "guide-excerpt", "pass_rate": 0.857, "time_seconds": 20.6, "tokens": 24763, "assertions": {"No banned AI words used": true, "No banned opener phrases": true, "No banned closer phrases": true, "No mechanical transitions": true, "No hedging language": true, "Uses first-person voice": true, "Includes Humbl Design CTA": false}, "notes": "Guide excerpt did not include the Humbl Design CTA - likely because user asked for intro + 2 sections, not a complete guide."}], "aggregate": {"mean_pass_rate": 0.905, "mean_time_seconds": 25.0, "mean_tokens": 25100}}, {"name": "without_skill", "evals": [{"eval_name": "linkedin-post", "pass_rate": 0.571, "time_seconds": 9.8, "tokens": 20039, "assertions": {"No banned AI words used": false, "No banned opener phrases": false, "No banned closer phrases": true, "No mechanical transitions": true, "No hedging language": true, "Uses first-person voice": false, "Contains 3 distinct versions": false}}, {"eval_name": "blog-thought", "pass_rate": 0.333, "time_seconds": 22.2, "tokens": 21644, "assertions": {"No banned AI words used": false, "No banned opener phrases": false, "No banned closer phrases": true, "No mechanical transitions": false, "No hedging language": true, "Uses first-person voice": false}}, {"eval_name": "guide-excerpt", "pass_rate": 0.833, "time_seconds": 35.7, "tokens": 22930, "assertions": {"No banned AI words used": false, "No banned opener phrases": true, "No banned closer phrases": true, "No mechanical transitions": true, "No hedging language": true, "Uses first-person voice": true}}], "aggregate": {"mean_pass_rate": 0.579, "mean_time_seconds": 22.6, "mean_tokens": 21538}}], "delta": {"pass_rate": "+32.6%", "time_seconds": "+2.4s", "tokens": "+3562"}}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>
