@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StatDoctor: Case Study / Humbl Design</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px; color: #111; background: #fff; line-height: 1.65;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+
+  .cs-header { padding: 72px 0 64px; border-bottom: 1px solid #e0e0e0; }
+  .cs-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+    border: 1px solid #ddd; color: #666; background: #fafafa;
+  }
+  .tag.highlight { background: #111; color: #fff; border-color: #111; }
+  h1 { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 18px; }
+  .cs-intro { font-size: 19px; color: #555; line-height: 1.6; margin-bottom: 40px; max-width: 640px; }
+
+  .cs-sidebar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e0e0e0;
+    border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+  }
+  .cs-sidebar-item { background: #fff; padding: 16px 20px; }
+  .cs-sidebar-item .label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .cs-sidebar-item .value { font-size: 14px; font-weight: 600; color: #111; }
+
+  .cs-section { padding: 64px 0; border-bottom: 1px solid #e0e0e0; }
+  .cs-section.alt { background: #f7f7f7; }
+  h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+  p { color: #444; margin-bottom: 14px; line-height: 1.7; }
+  p:last-of-type { margin-bottom: 0; }
+
+  .outcome-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e0e0e0; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; margin-bottom: 40px; }
+  .outcome-item { background: #fff; padding: 28px 24px; text-align: center; }
+  .outcome-num { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .outcome-label { font-size: 12px; color: #888; line-height: 1.4; }
+
+  .cs-testimonial { border-left: 3px solid #111; padding: 24px 28px; background: #f7f7f7; border-radius: 0 6px 6px 0; }
+  .cs-testimonial p { font-size: 16px; color: #333; font-style: italic; line-height: 1.7; margin-bottom: 20px; }
+  .testimonial-author { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #111; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .author-name { font-size: 14px; font-weight: 600; color: #111; }
+  .author-title { font-size: 12px; color: #999; margin-top: 2px; }
+
+  .cs-nav-footer { padding: 40px 0; }
+  .cs-nav-footer-inner { display: flex; justify-content: space-between; }
+  .btn { display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; border: 2px solid #111; color: #111; }
+  .btn:hover { background: #111; color: #fff; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .cs-sidebar { grid-template-columns: repeat(2, 1fr); }
+    .outcome-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="cs-header">
+  <div class="container">
+    <div class="cs-meta">
+      <span class="tag highlight">Landing page</span>
+      <span class="tag">HealthTech</span>
+      <span class="tag">5 days</span>
+    </div>
+    <h1>5 days to rebuild user trust.</h1>
+    <p class="cs-intro">StatDoctor is a healthcare service that delivers quick, reliable medical consultations online. Their landing page was live. The conversion rate wasn't where it needed to be.</p>
+    <div class="cs-sidebar">
+      <div class="cs-sidebar-item">
+        <div class="label">Client</div>
+        <div class="value">StatDoctor</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Service</div>
+        <div class="value">Landing page redesign</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Timeline</div>
+        <div class="value">5 days</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Industry</div>
+        <div class="value">HealthTech</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The brief</h2>
+    <p>Dr. Anu G came through a free audit offer. StatDoctor connects patients with expert doctors in real time, making healthcare more accessible without the waiting room. The landing page was already live and functional.</p>
+    <p>The booking rate was disappointing. She wanted it fixed.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>What was actually broken</h2>
+    <p>The page lacked visual clarity, a clear hierarchy, and a logical flow. Visitors arrived curious and left without taking action. They didn't understand the value fast enough, didn't know what to click, and rarely reached the booking form.</p>
+    <p>For a service operating in healthcare (a high-trust category), that's a serious problem. The page wasn't building trust before asking for a booking.</p>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The work</h2>
+    <p>A focused 5-day redesign sprint. Rebuilt the page around visual clarity and a logical user flow, with one organising principle for every section: book a consultation.</p>
+    <p>The messaging was restructured to lead with outcomes, not features. Trust signals were moved earlier in the page. The CTA was placed where visitors were actually ready to act.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>The outcome</h2>
+    <div class="outcome-row">
+      <div class="outcome-item">
+        <div class="outcome-num">5</div>
+        <div class="outcome-label">Days from brief to new design</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">★★★★★</div>
+        <div class="outcome-label">CEO review</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">1</div>
+        <div class="outcome-label">Clear goal: book a consultation</div>
+      </div>
+    </div>
+    <div class="cs-testimonial">
+      <p>"Whilst we had a working landing page, I wasn't happy with the design nor the conversion rate. After a quick video consultation and filling out a form, I was amazed by the speed and quality of David's work. Within 5 days I had a new landing page design, exceeding all of my expectations. I have thoroughly enjoyed working with Humbl, and highly recommend their services to everyone."</p>
+      <div class="testimonial-author">
+        <div class="avatar">AG</div>
+        <div>
+          <div class="author-name">Dr. Anu G</div>
+          <div class="author-title">CEO, StatDoctor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-nav-footer">
+  <div class="container">
+    <div class="cs-nav-footer-inner">
+      <a href="portfolio.html" class="btn">← All work</a>
+      <a href="augment.html" class="btn">Next: Augment →</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

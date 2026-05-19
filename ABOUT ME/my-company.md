@@ -67,9 +67,15 @@ Design and build landing pages and websites that actually convert — for early-
 
 ## Ideal Customer Profile (ICP)
 
-The single "main character" I write for is **Ryan** — a hypothetical early-seed tech founder used internally as the target for every post and offer.
+Two ICPs operate in parallel as of May 2026:
 
-**Ryan:**
+- **Ryan** is the buying ICP. Target for every paid offer (audit, retainer, project) and the humbldesign.io conversion flow.
+- **Alex** is the content audience ICP. Default audience for every LinkedIn post and newsletter issue. Alex eventually surfaces Ryan via overflow referrals, indirect distribution, and audience-as-trust-signal at scale.
+
+For the 2026 audience-build phase, content is written for Alex first. Ryan-aimed content stays at 20% of the rotation. Re-converge to founder funnel in 2027 once audience clears 30K.
+
+### Buying ICP: Ryan
+
 - Based in Austin, Texas — US timezone, founder network, modern tech culture
 - Company is early seed: ~2–10 people, shipping weekly, messy but moving fast
 - Building in AI/SaaS — AI products, dev tooling, B2B SaaS, fintech-adjacent, anything software-first
@@ -83,6 +89,30 @@ The single "main character" I write for is **Ryan** — a hypothetical early-see
 **Decision-maker nuance:** At early seed the founder IS the product person. By seed+ there's a Head of Product. Content should land both ways — the founder reads it and thinks "this is exactly what's broken," and a Head of Product reads it and thinks "this is the right diagnosis." That makes posts forwardable inside the company.
 
 **Broader served range:** Seed to Series A tech startups in AI, SaaS, and Fintech. Founders who need reliable, fast design help but aren't ready to hire in-house.
+
+### Content audience ICP: Alex
+
+- Freelance solo designer, 3-6 years into the career
+- Lives anywhere LinkedIn reaches (EU, US, Canada, design hub cities)
+- 2-5 clients at any time, mostly project work plus occasional small retainers
+- Earns $50-120/hr or $3-8K per project, wants to reach $150+/hr
+- Stack: Figma primary, Webflow for some clients, dabbling with Framer, v0, Lovable
+- Anxious about the AI/vibe-coded wave eating the low end of freelance design
+- LinkedIn at 500-3,000 followers, posts occasionally, has never gone viral
+
+**Alex's stated goal:** "Improve my craft. Become a better designer."
+
+**Alex's real pain (the bullseye):** "I'm doing $50/hr UI tweaks while my client's marketer takes credit for any conversion lift my design produces. I want to be the designer who owns business outcomes, not just the pretty pixels. I want to charge $150/hr and have founders refer me without me chasing."
+
+**Alex's job-to-be-done:** "Teach me the conversion skills most designers don't have, so I can charge more, land better clients, and stop competing with vibe-coded pages on price."
+
+**What Alex saves:** CRO cheat sheets, before/after redesigns, AI design tool comparisons, hot takes on the design industry, anything actionable for a client project next Monday.
+
+**What Alex reposts:** content that makes them look smart in their designer Slack, industry takes they agree with, famous-site teardowns of companies their peers know.
+
+**How Alex surfaces Ryan in 2027:** (1) overflow referrals, (2) indirect distribution to founders in Alex's network, (3) audience size as a trust signal at 30K+.
+
+**The persona note:** Alex is essentially David circa 2021-2024. Content-writing test: would David at that career stage save, repost, or share this? If yes, the post is right for Alex.
 
 ---
 
@@ -134,22 +164,47 @@ Clients stay for years (Augment: 4+ years). Why: speed, quality, reliability, tr
 
 ## Content Strategy
 
-**Platform:** LinkedIn only (for now). Daily posting. Building a founder-led brand that's approachable and useful.
+**Platform:** LinkedIn only (for now). 5 posts/week. Weekly newsletter (name + platform TBD as of May 2026, working title: "Conversion Design") launches alongside.
 
-**AIO layer (as of May 2026):** AI search (ChatGPT, Perplexity, Claude) is now part of the content and website strategy. When working on LinkedIn posts, blog content, or website copy, pull from `skills/linkedin-strategy-SKILL.md` (off-site presence, content structure) and `skills/seo-SKILL.md` (website clarity, blog structure, monthly reconnaissance). The goal: Humbl shows up when founders ask AI "who should I hire to fix my landing page?" The anti-AI writing rules are a structural advantage — 82% of AI-cited content is human-written.
+**Phase (May 2026 to Dec 2026):** Designer-first audience build. Default audience for content is Alex (the designer ICP). Goal: 30-50K LinkedIn followers and 15K newsletter subs by Dec 31. Ryan-aimed content stays at 20% of the rotation. Re-converge to founder funnel in 2027 once audience clears 30K. Detailed strategy: `OUTPUTS/linkedin-strategy/designer-first-pivot-strategy-v3.md`.
 
-**Entry door — what to be famous for:** Landing pages that don't convert. Every founder has one. The problem is always the same — bad hierarchy, weak social proof, no clear CTA, hero copy that explains features instead of outcomes. This is the hook. It expands naturally into every other page on the site (pricing, about, features, careers) and eventually into product UX for the right clients.
+**AIO layer (as of May 2026):** AI search (ChatGPT, Perplexity, Claude) is now part of the content and website strategy. When working on LinkedIn posts, blog content, or website copy, pull from `skills/linkedin-strategy-SKILL.md` and `skills/seo-SKILL.md`. The goal: Humbl shows up when founders ask AI "who should I hire to fix my landing page?" The anti-AI writing rules are a structural advantage — 82% of AI-cited content is human-written.
 
-**Core belief repeated across posts:** "Good design is invisible. If visitors have to think, your page isn't converting."
+**Entry door — what to be famous for:** Landing page redesigns + the CRO playbook designers don't get taught. The wedge: most design creators teach UI craft. Almost none teach conversion outcomes. CRO-for-designers is the lane nobody else owns.
 
-**Content pillars:**
-1. **Humbl Audit — Landing Page Teardowns.** Hero rewrites, CTA analysis, social proof fixes, above-the-fold critique, pricing-page teardowns. Screenshot + roast format. This is the highest-engagement pillar.
-2. **Humbl Audit — Website Page CRO.** One page type per post — pricing page, about page, features page, careers page, blog, contact, etc. What CRO-friendly elements each page needs, what most startups get wrong, what to fix first. (Content series: every startup website page, one by one, with the CRO building blocks for each.)
-3. **Humbl Rules.** Punchy CRO and design heuristics. "If X, then Y is broken." Social proof is non-negotiable. Fix the landing page before running ads. Don't overdesign. Your hero isn't a brochure. One CTA per page. These should sound like principles David has burned into his brain from 50+ audits.
+**Contrarian belief (the brand spine):** "Pretty doesn't convert. Conversion is the only design metric that matters."
 
-Every post should do one of two things: generate an "AUDIT" DM, or build trust so the founder follows now and DMs later.
+This is the position every post defends. It pushes against both the design community (which prizes craft for its own sake) and the marketing community (which thinks CRO is their turf). Sub-beliefs: designers undersell themselves because they don't track conversions; good design is invisible; vibe-coded pages are fine, the problem is everything after them; fix the landing page before running ads.
 
-**CTA on every post:** Some form of "DM 'AUDIT' + your URL." Consistency is the point — repeating the same trigger phrase trains readers.
+**Content pillars (5 main + 1 cross-cutting):**
+
+Interest pillars (top of funnel, for Alex, 70% of rotation):
+1. **Landing page redesigns.** Reddit pipeline brought to LinkedIn. Solo founders, vibe-coded pages, famous public companies. 2 posts/week minimum. The engine.
+2. **CRO for designers.** Conversion principles taught for designers, not marketers. 1 post/week.
+3. **Design industry takes.** Opinions on tools, agencies, careers, freelancing in the AI era. 1 post/week.
+4. **Design breakdowns.** Buttons, hero sections, forms, nav patterns. The format past data proves works. 1 post/week.
+
+Expert pillars (middle and bottom of funnel, for Ryan, 30% of rotation):
+5. **Humbl Audit — Website Page CRO series.** Every standard startup page with CRO blocks. 1 post/week (Wednesday). Series plan: `OUTPUTS/content-ideas/website-pages-cro-series.md`.
+6. **Case studies and proof.** Augment, StatDoctor, the 20K Figma downloads. Every 2-3 weeks.
+
+Cross-cutting: **Humbl Rules** typographic posters used as filler across both interest and expert pillars.
+
+**Freebie roadmap (lead-magnet engine):** Each freebie = 8-10 LinkedIn lead-magnet posts ("Comment WORD for the X") + featured-section asset + newsletter feature. First three (next 30 days): CRO Designer's Pocket Guide PDF, Vibe-coded landing page checklist, Landing page wireframe pack (Figma file, 10 templates).
+
+**CTA on every post:**
+- Primary (designer-first phase): newsletter signup
+- Secondary (founder-aimed posts, ~20%): "DM 'AUDIT' + your URL"
+- Tertiary (free Loom reviews, any post): "DM 'REVIEW' + your URL"
+
+**Trust-action quality bar (per Caleb Ralston):** Every post passes "Does this make it easier for the viewer to take action and get a result?" Stacks with Sanders' repost-as-#1-metric. Posts that pass both bars are the strongest.
+
+**Acquisition goal layering (2026):**
+- Tier 1 (North Star): newsletter subs + LinkedIn followers
+- Tier 2 (leading indicators): reposts per post, comments from founder accounts, profile views
+- Tier 3 (latent buyer pipeline, tracked not pushed): AUDIT DMs, REVIEW DMs, retainer inquiries
+
+In 2027 the tiers flip back as the funnel re-converges.
 
 ---
 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sahil: Case Study / Humbl Design</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px; color: #111; background: #fff; line-height: 1.65;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+
+  .cs-header { padding: 72px 0 64px; border-bottom: 1px solid #e0e0e0; }
+  .cs-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+    border: 1px solid #ddd; color: #666; background: #fafafa;
+  }
+  .tag.highlight { background: #111; color: #fff; border-color: #111; }
+  h1 { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 18px; }
+  .cs-intro { font-size: 19px; color: #555; line-height: 1.6; margin-bottom: 40px; max-width: 640px; }
+
+  .cs-sidebar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e0e0e0;
+    border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+  }
+  .cs-sidebar-item { background: #fff; padding: 16px 20px; }
+  .cs-sidebar-item .label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .cs-sidebar-item .value { font-size: 14px; font-weight: 600; color: #111; }
+
+  .cs-section { padding: 64px 0; border-bottom: 1px solid #e0e0e0; }
+  .cs-section.alt { background: #f7f7f7; }
+  h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+  p { color: #444; margin-bottom: 14px; line-height: 1.7; }
+  p:last-of-type { margin-bottom: 0; }
+
+  .outcome-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e0e0e0; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; margin-bottom: 40px; }
+  .outcome-item { background: #fff; padding: 28px 24px; text-align: center; }
+  .outcome-num { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .outcome-label { font-size: 12px; color: #888; line-height: 1.4; }
+
+  .cs-testimonial { border-left: 3px solid #111; padding: 24px 28px; background: #f7f7f7; border-radius: 0 6px 6px 0; }
+  .cs-testimonial p { font-size: 16px; color: #333; font-style: italic; line-height: 1.7; margin-bottom: 20px; }
+  .testimonial-author { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #111; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .author-name { font-size: 14px; font-weight: 600; color: #111; }
+  .author-title { font-size: 12px; color: #999; margin-top: 2px; }
+
+  .cs-nav-footer { padding: 40px 0; }
+  .cs-nav-footer-inner { display: flex; justify-content: space-between; }
+  .btn { display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; border: 2px solid #111; color: #111; }
+  .btn:hover { background: #111; color: #fff; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .cs-sidebar { grid-template-columns: repeat(2, 1fr); }
+    .outcome-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="cs-header">
+  <div class="container">
+    <div class="cs-meta">
+      <span class="tag highlight">Product design</span>
+      <span class="tag">AI</span>
+      <span class="tag">24 hours</span>
+    </div>
+    <h1>24-hour sprint for an AI startup.</h1>
+    <p class="cs-intro">Sahil is an AI-powered platform that connects businesses with suppliers and customers, centralising procurement and distribution for small businesses. The founder had a vision and a deadline. Both mattered equally.</p>
+    <div class="cs-sidebar">
+      <div class="cs-sidebar-item">
+        <div class="label">Client</div>
+        <div class="value">Sahil</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Service</div>
+        <div class="value">Product design (investor mockups)</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Timeline</div>
+        <div class="value">24 hours</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Industry</div>
+        <div class="value">AI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The brief</h2>
+    <p>Emmanuel Gatwech needed product mockups for investors and early users. Fast. The goal was to show the product clearly enough that investors could grasp the value and back it.</p>
+    <p>The core of Sahil's product is a ranking algorithm that gathers and evaluates products from various suppliers. The backend logic was solid. Getting that into a UI a business owner could actually use was the hard part.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>What was actually broken</h2>
+    <p>The existing product concept had no UX structure and no visual hierarchy. There was no clear flow between user actions, and the interface didn't communicate what the product could do.</p>
+    <p>Early users were confused. Investors couldn't grasp the value. A strong backend idea was getting lost before anyone saw what it was capable of.</p>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The work</h2>
+    <p>A focused 24-hour sprint. Short alignment call with Emmanuel to understand the core product flow, then straight into Figma. The brief was clear: clean, minimal UI that makes the product story easy to follow.</p>
+    <p>The hardest part was translating the ranking algorithm into something a business owner could actually interact with: supplier comparisons, product selection logic, and the reasons behind each recommendation, presented without feeling like a data dump.</p>
+    <p>Iterated directly with Emmanuel throughout the day. By the end of it: investor-ready mockups that read as a real product.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>The outcome</h2>
+    <div class="outcome-row">
+      <div class="outcome-item">
+        <div class="outcome-num">24h</div>
+        <div class="outcome-label">From brief to investor-ready mockups</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">★★★★★</div>
+        <div class="outcome-label">Founder review</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">Funded</div>
+        <div class="outcome-label">Early funding secured after presentation</div>
+      </div>
+    </div>
+    <div class="cs-testimonial">
+      <p>"I had the pleasure of working closely with David in the development of Sahil's product selection process. Our product selection process involves gathering and evaluating products from various suppliers using a ranking algorithm. While setting up this process on the backend was relatively straightforward, translating it into a user-friendly interface was a major challenge. He deeply understood our objectives and requirements, delivering designs that met and surpassed our expectations. Thanks to David's efforts, our users can now easily compare products, view a list of suppliers, and understand the reasons behind product selection, with the flexibility to make informed decisions. David's commitment, attention to detail, and ability to translate complex ideas into intuitive designs have been instrumental in enhancing Sahil's user experience. Did I mention that he was extremely efficient? I wholeheartedly recommend David for any project requiring a blend of technical acumen and creative design!"</p>
+      <div class="testimonial-author">
+        <div class="avatar">EG</div>
+        <div>
+          <div class="author-name">Emmanuel Gatwech</div>
+          <div class="author-title">Founder, Sahil</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-nav-footer">
+  <div class="container">
+    <div class="cs-nav-footer-inner">
+      <a href="augment.html" class="btn">← Augment</a>
+      <a href="castingofka.html" class="btn">Next: Castingofka →</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Castingofka: Case Study / Humbl Design</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px; color: #111; background: #fff; line-height: 1.65;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+
+  .cs-header { padding: 72px 0 64px; border-bottom: 1px solid #e0e0e0; }
+  .cs-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+    border: 1px solid #ddd; color: #666; background: #fafafa;
+  }
+  .tag.highlight { background: #111; color: #fff; border-color: #111; }
+  h1 { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 18px; }
+  .cs-intro { font-size: 19px; color: #555; line-height: 1.6; margin-bottom: 40px; max-width: 640px; }
+
+  .cs-sidebar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e0e0e0;
+    border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+  }
+  .cs-sidebar-item { background: #fff; padding: 16px 20px; }
+  .cs-sidebar-item .label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .cs-sidebar-item .value { font-size: 14px; font-weight: 600; color: #111; }
+
+  .cs-section { padding: 64px 0; border-bottom: 1px solid #e0e0e0; }
+  .cs-section.alt { background: #f7f7f7; }
+  h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+  p { color: #444; margin-bottom: 14px; line-height: 1.7; }
+  p:last-of-type { margin-bottom: 0; }
+
+  .outcome-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e0e0e0; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; margin-bottom: 40px; }
+  .outcome-item { background: #fff; padding: 28px 24px; text-align: center; }
+  .outcome-num { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .outcome-label { font-size: 12px; color: #888; line-height: 1.4; }
+
+  .cs-testimonial { border-left: 3px solid #ddd; padding: 24px 28px; background: #fafafa; border-radius: 0 6px 6px 0; }
+  .cs-testimonial p { font-size: 15px; color: #bbb; line-height: 1.7; margin-bottom: 0; }
+
+  .cs-nav-footer { padding: 40px 0; }
+  .cs-nav-footer-inner { display: flex; justify-content: space-between; }
+  .btn { display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; border: 2px solid #111; color: #111; }
+  .btn:hover { background: #111; color: #fff; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .cs-sidebar { grid-template-columns: repeat(2, 1fr); }
+    .outcome-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="cs-header">
+  <div class="container">
+    <div class="cs-meta">
+      <span class="tag highlight">Platform redesign</span>
+      <span class="tag">SaaS</span>
+      <span class="tag">3 months</span>
+    </div>
+    <h1>3 months to simplify creative connections.</h1>
+    <p class="cs-intro">Castingofka is a Prague-based casting platform for actors, extras, and models in film, TV, and commercial productions. The platform helps creatives register, build portfolios, and connect with producers. It had strong functionality and poor usability.</p>
+    <div class="cs-sidebar">
+      <div class="cs-sidebar-item">
+        <div class="label">Client</div>
+        <div class="value">Castingofka</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Service</div>
+        <div class="value">Platform redesign</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Timeline</div>
+        <div class="value">3 months</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Industry</div>
+        <div class="value">SaaS / Creative</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The brief</h2>
+    <p>The founders knew the platform worked. They wanted to know if it could feel better. The goal was a full redesign: intuitive, consistent, and ready for the next stage of growth.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>What was actually broken</h2>
+    <p>The interface was cluttered, the visual style inconsistent, and the overall experience felt dated. Users were switching between a website and a mobile app that behaved like different products: different navigation, different visual language, constant context-switching.</p>
+    <p>That created confusion and lower engagement. The platform had good functionality buried under an experience that made it hard to use.</p>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The work</h2>
+    <p>A 3-month redesign sprint focused on unifying the experience across web and mobile. Clean layouts, consistent navigation, clear hierarchy throughout. Every component rebuilt with the same design system so the two platforms finally felt like one product.</p>
+    <p>Worked directly with the internal tech team to make sure the new system was implementable and maintainable, not just a Figma handoff they'd struggle to ship.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>The outcome</h2>
+    <div class="outcome-row">
+      <div class="outcome-item">
+        <div class="outcome-num">3 mo</div>
+        <div class="outcome-label">Full redesign delivered</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">Web + mobile</div>
+        <div class="outcome-label">Unified into one consistent experience</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">1</div>
+        <div class="outcome-label">Design system for both platforms</div>
+      </div>
+    </div>
+    <div class="cs-testimonial">
+      <p>Testimonial coming. Reach out to the Castingofka founders for a quote.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cs-nav-footer">
+  <div class="container">
+    <div class="cs-nav-footer-inner">
+      <a href="sahil.html" class="btn">← Sahil</a>
+      <a href="portfolio.html" class="btn">All work →</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

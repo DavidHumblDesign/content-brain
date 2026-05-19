@@ -13,7 +13,7 @@ Format: Single scroll, dark theme (keep existing aesthetic). No quiz form. One C
 I'll find the 3 things killing your signups.
 
 **Subheadline:**
-Send me your URL. I record a Loom going through your website or product flow and tell you exactly what's broken, why it's killing conversions, and what to fix first.
+Send me your URL. I record a video going through your website or product flow and tell you exactly what's broken, why it's killing conversions, and what to fix first.
 
 No call. No pitch at the end. Just the straight answer.
 
@@ -28,7 +28,7 @@ No call. No pitch at the end. Just the straight answer.
 *(replace the existing 4 stats with these)*
 
 **50+** founders audited
-**72 hrs** average Loom turnaround
+**72 hrs** average turnaround
 **$12M+** raised by clients we've worked with
 **Free** no strings
 
@@ -38,7 +38,7 @@ No call. No pitch at the end. Just the straight answer.
 
 **Header:** What's in the audit
 
-A Loom video, usually 10 to 15 minutes. I go through your site or a single product flow and find:
+A video, usually 10 to 15 minutes. I go through your site or a single product flow and find:
 
 1. The 3 biggest leaks hurting your signups, demos, or activation
 2. Why each one matters — tied to your specific goal
@@ -72,7 +72,7 @@ AI, SaaS, and Fintech founders get the most out of this. If you're pre-launch or
 
 **Header:** Who's doing the audit
 
-David Pokorny. Founder of Humbl Design. I've worked with 50+ AI, SaaS, and Fintech founders — from early seed through Series A. 4 years with Augment, who used the design work to help raise $12M. 20,000+ Figma template downloads.
+David Pokorny. Founder of Humbl Design. I've worked with 50+ AI, SaaS, and Fintech founders, from early seed through Series A. 4 years with Augment, who used the design work to help raise $12M. 20,000+ Figma template downloads.
 
 I'm a designer, not a strategist. I look at your site the way a first-time visitor does and tell you what's broken before they bounce.
 
@@ -84,7 +84,7 @@ I'm a designer, not a strategist. I look at your site the way a first-time visit
 
 **Header:** One thing to be clear about
 
-There's no pitch at the end. If you want help implementing the fixes, retainers start at $5,999/mo. But that's separate. The audit is the whole thing — you get it regardless of whether we ever work together.
+There's no pitch at the end. If you want help implementing the fixes, retainers start at $5,999/mo. But that's separate. You get the audit regardless of whether we ever work together.
 
 ---
 
@@ -95,7 +95,7 @@ There's no pitch at the end. If you want help implementing the fixes, retainers 
 1. DM me "AUDIT" on LinkedIn
 2. Drop your URL
 3. Tell me your #1 goal: signups, demos, activation, or waitlist
-4. I'll send the Loom back
+4. I'll send the video back
 
 **CTA button:** DM "AUDIT" on LinkedIn →
 
@@ -103,7 +103,7 @@ There's no pitch at the end. If you want help implementing the fixes, retainers 
 
 ## FAQ
 
-**How long is the Loom?**
+**How long is the video?**
 Usually 10 to 15 minutes. Long enough to cover the 3 biggest issues in detail, short enough that you'll actually watch it.
 
 **Do I need to be on a call?**

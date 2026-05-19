@@ -1,0 +1,67 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to use DESIGN.md to generate on-brand AI UI",
+  "description": "DESIGN.md is a text file that carries your brand's design system — colors, fonts, spacing, and usage rules — so every AI tool you use generates on-brand UI automatically. Here's how to set it up.",
+  "totalTime": "PT15M",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": "1",
+      "name": "Get a DESIGN.md file",
+      "text": "Download a pre-built design system from a library like getdesign.md (71 free files inspired by Stripe, Apple, Linear, Revolut and more), or generate one from your existing brand using Neuform.ai or Google Stitch. When a library offers both a DESIGN.md and an HTML file, download both — the DESIGN.md carries the foundation (colors, typography, spacing) and the HTML gives the AI a complete example of how those elements come together.",
+      "url": "https://getdesign.md/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": "2",
+      "name": "Drop it in your project folder",
+      "text": "Place the DESIGN.md file in the same folder as your other project files — the same level as your README or index file. No configuration needed. AI tools that read project files (Claude, Cursor, Codex) pick it up automatically.",
+      "url": "https://github.com/google-labs-code/design.md"
+    },
+    {
+      "@type": "HowToStep",
+      "position": "3",
+      "name": "Reference it in your prompt",
+      "text": "When generating UI, include the file in your prompt: 'Using the DESIGN.md in this project, build me a pricing page.' The AI reads your brand rules from the file and generates output that follows them instead of defaulting to generic Tailwind styles.",
+      "url": "https://stitch.withgoogle.com/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": "4",
+      "name": "Use Stitch for automatic integration",
+      "text": "For the tightest experience, use Google Stitch (stitch.withgoogle.com). It reads your DESIGN.md natively — you don't have to reference the file in every prompt. It runs in the background on every generation automatically.",
+      "url": "https://stitch.withgoogle.com/"
+    },
+    {
+      "@type": "HowToStep",
+      "position": "5",
+      "name": "Version and update the file as your brand evolves",
+      "text": "Treat the DESIGN.md like any other project file. Commit it to version control. When your brand changes — new colors, updated typography, revised component rules — update the file. Every future generation picks up the changes automatically."
+    }
+  ],
+  "tool": [
+    {
+      "@type": "HowToTool",
+      "name": "getdesign.md",
+      "url": "https://getdesign.md/"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Neuform.ai",
+      "url": "https://neuform.ai/"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Google Stitch",
+      "url": "https://stitch.withgoogle.com/"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Aura.build",
+      "url": "https://www.aura.build/"
+    }
+  ]
+}
+</script>

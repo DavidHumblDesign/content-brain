@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Augment: Case Study / Humbl Design</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px; color: #111; background: #fff; line-height: 1.65;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+
+  .cs-header { padding: 72px 0 64px; border-bottom: 1px solid #e0e0e0; }
+  .cs-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 3px;
+    border: 1px solid #ddd; color: #666; background: #fafafa;
+  }
+  .tag.highlight { background: #111; color: #fff; border-color: #111; }
+  h1 { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 18px; }
+  .cs-intro { font-size: 19px; color: #555; line-height: 1.6; margin-bottom: 40px; max-width: 640px; }
+
+  .cs-sidebar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e0e0e0;
+    border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+  }
+  .cs-sidebar-item { background: #fff; padding: 16px 20px; }
+  .cs-sidebar-item .label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .cs-sidebar-item .value { font-size: 14px; font-weight: 600; color: #111; }
+
+  .cs-section { padding: 64px 0; border-bottom: 1px solid #e0e0e0; }
+  .cs-section.alt { background: #f7f7f7; }
+  h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+  p { color: #444; margin-bottom: 14px; line-height: 1.7; }
+  p:last-of-type { margin-bottom: 0; }
+
+  .outcome-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e0e0e0; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; margin-bottom: 40px; }
+  .outcome-item { background: #fff; padding: 28px 24px; text-align: center; }
+  .outcome-num { font-size: 36px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .outcome-label { font-size: 12px; color: #888; line-height: 1.4; }
+
+  .cs-testimonial { border-left: 3px solid #111; padding: 24px 28px; background: #f7f7f7; border-radius: 0 6px 6px 0; }
+  .cs-testimonial p { font-size: 16px; color: #333; font-style: italic; line-height: 1.7; margin-bottom: 20px; }
+  .testimonial-author { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #111; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .author-name { font-size: 14px; font-weight: 600; color: #111; }
+  .author-title { font-size: 12px; color: #999; margin-top: 2px; }
+
+  .cs-nav-footer { padding: 40px 0; }
+  .cs-nav-footer-inner { display: flex; justify-content: space-between; }
+  .btn { display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; border: 2px solid #111; color: #111; }
+  .btn:hover { background: #111; color: #fff; }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; }
+    .cs-sidebar { grid-template-columns: repeat(2, 1fr); }
+    .outcome-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="cs-header">
+  <div class="container">
+    <div class="cs-meta">
+      <span class="tag highlight">Product design</span>
+      <span class="tag">FinTech</span>
+      <span class="tag">4+ years</span>
+    </div>
+    <h1>$12M raised. The client I've worked with longest.</h1>
+    <p class="cs-intro">Augment is a FinTech platform that lets investors, shareholders, and brokers trade private equity with the speed and transparency of public markets. We started working together in 2021. Still going.</p>
+    <div class="cs-sidebar">
+      <div class="cs-sidebar-item">
+        <div class="label">Client</div>
+        <div class="value">Augment</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Service</div>
+        <div class="value">Web app redesign + ongoing design</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Timeline</div>
+        <div class="value">4+ years (ongoing)</div>
+      </div>
+      <div class="cs-sidebar-item">
+        <div class="label">Industry</div>
+        <div class="value">FinTech</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The brief</h2>
+    <p>When Augment's co-founders reached out, the product was gaining traction. Design wasn't keeping up. Their development team was handling the visuals: no structured design process, no dedicated ownership, no system for consistency.</p>
+    <p>The product worked. It didn't feel cohesive or intuitive. User journeys were fragmented, visual hierarchy was unclear, and the interface didn't reflect the sophistication of a FinTech company preparing to raise capital.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>What was actually broken</h2>
+    <p>There was no design foundation. Developers were making visual decisions on the fly, which created inconsistency across the product over time. Each new feature added more noise.</p>
+    <p>For a platform where investors are moving real money, that matters a lot. The interface needs to communicate trust and precision. What they had communicated neither.</p>
+  </div>
+</section>
+
+<section class="cs-section">
+  <div class="container">
+    <h2>The work</h2>
+    <p>Rebuilt the web app from the ground up. Built a visual system grounded in clarity and credibility, with structure and hierarchy that made the product feel like a serious FinTech platform.</p>
+    <p>Worked directly with the founders and internal developers throughout, adapting to their workflow rather than adding process overhead. As the product grew, the scope grew with it. New features, new pages, ongoing iteration as user feedback came in.</p>
+    <p>What started as a redesign project became a standing arrangement. Four years in, I already know the product and the founders' thinking. That's faster than onboarding someone new every time something needs building.</p>
+  </div>
+</section>
+
+<section class="cs-section alt">
+  <div class="container">
+    <h2>The outcome</h2>
+    <div class="outcome-row">
+      <div class="outcome-item">
+        <div class="outcome-num">$12M</div>
+        <div class="outcome-label">Raised during the relationship</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">4+</div>
+        <div class="outcome-label">Years working together, still ongoing</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">2021</div>
+        <div class="outcome-label">Year it started</div>
+      </div>
+    </div>
+    <div class="cs-testimonial">
+      <p>"David redesigned our web app from the ground up. He does great work, is thorough, quick when needed, receptive to feedback, and most importantly super easy to work with. He's a master at taking user stories and converting them to refined designs. David is also useful to bounce ideas off of and go into the weeds to snuff out inconsistencies in product requirements. At implementation time as changes inevitably need to be made, David has been flexible to adapt and dynamically reorder priorities to put out a product on time. Looking forward to continue working together!"</p>
+      <div class="testimonial-author">
+        <div class="avatar">NM</div>
+        <div>
+          <div class="author-name">Noel Moldvai</div>
+          <div class="author-title">CEO, Augment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cs-nav-footer">
+  <div class="container">
+    <div class="cs-nav-footer-inner">
+      <a href="statdoctor.html" class="btn">← StatDoctor</a>
+      <a href="sahil.html" class="btn">Next: Sahil →</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

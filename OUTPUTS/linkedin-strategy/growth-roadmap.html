@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>David Pokorny — Creator Growth Roadmap 2026–2028</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0a; --surface: #131313; --surface2: #1c1c1c; --surface3: #252525;
+      --border: #2a2a2a; --border2: #1e1e1e;
+      --text: #f0f0f0; --text2: #aaa; --text3: #666;
+      --bad: #ef4444; --bad-bg: rgba(239,68,68,0.08); --bad-border: rgba(239,68,68,0.25);
+      --mid: #f59e0b; --mid-bg: rgba(245,158,11,0.08); --mid-border: rgba(245,158,11,0.25);
+      --best: #10b981; --best-bg: rgba(16,185,129,0.08); --best-border: rgba(16,185,129,0.25);
+      --indigo: #6366f1; --blue: #3b82f6; --purple: #a855f7; --pink: #ec4899;
+    }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif; font-size:13px; line-height:1.6; min-height:100vh; }
+
+    .header { padding:36px 52px 28px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:32px; }
+    .header-title { font-size:22px; font-weight:700; letter-spacing:-0.4px; margin-bottom:6px; }
+    .header-sub { color:var(--text3); font-size:12px; }
+    .header-stats { display:flex; gap:32px; flex-shrink:0; }
+    .hstat { text-align:right; }
+    .hstat-label { font-size:10px; text-transform:uppercase; letter-spacing:.8px; color:var(--text3); margin-bottom:3px; }
+    .hstat-value { font-size:22px; font-weight:700; letter-spacing:-.5px; }
+
+    .vision-bar { display:grid; grid-template-columns:1fr 40px 1fr; padding:24px 52px; border-bottom:1px solid var(--border); align-items:start; }
+    .vision-phase { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 22px; }
+    .vision-phase-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:6px; }
+    .vision-phase-title { font-size:15px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+    .vision-phase-title.phase-a { color:var(--mid); }
+    .vision-phase-title.phase-b { color:var(--indigo); }
+    .vision-phase-desc { font-size:12px; color:var(--text2); line-height:1.6; }
+    .vision-bridge { margin-top:10px; padding:10px 12px; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:6px; font-size:11px; color:#a5b4fc; line-height:1.6; }
+    .vision-bridge strong { color:#c7d2fe; }
+    .vision-arrow { text-align:center; font-size:22px; color:var(--text3); padding-top:24px; }
+
+    .tabs-wrapper { padding:0 52px; border-bottom:1px solid var(--border); display:flex; align-items:flex-end; gap:4px; }
+    .tab { padding:14px 28px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text3); border-bottom:2px solid transparent; margin-bottom:-1px; display:flex; align-items:center; gap:8px; transition:color .2s; user-select:none; }
+    .tab:hover { color:var(--text2); }
+    .tab.active.bad  { color:var(--bad);  border-bottom-color:var(--bad); }
+    .tab.active.mid  { color:var(--mid);  border-bottom-color:var(--mid); }
+    .tab.active.best { color:var(--best); border-bottom-color:var(--best); }
+    .tab-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .dot-bad { background:var(--bad); } .dot-mid { background:var(--mid); } .dot-best { background:var(--best); }
+
+    .main { padding:36px 52px 80px; max-width:1440px; }
+    .scenario { display:none; }
+    .scenario.active { display:block; }
+
+    .scenario-hero { display:flex; justify-content:space-between; align-items:flex-start; gap:32px; margin-bottom:32px; }
+    .scenario-hero-left { flex:1; max-width:640px; }
+    .scenario-tag { display:inline-block; padding:3px 10px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .tag-bad  { background:var(--bad-bg);  color:var(--bad);  border:1px solid var(--bad-border); }
+    .tag-mid  { background:var(--mid-bg);  color:var(--mid);  border:1px solid var(--mid-border); }
+    .tag-best { background:var(--best-bg); color:var(--best); border:1px solid var(--best-border); }
+    .scenario-title { font-size:26px; font-weight:700; letter-spacing:-.5px; margin-bottom:10px; }
+    .scenario-desc { font-size:14px; color:var(--text2); line-height:1.75; }
+    .probability-badge { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 22px; text-align:center; min-width:160px; }
+    .prob-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:6px; }
+    .prob-value { font-size:36px; font-weight:700; letter-spacing:-1px; }
+    .prob-sub { font-size:11px; color:var(--text3); margin-top:4px; }
+
+    .snapshots { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
+    .snap-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .snap-year { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; }
+    .snap-year span { background:var(--surface3); padding:2px 8px; border-radius:3px; }
+    .snap-metrics { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .snap-metric-label { font-size:10px; color:var(--text3); margin-bottom:2px; }
+    .snap-metric-value { font-size:18px; font-weight:700; letter-spacing:-.5px; }
+    .snap-metric-value.bad  { color:var(--bad); }
+    .snap-metric-value.mid  { color:var(--mid); }
+    .snap-metric-value.best { color:var(--best); }
+    .snap-metric-sub { font-size:11px; color:var(--text3); margin-top:2px; }
+    .snap-revenue { grid-column:span 2; }
+
+    .charts-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; }
+    .chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .chart-label { font-size:10px; text-transform:uppercase; letter-spacing:.8px; color:var(--text3); margin-bottom:2px; }
+    .chart-headline { font-size:15px; font-weight:700; margin-bottom:16px; letter-spacing:-.3px; }
+    .chart-canvas-wrap { position:relative; height:160px; }
+
+    .section-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:14px; margin-top:36px; }
+    .phases { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+    .phase-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; overflow:hidden; }
+    .phase-accent { position:absolute; top:0; left:0; right:0; height:3px; }
+    .phase-card[data-phase="1"] .phase-accent { background:var(--indigo); }
+    .phase-card[data-phase="2"] .phase-accent { background:var(--blue); }
+    .phase-card[data-phase="3"] .phase-accent { background:var(--purple); }
+    .phase-card[data-phase="4"] .phase-accent { background:var(--pink); }
+    .phase-num { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:6px; }
+    .phase-name { font-size:14px; font-weight:700; margin-bottom:3px; letter-spacing:-.3px; }
+    .phase-period { font-size:11px; color:var(--text3); margin-bottom:14px; }
+    .phase-list { list-style:none; font-size:12px; color:var(--text2); }
+    .phase-list li { padding:5px 0; border-bottom:1px solid var(--border2); line-height:1.5; }
+    .phase-list li:last-child { border-bottom:none; }
+    .phase-target { margin-top:14px; padding:8px 12px; background:var(--surface2); border-radius:6px; font-size:11px; color:var(--text3); }
+    .phase-target strong { color:var(--text2); }
+
+    .income-pair { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; }
+    .income-year-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .income-year-title { font-size:13px; font-weight:700; margin-bottom:16px; color:var(--text2); }
+    .income-stream { margin-bottom:10px; }
+    .income-stream-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:11px; }
+    .income-stream-name { color:var(--text2); }
+    .income-stream-pct { font-weight:600; }
+    .income-bar-track { height:5px; background:var(--surface3); border-radius:3px; overflow:hidden; }
+    .income-bar-fill { height:100%; border-radius:3px; }
+    .bar-client { background:var(--indigo); } .bar-sponsor { background:var(--blue); }
+    .bar-course { background:var(--purple); } .bar-coaching { background:var(--pink); }
+    .income-total { margin-top:14px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:baseline; font-size:12px; }
+    .income-total-label { color:var(--text3); }
+    .income-total-value { font-size:16px; font-weight:700; letter-spacing:-.4px; }
+
+    .milestones { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
+    .ms { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+    .ms-month { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text3); margin-bottom:6px; }
+    .ms-title { font-size:12px; font-weight:600; margin-bottom:3px; line-height:1.4; }
+    .ms-detail { font-size:11px; color:var(--text3); line-height:1.5; }
+    .ms.highlight { border-color:var(--mid-border); background:var(--mid-bg); }
+    .ms.highlight .ms-title { color:var(--mid); }
+    .ms.highlight-best { border-color:var(--best-border); background:var(--best-bg); }
+    .ms.highlight-best .ms-title { color:var(--best); }
+    .ms.highlight-bad { border-color:var(--bad-border); background:var(--bad-bg); }
+    .ms.highlight-bad .ms-title { color:var(--bad); }
+
+    .q27 { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
+    .q27-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; border-top:2px solid; }
+    .q27-card.q1 { border-top-color:var(--indigo); }
+    .q27-card.q2 { border-top-color:var(--blue); }
+    .q27-card.q3 { border-top-color:var(--purple); }
+    .q27-card.q4 { border-top-color:var(--pink); }
+    .q27-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text3); margin-bottom:6px; }
+    .q27-title { font-size:12px; font-weight:600; margin-bottom:4px; }
+    .q27-detail { font-size:11px; color:var(--text3); line-height:1.5; }
+    .q27-metric { margin-top:8px; padding-top:8px; border-top:1px solid var(--border2); font-size:11px; font-weight:600; color:var(--text2); }
+
+    .risk-unlock { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+    .ru-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .ru-card h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .ru-card.risk h4 { color:var(--bad); }
+    .ru-card.unlock h4 { color:var(--best); }
+    .ru-item { padding:10px 0; border-bottom:1px solid var(--border2); font-size:12px; }
+    .ru-item:last-child { border-bottom:none; }
+    .ru-item strong { display:block; color:var(--text); margin-bottom:2px; font-size:13px; }
+    .ru-item span { color:var(--text3); }
+
+    .upgrade-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:28px; }
+    .upgrade-card h4 { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text3); margin-bottom:16px; }
+    .upgrade-steps { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .upgrade-step { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:12px; flex:1; min-width:140px; }
+    .upgrade-step-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+    .upgrade-step-value { font-weight:600; color:var(--text); font-size:13px; }
+    .upgrade-arrow { color:var(--text3); font-size:16px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Creator Growth Roadmap — David Pokorny / Humbl Design</div>
+    <div class="header-sub">LinkedIn creator path · Freelance designer → Educator · 2026–2028 · v2 May 2026</div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-label">LinkedIn now</div><div class="hstat-value">2,300</div></div>
+    <div class="hstat"><div class="hstat-label">Revenue / mo</div><div class="hstat-value">$7K</div></div>
+    <div class="hstat"><div class="hstat-label">Newsletter</div><div class="hstat-value">launching</div></div>
+  </div>
+</div>
+
+<div class="vision-bar">
+  <div class="vision-phase">
+    <div class="vision-phase-label">Phase A · 2026</div>
+    <div class="vision-phase-title phase-a">Do the work. Document everything.</div>
+    <div class="vision-phase-desc">
+      Get clients. Charge more. Make money. Run the redesign engine publicly.
+      Every client win, every pricing decision, every hustle story goes on LinkedIn.
+      Build the audience that gives you permission to teach later.
+      The CRO-for-designers wedge is the entry point. The journey is the differentiator.
+    </div>
+    <div class="vision-bridge">
+      <strong>The bridge that makes Phase B work:</strong> CRO posts build Phase A authority. Journey posts — landing clients, raising rates, the Sydney origin story — build Phase B permission. Start both from day 1. Target ratio: 4 CRO/redesign posts per 1 journey post. The people who save the journey posts are exactly the people who buy the business-growth course in 2027.
+    </div>
+  </div>
+  <div class="vision-arrow">→</div>
+  <div class="vision-phase">
+    <div class="vision-phase-label">Phase B · 2027 +</div>
+    <div class="vision-phase-title phase-b">Teach designers how to do what you did.</div>
+    <div class="vision-phase-desc">
+      Once you've documented the climb in public, you have the social proof to teach it.
+      Not just CRO — the full picture. How to build a personal brand. How to grow on LinkedIn.
+      How to get leads without chasing. How to charge $150/hr when everyone else is stuck at $50.
+      You're not the best agency. You're the person who shows designers how to build one.
+    </div>
+    <div class="vision-bridge">
+      <strong>Note on audience overlap:</strong> Some followers will come for CRO tips and not care about building a business. That's fine — they buy freebies, share posts, and grow the list. The buyers of the Phase B course are a subset: the designers who followed the journey posts closely. The ratio is small (maybe 5–10% of total audience) but at 80K+ followers that's 4–8K potential students. That funds everything.
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tab bad" onclick="switchTab('bad')"><div class="tab-dot dot-bad"></div>Bad scenario</div>
+  <div class="tab mid active" onclick="switchTab('mid')"><div class="tab-dot dot-mid"></div>Realistic — the target</div>
+  <div class="tab best" onclick="switchTab('best')"><div class="tab-dot dot-best"></div>Best case</div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════ BAD ═══════════════════════════════ -->
+<div class="scenario" id="s-bad">
+
+  <div class="scenario-hero">
+    <div class="scenario-hero-left">
+      <div class="scenario-tag tag-bad">Bad scenario</div>
+      <div class="scenario-title">"Inconsistency kills the bet."</div>
+      <div class="scenario-desc">
+        You start strong. Two decent redesign posts. Then a client crunch hits in July and you miss a week. Then another.
+        The newsletter gets pushed to September. The freebies never ship.
+        By November you're at 3 posts a week telling yourself you'll "ramp back up in January."
+        The Sydney grind mindset — the exact thing that built Humbl — isn't applied here.
+        LinkedIn stays a side project. Revenue creeps up slowly on client referrals alone.
+        The real risk no one talks about: if Augment winds down or pauses, there's no pipeline to replace them.
+        LinkedIn was supposed to fix that. It didn't. The teaching phase never launches.
+      </div>
+    </div>
+    <div class="probability-badge">
+      <div class="prob-label">If you half-commit</div>
+      <div class="prob-value" style="color:var(--bad)">35%</div>
+      <div class="prob-sub">chance of landing here</div>
+    </div>
+  </div>
+
+  <div class="snapshots">
+    <div class="snap-card">
+      <div class="snap-year">End of 2026 <span>Year 1</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value bad">5,000</div><div class="snap-metric-sub">+2.7K from now</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value bad">500</div><div class="snap-metric-sub">Launched late, slow</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value bad">$7,500</div><div class="snap-metric-sub">Slight rate increase. No new income streams. Fully dependent on existing clients.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2027 <span>Year 2</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value bad">13,000</div><div class="snap-metric-sub">Slow linear climb</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value bad">2,000</div><div class="snap-metric-sub">Stagnated</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value bad">$9,500</div><div class="snap-metric-sub">Some LinkedIn inbound, no product revenue. Phase B never launched. Audience too small to monetise with a course.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2028 <span>Year 3</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value bad">21,000</div><div class="snap-metric-sub">Plateau approaching</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value bad">4,000</div><div class="snap-metric-sub">Small but loyal</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value bad">$11,000</div><div class="snap-metric-sub">Modest growth from client rate increases. No leverage. Vision of teaching designers is still just a vision.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-label">LinkedIn growth</div><div class="chart-headline">Follower trajectory</div><div class="chart-canvas-wrap"><canvas id="chart-bad-followers"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Revenue</div><div class="chart-headline">Monthly income ($K)</div><div class="chart-canvas-wrap"><canvas id="chart-bad-revenue"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Newsletter</div><div class="chart-headline">Subscribers</div><div class="chart-canvas-wrap"><canvas id="chart-bad-newsletter"></canvas></div></div>
+  </div>
+
+  <div class="section-label">What actually happens — phase by phase</div>
+  <div class="phases">
+    <div class="phase-card" data-phase="1"><div class="phase-accent"></div><div class="phase-num">Phase 1</div><div class="phase-name">Slow start</div><div class="phase-period">May – Dec 2026</div>
+      <ul class="phase-list"><li>Posts 2–3x/week instead of 5x</li><li>Newsletter delayed until September</li><li>Freebies planned but never shipped</li><li>Journey pillar skipped — feels uncomfortable to share</li><li>Client crunch kills momentum in July</li><li>Comment system never started</li></ul>
+      <div class="phase-target">End state: <strong>5K followers, $7.5K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="2"><div class="phase-accent"></div><div class="phase-num">Phase 2</div><div class="phase-name">Grind with no signal</div><div class="phase-period">Jan – Jun 2027</div>
+      <ul class="phase-list"><li>Tries to restart 5x/week — lasts 3 weeks</li><li>No course or cohort ever planned</li><li>First newsletter sponsorship ($300/issue)</li><li>LinkedIn pulls handful of inbound leads</li><li>Revenue grows from referrals, not content</li><li>Teaching identity never crystallises</li></ul>
+      <div class="phase-target">End state: <strong>9K followers, $8.5K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="3"><div class="phase-accent"></div><div class="phase-num">Phase 3</div><div class="phase-name">Plateau frustration</div><div class="phase-period">Jul – Dec 2027</div>
+      <ul class="phase-list"><li>LinkedIn growth slows — algorithm penalises low-frequency accounts</li><li>Considers quitting LinkedIn entirely</li><li>21K followers not enough to launch a course successfully</li><li>Fully dependent on client retainers</li><li>Phase B is indefinitely postponed</li></ul>
+      <div class="phase-target">End state: <strong>13K followers, $9.5K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="4"><div class="phase-accent"></div><div class="phase-num">Phase 4</div><div class="phase-name">Back to basics</div><div class="phase-period">2028 +</div>
+      <ul class="phase-list"><li>Revenue creeps up from client rate increases only</li><li>LinkedIn becomes a passive portfolio, not a growth engine</li><li>No course, no community, no coaching</li><li>21K followers by end 2028 — real but no leverage</li><li>Travel possible at $11K/mo, but tightly budgeted</li><li>If a client churns, there's still no pipeline to replace them</li></ul>
+      <div class="phase-target">End state: <strong>21K followers, $11K/mo</strong></div>
+    </div>
+  </div>
+
+  <div class="section-label">Income composition over time</div>
+  <div class="income-pair">
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2026 — $7.5K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">93%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:93%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">4%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:4%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">0%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:0%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">3%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:3%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--bad)">$7,500</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2027 — $9.5K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">88%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:88%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">7%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:7%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">0%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:0%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">5%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:5%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--bad)">$9,500</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2028 — $11K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">83%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:83%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">10%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:10%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">0%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:0%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">7%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:7%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--bad)">$11,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Month-by-month — 2026</div>
+  <div class="milestones">
+    <div class="ms"><div class="ms-month">May 2026</div><div class="ms-title">Inconsistent launch</div><div class="ms-detail">2 posts in week one, then skips 5 days. Newsletter "coming soon." 2,500 followers.</div></div>
+    <div class="ms"><div class="ms-month">Jun 2026</div><div class="ms-title">First redesign post</div><div class="ms-detail">800 impressions. Decent but not followed up. No system, no rotation. 3,000 followers.</div></div>
+    <div class="ms highlight-bad"><div class="ms-month">Jul 2026</div><div class="ms-title">Client crunch kills it</div><div class="ms-detail">Zero posts for 12 days. Followers flatline. Momentum gone.</div></div>
+    <div class="ms"><div class="ms-month">Aug 2026</div><div class="ms-title">Weak restart</div><div class="ms-detail">3 posts/week. Newsletter delayed again. Freebie still unbuilt. 3,500 followers.</div></div>
+    <div class="ms"><div class="ms-month">Sep 2026</div><div class="ms-title">Newsletter finally live</div><div class="ms-detail">300 subs from Reddit. 2 issues go out, then biweekly cadence.</div></div>
+    <div class="ms"><div class="ms-month">Oct 2026</div><div class="ms-title">4,000 followers</div><div class="ms-detail">Slow, real growth. Revenue flat. AUDIT DMs: 1–2/week.</div></div>
+    <div class="ms highlight-bad"><div class="ms-month">Nov 2026</div><div class="ms-title">Questioning the strategy</div><div class="ms-detail">"Is this worth it?" 2 posts/week. Considers stopping or taking a break.</div></div>
+    <div class="ms"><div class="ms-month">Dec 2026</div><div class="ms-title">5K followers. $7.5K/mo. 500 subs.</div><div class="ms-detail">Closes the year. No freebie built. Teaching phase still theoretical. No pipeline.</div></div>
+  </div>
+
+  <div class="risk-unlock">
+    <div class="ru-card risk">
+      <h4>⚠ What causes this</h4>
+      <div class="ru-item"><strong>Treating LinkedIn like a side project</strong><span>Client work is urgent. LinkedIn is important. Urgent wins every time you don't protect the morning hours.</span></div>
+      <div class="ru-item"><strong>Newsletter launch delayed</strong><span>Beehiiv recommendations need subscribers to activate. Every month delayed is compounding lost. 3 months late = 6 months behind on list growth.</span></div>
+      <div class="ru-item"><strong>Journey pillar avoided</strong><span>The personal content feels vulnerable. That's exactly why it builds trust. Skipping it removes the entire foundation for Phase B.</span></div>
+      <div class="ru-item"><strong>No freebie system</strong><span>Lead magnets are the fastest list-building tool available. Without them the newsletter stays under 1K subs and the course launch math never works.</span></div>
+      <div class="ru-item"><strong>No client pipeline built</strong><span>If Augment pauses or a retainer ends, there's nothing to replace it. LinkedIn was the insurance policy. It didn't get built.</span></div>
+    </div>
+    <div class="ru-card unlock">
+      <h4>→ What fixes it</h4>
+      <div class="ru-item"><strong>2 hours before client work — non-negotiable</strong><span>6–8 AM content block. Not "when I have time." Treat it exactly like a client retainer.</span></div>
+      <div class="ru-item"><strong>Newsletter live by June 1 — imperfect is fine</strong><span>First issue doesn't need to be good. It needs to exist. Ship the thing.</span></div>
+      <div class="ru-item"><strong>CRO Pocket Guide in one Sunday session</strong><span>8 principles. 8 pages. PDF. That unlocks the lead magnet engine. Total build time: 4 hours.</span></div>
+      <div class="ru-item"><strong>One journey post per week from day one</strong><span>"I just landed a $10K project from LinkedIn. Here's exactly how." That post will outperform every design breakdown you write.</span></div>
+    </div>
+  </div>
+
+  <div class="upgrade-card">
+    <h4>What moves you out of this scenario</h4>
+    <div class="upgrade-steps">
+      <div class="upgrade-step"><div class="upgrade-step-label">The commitment</div><div class="upgrade-step-value">Content block in calendar — not optional</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">The proof</div><div class="upgrade-step-value">Newsletter live by June, 5/week by July</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">The signal</div><div class="upgrade-step-value">First post over 10K impressions in month 3</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">The outcome</div><div class="upgrade-step-value">On track for Realistic by month 6</div></div>
+    </div>
+  </div>
+
+</div><!-- end bad -->
+
+
+<!-- ═══════════════════════════════ REALISTIC ═══════════════════════════════ -->
+<div class="scenario active" id="s-mid">
+
+  <div class="scenario-hero">
+    <div class="scenario-hero-left">
+      <div class="scenario-tag tag-mid">Realistic — the target</div>
+      <div class="scenario-title">"The plan works if you work the plan."</div>
+      <div class="scenario-desc">
+        You post 5 times a week, consistently, for 6+ months.
+        The newsletter hits 7K subs by December — not a home run, but real momentum.
+        One redesign goes properly viral in July — 50K impressions, +1,800 followers in a week.
+        In September you document landing a $10K project and it becomes the most-shared post of the year.
+        By April 2027 you run a pilot cohort: 50 designers at $497. It sells in 5 days.
+        That's the pivot point. By late 2027 the teaching identity is real, the income mix has flipped,
+        and the business you're building looks nothing like the solo studio you started with.
+        The Sydney mindset applied, for real this time, to content creation.
+      </div>
+    </div>
+    <div class="probability-badge">
+      <div class="prob-label">If you fully commit</div>
+      <div class="prob-value" style="color:var(--mid)">50%</div>
+      <div class="prob-sub">chance of landing here</div>
+    </div>
+  </div>
+
+  <div class="snapshots">
+    <div class="snap-card">
+      <div class="snap-year">End of 2026 <span>Year 1</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value mid">18,000</div><div class="snap-metric-sub">+15.7K from now</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value mid">7,000</div><div class="snap-metric-sub">Beehiiv recs starting</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value mid">$12,000</div><div class="snap-metric-sub">Client work + first newsletter sponsors. 8–12 REVIEW DMs/week. April 2027 cohort in planning.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2027 <span>Year 2</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value mid">78,000</div><div class="snap-metric-sub">Compounding properly now</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value mid">42,000</div><div class="snap-metric-sub">40%+ open rate</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value mid">$28,000</div><div class="snap-metric-sub">Course evergreen + 2 cohorts/year + selective client work. Teaching identity confirmed. Business model flip in progress.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2028 <span>Year 3</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value mid">118,000</div><div class="snap-metric-sub">Growth slows, stays strong</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value mid">70,000</div><div class="snap-metric-sub">Monetised asset</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value mid">$45,000</div><div class="snap-metric-sub">Education primary. 1 flagship client only. Run from anywhere. The business model has fully flipped.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-label">LinkedIn growth</div><div class="chart-headline">Follower trajectory</div><div class="chart-canvas-wrap"><canvas id="chart-mid-followers"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Revenue</div><div class="chart-headline">Monthly income ($K)</div><div class="chart-canvas-wrap"><canvas id="chart-mid-revenue"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Newsletter</div><div class="chart-headline">Subscribers</div><div class="chart-canvas-wrap"><canvas id="chart-mid-newsletter"></canvas></div></div>
+  </div>
+
+  <div class="section-label">What actually happens — phase by phase</div>
+  <div class="phases">
+    <div class="phase-card" data-phase="1"><div class="phase-accent"></div><div class="phase-num">Phase 1</div><div class="phase-name">The Grind</div><div class="phase-period">May – Dec 2026</div>
+      <ul class="phase-list"><li>5 posts/week — locked, non-negotiable</li><li>Newsletter (Conversion Design) live by June 1</li><li>Reddit redesign pipeline: 2 posts/week minimum</li><li>CRO Pocket Guide freebie ships in July</li><li>Journey pillar: client wins, pricing decisions, real numbers — 1x/week</li><li>30/30/30/10 comment system running daily</li><li>Client work: 2 retainers at ~$5,999/mo each</li></ul>
+      <div class="phase-target">End state: <strong>18K followers, $12K/mo, 7K subs</strong></div>
+    </div>
+    <div class="phase-card" data-phase="2"><div class="phase-accent"></div><div class="phase-num">Phase 2</div><div class="phase-name">First Signal</div><div class="phase-period">Jan – Jun 2027</div>
+      <ul class="phase-list"><li>Cohort curriculum build Jan–Mar (while posting 5x/week)</li><li>April pilot: 50 designers × $497 = $24,850 in launch week</li><li>First newsletter sponsors at $1.5–2K/issue</li><li>Client minimums raised to $7K+. Selective.</li><li>First podcast appearances — design + freelancing</li><li>"I am the ICP" content: teaching what Alex needs to hear</li></ul>
+      <div class="phase-target">End state: <strong>45K followers, $20K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="3"><div class="phase-accent"></div><div class="phase-num">Phase 3</div><div class="phase-name">The Educator Emerges</div><div class="phase-period">Jul – Dec 2027</div>
+      <ul class="phase-list"><li>Evergreen course live at $497</li><li>Second cohort: 70 designers. Curriculum improved from feedback.</li><li>Coaching tier opens: 3 slots at $3K/mo</li><li>Newsletter 32K+ subs, $2K/issue sponsors</li><li>1 flagship client ($7,999/mo). Nothing else.</li><li>Travel starts to be documented as content</li></ul>
+      <div class="phase-target">End state: <strong>78K followers, $28K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="4"><div class="phase-accent"></div><div class="phase-num">Phase 4</div><div class="phase-name">The Business Flips</div><div class="phase-period">2028 +</div>
+      <ul class="phase-list"><li>Education is the primary business. Clients are secondary.</li><li>Multiple products: course ($497), cohort ($997), coaching ($3–5K/mo)</li><li>Studio: 1 flagship client, highly selective $8–10K/mo projects only</li><li>Travel documented as proof of concept for Phase B</li><li>"Running a $45K/mo studio from Lisbon" post performs every time</li><li>$45K/mo with 4-day workweek is achievable here</li></ul>
+      <div class="phase-target">End state: <strong>118K followers, $45K/mo</strong></div>
+    </div>
+  </div>
+
+  <div class="section-label">Income composition over time</div>
+  <div class="income-pair">
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2026 — $12K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">83%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:83%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">10%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:10%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">3%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:3%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">4%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:4%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--mid)">$12,000</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2027 — $28K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">25%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:25%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">18%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:18%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">35%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:35%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">22%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:22%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--mid)">$28,000</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2028 — $45K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">13%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:13%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">15%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:15%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">42%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:42%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort</span><span class="income-stream-pct" style="color:var(--pink)">30%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:30%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--mid)">$45,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Month-by-month — 2026</div>
+  <div class="milestones">
+    <div class="ms"><div class="ms-month">May 2026</div><div class="ms-title">Newsletter locked + launched</div><div class="ms-detail">Name: Conversion Design. Beehiiv. First issue ships. 350 subs from Reddit + existing LinkedIn in week 1.</div></div>
+    <div class="ms"><div class="ms-month">Jun 2026</div><div class="ms-title">5/week rotation running</div><div class="ms-detail">Banner, headline, featured section updated. Redesign engine: 2 posts/week. 5,000 followers. Newsletter: 1.5K subs.</div></div>
+    <div class="ms highlight"><div class="ms-month">Jul 2026</div><div class="ms-title">First viral post — 50K impressions</div><div class="ms-detail">Famous site teardown. +1,800 followers in one week. CRO Pocket Guide ships: 500 downloads in first 5 days.</div></div>
+    <div class="ms"><div class="ms-month">Aug 2026</div><div class="ms-title">8,000 followers</div><div class="ms-detail">Beehiiv recs beginning to activate. Newsletter: 3K subs. Vibe-coded checklist freebie live.</div></div>
+    <div class="ms"><div class="ms-month">Sep 2026</div><div class="ms-title">Journey post hits</div><div class="ms-detail">"I landed a $10K project via LinkedIn. Here's the exact DM thread." 35K impressions, 180 comments. Biggest post yet.</div></div>
+    <div class="ms"><div class="ms-month">Oct 2026</div><div class="ms-title">12,000 followers</div><div class="ms-detail">First newsletter sponsorship inquiry ($1.5K/issue). REVIEW DMs: 8/week. Wireframe pack freebie shipped.</div></div>
+    <div class="ms highlight"><div class="ms-month">Nov 2026</div><div class="ms-title">First sponsorship deal closed</div><div class="ms-detail">$1.5K/issue, 3-issue contract. Cohort curriculum planning begins. April launch date set.</div></div>
+    <div class="ms"><div class="ms-month">Dec 2026</div><div class="ms-title">18K followers. $12K/mo. 7K subs.</div><div class="ms-detail">Cohort waitlist soft-test: 40 pre-signups. April timeline confirmed. Year 1 done.</div></div>
+  </div>
+
+  <div class="section-label">Key moments — 2027</div>
+  <div class="q27">
+    <div class="q27-card q1"><div class="q27-label">Q1 · Jan–Mar 2027</div><div class="q27-title">Curriculum build + newsletter monetisation</div><div class="q27-detail">Building the cohort curriculum while posting 5x/week. First sponsorship cheques arrive. Newsletter passes 13K subs. 30K followers.</div><div class="q27-metric">Revenue: ~$14K/mo avg</div></div>
+    <div class="q27-card q2"><div class="q27-label">Q2 · Apr–Jun 2027</div><div class="q27-title">Cohort pilot launches. First taste of Phase B.</div><div class="q27-detail">50 designers × $497. Sells in 5 days. Journey post: "I made $24K teaching this week." Performs massively. Proves Phase B has demand. 45K followers.</div><div class="q27-metric">Launch month: ~$32K total</div></div>
+    <div class="q27-card q3"><div class="q27-label">Q3 · Jul–Sep 2027</div><div class="q27-title">Evergreen course live + coaching opens</div><div class="q27-detail">Course at $497 running on autopilot. 3 coaching slots at $3K/mo (full immediately). Newsletter: 32K subs, $2K/issue sponsors. 62K followers.</div><div class="q27-metric">Revenue: ~$25K/mo</div></div>
+    <div class="q27-card q4"><div class="q27-label">Q4 · Oct–Dec 2027</div><div class="q27-title">Second cohort. First $28K month.</div><div class="q27-detail">70 designers at $497. Revenue model confirmed. Teaching identity real. Content shifts: more "how I built this" alongside redesigns. 78K followers.</div><div class="q27-metric">Revenue: ~$28K/mo</div></div>
+  </div>
+
+  <div class="risk-unlock">
+    <div class="ru-card risk">
+      <h4>⚠ What breaks this</h4>
+      <div class="ru-item"><strong>One bad month of consistency</strong><span>Miss 2 weeks in months 2–3 and the algorithm penalises for 4–6 weeks. The follower curve doesn't recover its slope.</span></div>
+      <div class="ru-item"><strong>Cohort launched before the audience is big enough</strong><span>50 buyers from an 18K audience is doable but tight. Launching the cohort in April (not February) gives 4 extra months of audience build. The timing was moved for a reason.</span></div>
+      <div class="ru-item"><strong>Journey pillar skipped</strong><span>The highest-trust content and the direct proof needed for Phase B. Without it, the teaching course has no foundation people will pay for.</span></div>
+      <div class="ru-item"><strong>Competition enters the CRO-for-designers lane</strong><span>By mid-2027 this niche will be visible enough that others try to enter it. The moat: the Sydney origin story, the documented journey, and being 18 months ahead. None of those are replicable. Start owning the story now — it's the permanent differentiator.</span></div>
+    </div>
+    <div class="ru-card unlock">
+      <h4>→ What pushes you to Best</h4>
+      <div class="ru-item"><strong>One post hits 200K+ impressions before month 4</strong><span>The redesign format (visual, specific, useful) is the most likely vehicle. Famous company teardowns are the bet. If it happens early, the Beehiiv recs activate faster and the newsletter 3x's in weeks.</span></div>
+      <div class="ru-item"><strong>A major creator shares your work</strong><span>Any creator with 200K+ shares a teardown = instant 3–8K followers. The daily piggyback comment system makes this materially more likely over 6 months than it sounds.</span></div>
+      <div class="ru-item"><strong>Cohort sells to 100+ on second run</strong><span>50 × $497 is the pilot. If the second run sells 100+ at $797, move to evergreen fast and price the next cohort at $997.</span></div>
+    </div>
+  </div>
+
+  <div class="upgrade-card">
+    <h4>The path to $45K/mo — key transitions</h4>
+    <div class="upgrade-steps">
+      <div class="upgrade-step"><div class="upgrade-step-label">Now</div><div class="upgrade-step-value">$7K/mo — 100% client work</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2026</div><div class="upgrade-step-value">$12K/mo — clients + newsletter</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Apr 2027</div><div class="upgrade-step-value">$32K launch month — cohort</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2027</div><div class="upgrade-step-value">$28K/mo — course evergreen</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2028</div><div class="upgrade-step-value">$45K/mo — educator business</div></div>
+    </div>
+  </div>
+
+</div><!-- end mid -->
+
+
+<!-- ═══════════════════════════════ BEST ═══════════════════════════════ -->
+<div class="scenario" id="s-best">
+
+  <div class="scenario-hero">
+    <div class="scenario-hero-left">
+      <div class="scenario-tag tag-best">Best case</div>
+      <div class="scenario-title">"The compounding machine runs hot."</div>
+      <div class="scenario-desc">
+        Month 2, a famous-site teardown hits 300K impressions. A major creator shares it.
+        You gain 7,000 followers in a week. Beehiiv recommendations fire immediately — 4K to 16K subs in three weeks.
+        By Q3 you're on design podcasts every fortnight. A January 2027 course launch at $997
+        makes over $150K in its first 10 days.
+        By end of 2027 your name is what comes up when designers ask "who should I learn from
+        if I want to build a real business, not just improve my craft?"
+        You own the story nobody else has in public, with receipts:
+        "$200 in Sydney → 200K followers → teaching 5,000 designers how to do what I did."
+      </div>
+    </div>
+    <div class="probability-badge">
+      <div class="prob-label">Commitment + luck</div>
+      <div class="prob-value" style="color:var(--best)">15%</div>
+      <div class="prob-sub">chance — higher if virality hits early</div>
+    </div>
+  </div>
+
+  <div class="snapshots">
+    <div class="snap-card">
+      <div class="snap-year">End of 2026 <span>Year 1</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value best">55,000</div><div class="snap-metric-sub">+52.7K in 7 months</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value best">18,000</div><div class="snap-metric-sub">Beehiiv network fired</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value best">$20,000</div><div class="snap-metric-sub">Clients + sponsorships + templates. Course waitlist: 280+ people. Clients waitlisted.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2027 <span>Year 2</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value best">220,000</div><div class="snap-metric-sub">Top design creator</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value best">115,000</div><div class="snap-metric-sub">Top design newsletter</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value best">$68,000</div><div class="snap-metric-sub">Course ecosystem + community + sponsorships. 1:1 coaching waitlisted. Client work on your terms only.</div></div>
+      </div>
+    </div>
+    <div class="snap-card">
+      <div class="snap-year">End of 2028 <span>Year 3</span></div>
+      <div class="snap-metrics">
+        <div><div class="snap-metric-label">LinkedIn followers</div><div class="snap-metric-value best">325,000</div><div class="snap-metric-sub">Household name in design</div></div>
+        <div><div class="snap-metric-label">Newsletter subs</div><div class="snap-metric-value best">185,000</div><div class="snap-metric-sub">Major sponsorship asset</div></div>
+        <div class="snap-revenue"><div class="snap-metric-label">Monthly revenue</div><div class="snap-metric-value best">$115,000</div><div class="snap-metric-sub">Full creator-educator business. Book deal. Speaking circuit. Team of 3. Running from anywhere.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-label">LinkedIn growth</div><div class="chart-headline">Follower trajectory</div><div class="chart-canvas-wrap"><canvas id="chart-best-followers"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Revenue</div><div class="chart-headline">Monthly income ($K)</div><div class="chart-canvas-wrap"><canvas id="chart-best-revenue"></canvas></div></div>
+    <div class="chart-card"><div class="chart-label">Newsletter</div><div class="chart-headline">Subscribers</div><div class="chart-canvas-wrap"><canvas id="chart-best-newsletter"></canvas></div></div>
+  </div>
+
+  <div class="section-label">What actually happens — phase by phase</div>
+  <div class="phases">
+    <div class="phase-card" data-phase="1"><div class="phase-accent"></div><div class="phase-num">Phase 1</div><div class="phase-name">The Hot Start</div><div class="phase-period">May – Dec 2026</div>
+      <ul class="phase-list"><li>5 posts/week from day one, no exceptions</li><li>Newsletter live June 1 — 1.5K subs from Reddit in week 1</li><li>Famous-site teardown hits 300K+ impressions in July</li><li>Beehiiv recommendations fire: 4K → 16K subs in 3 weeks</li><li>"$200 in Sydney" journey post — 80K impressions, 350+ comments</li><li>Podcast circuit begins in Q3: 3 design + creator economy shows</li><li>Clients: fully booked, waitlist opened</li></ul>
+      <div class="phase-target">End state: <strong>55K followers, $20K/mo, 18K subs</strong></div>
+    </div>
+    <div class="phase-card" data-phase="2"><div class="phase-accent"></div><div class="phase-num">Phase 2</div><div class="phase-name">Course Launch Ignition</div><div class="phase-period">Jan – Jun 2027</div>
+      <ul class="phase-list"><li>Course at $997 launches to 280-person waitlist</li><li>First 10 days: $150K+ revenue</li><li>Second cohort: 150 designers × $997</li><li>Newsletter: first $4–5K/issue sponsorship deals</li><li>Client work: 1 flagship at $9,999/mo, nothing else</li><li>Speaking: 2 conferences — design + creator economy ($5K fee each)</li><li>1:1 coaching: $4K/month, waitlisted immediately</li></ul>
+      <div class="phase-target">End state: <strong>140K followers, $45K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="3"><div class="phase-accent"></div><div class="phase-num">Phase 3</div><div class="phase-name">The Name People Know</div><div class="phase-period">Jul – Dec 2027</div>
+      <ul class="phase-list"><li>"From $50/hr to $150/hr" full curriculum live</li><li>Evergreen + 3x cohorts/year</li><li>Community: 400 designers at $99/mo = ~$40K/mo</li><li>Newsletter: 90K+ subs, $5K/issue sponsors</li><li>Book proposal sent — "The Freelance Designer Blueprint"</li><li>Team: 1 VA, 1 community manager</li><li>Travel documented: "Running $68K/mo from Lisbon" is a regular post format</li></ul>
+      <div class="phase-target">End state: <strong>220K followers, $68K/mo</strong></div>
+    </div>
+    <div class="phase-card" data-phase="4"><div class="phase-accent"></div><div class="phase-num">Phase 4</div><div class="phase-name">The Creator Empire</div><div class="phase-period">2028 +</div>
+      <ul class="phase-list"><li>Book published — keynotes, media, new audience channel</li><li>3 products: intro ($297), advanced ($997), mastery cohort ($2,497)</li><li>Community: 400+ members at $99/mo contributing ~$40K/mo to total</li><li>Newsletter: 185K subs, $10K/issue sponsors. Premium tier launching.</li><li>Speaking: $15K/keynote, 5–6 events/year</li><li>$115K/mo. 4-day week. Operates from anywhere.</li></ul>
+      <div class="phase-target">End state: <strong>325K followers, $115K/mo</strong></div>
+    </div>
+  </div>
+
+  <div class="section-label">Income composition over time</div>
+  <div class="income-pair">
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2026 — $20K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">65%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:65%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">20%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:20%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product</span><span class="income-stream-pct" style="color:var(--purple)">10%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:10%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / cohort / speaking</span><span class="income-stream-pct" style="color:var(--pink)">5%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:5%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--best)">$20,000</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2027 — $68K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">10%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:10%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">16%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:16%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product / community</span><span class="income-stream-pct" style="color:var(--purple)">55%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:55%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / speaking</span><span class="income-stream-pct" style="color:var(--pink)">19%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:19%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--best)">$68,000</span></div>
+    </div>
+    <div class="income-year-card">
+      <div class="income-year-title">End of 2028 — $115K/mo</div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Client retainers + projects</span><span class="income-stream-pct" style="color:var(--indigo)">3%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-client" style="width:3%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Newsletter / sponsorships</span><span class="income-stream-pct" style="color:var(--blue)">20%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-sponsor" style="width:20%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Course / product / community</span><span class="income-stream-pct" style="color:var(--purple)">57%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-course" style="width:57%"></div></div></div>
+      <div class="income-stream"><div class="income-stream-header"><span class="income-stream-name">Coaching / speaking / book</span><span class="income-stream-pct" style="color:var(--pink)">20%</span></div><div class="income-bar-track"><div class="income-bar-fill bar-coaching" style="width:20%"></div></div></div>
+      <div class="income-total"><span class="income-total-label">Monthly total</span><span class="income-total-value" style="color:var(--best)">$115,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Month-by-month — 2026</div>
+  <div class="milestones">
+    <div class="ms"><div class="ms-month">May 2026</div><div class="ms-title">Fast launch</div><div class="ms-detail">Newsletter live immediately. 1.5K subs in first week from Reddit + existing audience. 5/week posting from day one.</div></div>
+    <div class="ms highlight-best"><div class="ms-month">Jun 2026</div><div class="ms-title">First viral teardown</div><div class="ms-detail">Famous site teardown: 300K impressions. +7,000 followers in one week. DMs overwhelmed with requests.</div></div>
+    <div class="ms highlight-best"><div class="ms-month">Jul 2026</div><div class="ms-title">Beehiiv recommendations explode</div><div class="ms-detail">4K → 16K newsletter subs in 3 weeks via recommendation network. CRO Pocket Guide: 2,800 downloads.</div></div>
+    <div class="ms"><div class="ms-month">Aug 2026</div><div class="ms-title">30,000 followers</div><div class="ms-detail">First design podcast. "$200 in Sydney" journey post: 80K impressions, 350+ comments. Best performing post.</div></div>
+    <div class="ms"><div class="ms-month">Sep 2026</div><div class="ms-title">45,000 followers</div><div class="ms-detail">Client waitlist started. First $4K newsletter sponsorship deal. 18 REVIEW DMs/day.</div></div>
+    <div class="ms highlight-best"><div class="ms-month">Oct 2026</div><div class="ms-title">Major creator shares your work</div><div class="ms-detail">Top creator shares a redesign post. +10,000 followers in 72 hours. Newsletter: 17K subs.</div></div>
+    <div class="ms"><div class="ms-month">Nov 2026</div><div class="ms-title">Course waitlist opens</div><div class="ms-detail">280 pre-signups in first 48 hours at $997. January launch economics confirmed.</div></div>
+    <div class="ms"><div class="ms-month">Dec 2026</div><div class="ms-title">55K followers. $20K/mo. 18K subs.</div><div class="ms-detail">Closes the year in a completely different position. The teaching business is already underway.</div></div>
+  </div>
+
+  <div class="section-label">Key moments — 2027</div>
+  <div class="q27">
+    <div class="q27-card q1"><div class="q27-label">Q1 · Jan 2027</div><div class="q27-title">Course launches. $150K+ in first 10 days.</div><div class="q27-detail">$997 course to 280-person waitlist. 160+ buy in week 1. First VA hired to handle operations. 95K followers.</div><div class="q27-metric">Jan revenue: ~$165K (launch month avg out to $55K/mo Q1)</div></div>
+    <div class="q27-card q2"><div class="q27-label">Q2 · Apr–Jun 2027</div><div class="q27-title">Second cohort + first conference keynote</div><div class="q27-detail">150 designers in second cohort. First conference speaking ($5K fee). Newsletter 62K. Sponsorships at $4K/issue. 140K followers.</div><div class="q27-metric">Revenue: ~$45K/mo</div></div>
+    <div class="q27-card q3"><div class="q27-label">Q3 · Jul–Sep 2027</div><div class="q27-title">Community launches. Passive income begins.</div><div class="q27-detail">Community at $99/mo. 400 members in first month = $39,600/mo baseline. Newsletter: 90K. Sponsorships $5K/issue. 185K followers.</div><div class="q27-metric">Revenue: ~$58K/mo</div></div>
+    <div class="q27-card q4"><div class="q27-label">Q4 · Oct–Dec 2027</div><div class="q27-title">Book proposal. Team of 3. $68K/mo baseline.</div><div class="q27-detail">Book proposal accepted. Mastery cohort at $2,497 piloted (30 students). Travel content: "Running $68K/mo from Prague." 220K followers.</div><div class="q27-metric">Revenue: ~$68K/mo</div></div>
+  </div>
+
+  <div class="risk-unlock">
+    <div class="ru-card risk">
+      <h4>⚠ What can still break this</h4>
+      <div class="ru-item"><strong>Burning out from the volume of attention</strong><span>Going viral is energising and exhausting simultaneously. 350+ comments, 20 DMs/day, podcast requests. You need systems before this hits — not after. VA hired by month 4.</span></div>
+      <div class="ru-item"><strong>Course launched wrong — too cheap or too early</strong><span>$997 to 55K followers with a warm waitlist is the right price. Launch at $97 out of fear and you anchor the price low permanently. Launch to 5K followers and you leave $140K on the table waiting.</span></div>
+      <div class="ru-item"><strong>Studio demand swamps content time</strong><span>When the client waitlist is 6 deep it's tempting to say yes to all of them. Content is the engine that created the waitlist. Protect it before protecting revenue.</span></div>
+      <div class="ru-item"><strong>Competition copies the playbook</strong><span>At 100K+ followers, 3–5 others will enter the CRO-for-designers lane. The moat: the Sydney origin story is unreplicable. The documented journey (in real time, with real numbers) is unreplicable. Being 2 years ahead is unreplicable. Own those, hard.</span></div>
+    </div>
+    <div class="ru-card unlock">
+      <h4>→ What makes this the floor, not the ceiling</h4>
+      <div class="ru-item"><strong>The origin story is a permanent moat</strong><span>"$200 in Sydney → $115K/mo teaching designers" is a story nobody else has. Told well, with real numbers, in public — it compounds. New designers find it years later and it still converts.</span></div>
+      <div class="ru-item"><strong>A newsletter at 185K subs is a business unto itself</strong><span>That asset is worth $1–2M as an acquisition. It funds course launches, book advances, and the community build with zero ad spend.</span></div>
+      <div class="ru-item"><strong>Teaching designers is a 10-year market</strong><span>100,000+ new designers enter the market every year. Every one of them will eventually face the same problem Alex has now. The market doesn't saturate.</span></div>
+      <div class="ru-item"><strong>Travel is the proof of concept, not just the reward</strong><span>"Running a $115K/mo education business from Bali, Prague, and Lisbon" is the best-performing content David can make in 2028. It validates Phase B to every Alex watching. The lifestyle is the pitch.</span></div>
+    </div>
+  </div>
+
+  <div class="upgrade-card">
+    <h4>The $115K/mo path — key transitions</h4>
+    <div class="upgrade-steps">
+      <div class="upgrade-step"><div class="upgrade-step-label">Now</div><div class="upgrade-step-value">$7K/mo — solo studio</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2026</div><div class="upgrade-step-value">$20K/mo — virality hit</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Jan 2027</div><div class="upgrade-step-value">$165K course launch month</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2027</div><div class="upgrade-step-value">$68K/mo — creator business</div></div>
+      <div class="upgrade-arrow">→</div>
+      <div class="upgrade-step"><div class="upgrade-step-label">Dec 2028</div><div class="upgrade-step-value">$115K/mo — educator empire</div></div>
+    </div>
+  </div>
+
+</div><!-- end best -->
+</div><!-- end main -->
+
+<script>
+  const labels = ["Q2 '26","Q3 '26","Q4 '26","Q1 '27","Q2 '27","Q3 '27","Q4 '27","Q1 '28","Q2 '28","Q3 '28","Q4 '28"];
+
+  // ── Revised data: realistic numbers pulled down, bad scenario floor lower,
+  //    best scenario adjusted so Phase 4 community figure is consistent with totals ──
+  const followers = {
+    bad:  [2.3, 3.5, 5,   7,   9,   11,  13,  15,  17,  19,  21],
+    mid:  [2.3, 8,   18,  30,  45,  62,  78,  90,  100, 110, 118],
+    best: [2.3, 20,  55,  95,  140, 185, 220, 250, 275, 300, 325]
+  };
+  const revenue = {
+    bad:  [7,   7,   7.5, 8,   8.5, 9,   9.5, 10,  10,  10.5, 11],
+    mid:  [7,   9,   12,  14,  20,  25,  28,  30,  35,  40,   45],
+    best: [7,   13,  20,  40,  45,  58,  68,  75,  88,  100,  115]
+  };
+  const newsletter = {
+    bad:  [0,   0.2, 0.5, 0.8, 1.1, 1.5, 2,   2.5, 3,   3.5, 4],
+    mid:  [0,   2,   7,   13,  22,  32,  42,  50,  58,  65,  70],
+    best: [0,   5,   18,  38,  62,  90,  115, 138, 158, 175, 185]
+  };
+
+  const colors = { bad:'#ef4444', mid:'#f59e0b', best:'#10b981' };
+  const gridColor = 'rgba(255,255,255,0.04)';
+  const tickColor = '#555';
+
+  function makeLineChart(id, data, color, yLabel) {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: color,
+          backgroundColor: color + '10',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: color,
+          pointBorderColor: '#0a0a0a',
+          pointBorderWidth: 1.5,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1c1c1c',
+            borderColor: '#2a2a2a',
+            borderWidth: 1,
+            titleColor: '#aaa',
+            bodyColor: '#f0f0f0',
+            padding: 10,
+            callbacks: {
+              label: ctx => {
+                const v = ctx.parsed.y;
+                if (yLabel === 'f') return ` ${v >= 1 ? v.toFixed(v < 10 ? 1 : 0) + 'K' : Math.round(v * 1000)} followers`;
+                if (yLabel === 'r') return ` $${v}K/mo`;
+                if (yLabel === 'n') return ` ${v >= 1 ? v.toFixed(v < 10 ? 1 : 0) + 'K' : Math.round(v * 1000)} subs`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } }, border: { color: 'transparent' } },
+          y: {
+            grid: { color: gridColor },
+            ticks: { color: tickColor, font: { size: 10 }, callback: (v, i, a) => {
+              if (yLabel === 'r') return '$' + v + 'K';
+              return v >= 1 ? v + 'K' : (v > 0 ? Math.round(v * 1000) : 0);
+            }},
+            border: { color: 'transparent' }
+          }
+        }
+      }
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    makeLineChart('chart-bad-followers',   followers.bad,   colors.bad,  'f');
+    makeLineChart('chart-bad-revenue',     revenue.bad,     colors.bad,  'r');
+    makeLineChart('chart-bad-newsletter',  newsletter.bad,  colors.bad,  'n');
+    makeLineChart('chart-mid-followers',   followers.mid,   colors.mid,  'f');
+    makeLineChart('chart-mid-revenue',     revenue.mid,     colors.mid,  'r');
+    makeLineChart('chart-mid-newsletter',  newsletter.mid,  colors.mid,  'n');
+    makeLineChart('chart-best-followers',  followers.best,  colors.best, 'f');
+    makeLineChart('chart-best-revenue',    revenue.best,    colors.best, 'r');
+    makeLineChart('chart-best-newsletter', newsletter.best, colors.best, 'n');
+  });
+
+  function switchTab(s) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.tab.' + s).classList.add('active');
+    document.querySelectorAll('.scenario').forEach(c => c.classList.remove('active'));
+    document.getElementById('s-' + s).classList.add('active');
+  }
+</script>
+</body>
+</html>
